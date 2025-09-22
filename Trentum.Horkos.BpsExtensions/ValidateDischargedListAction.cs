@@ -12,7 +12,7 @@ using WebCon.WorkFlow.SDK.Tools.Data.Model;
 
 namespace Trentum.Horkos.BpsExtensions
 {
-    public class ValidateAnnualListAction : CustomAction<ValidateAnnualListActionConfig>
+    public class ValidateDischargedListAction : CustomAction<ValidateDischargedListActionConfig>
     {
         public override async Task RunAsync(RunCustomActionParams args)
         {
@@ -20,14 +20,15 @@ namespace Trentum.Horkos.BpsExtensions
             bool _validatePeselDuplicates = ActionParamsHelpers.GetParamBoolOrDefaultValue(args, Configuration.ValidationConditionsGroupBox.ValidatePeselDuplicatesFormFieldId);
             bool _validateRank = ActionParamsHelpers.GetParamBoolOrDefaultValue(args, Configuration.ValidationConditionsGroupBox.ValidateRankFormFieldId);
             bool _validateUnitName = ActionParamsHelpers.GetParamBoolOrDefaultValue(args, Configuration.ValidationConditionsGroupBox.ValidateUnitNameFormFieldId);
+            bool _validateDischargeDate = ActionParamsHelpers.GetParamBoolOrDefaultValue(args, Configuration.ValidationConditionsGroupBox.ValidateDischargedDateFormFieldId);
 
             int? _referenceListConnectionId = Configuration.ValidationConditionsGroupBox.ReferenceListConnectionId;
             int? _rankDataSourceId = Configuration.ValidationDataSourcesGroupBox.RankDataSourceID;
             int? _unitDataSourceId = Configuration.ValidationDataSourcesGroupBox.UnitDataSourceID;
 
             var _log = new StringBuilder();
-            _log.AppendLine("Walidacja rocznej listy osób zobowiązanych.");
-            _log.AppendLine($"Zakres: duplikaty PESEL={_validatePeselDuplicates}, stopień={_validateRank}, jednostka={_validateUnitName}, PESEL={_validatePesel}");
+            _log.AppendLine("Walidacja listy osób zwolnionych ze służby.");
+            _log.AppendLine($"Zakres: duplikaty PESEL={_validatePeselDuplicates}, stopień={_validateRank}, jednostka={_validateUnitName}, PESEL={_validatePesel}, Data zwolnienie={_validateDischargeDate}");
 
             string[] unitRefList = null;
             string[] rankRefList = null;
@@ -123,13 +124,13 @@ namespace Trentum.Horkos.BpsExtensions
                         input: inMs,
                         output: outMs,
                         sheetName: null,
-                        requiredHeaders: null,
+                        requiredHeaders: new[]{"Stopień", "Imiona", "Nazwisko", "PESEL","Stanowisko", "Nazwa jednostki wojskowej","Data zwolnienia"},
                         headerRow: 1,
                         validatePesel: _validatePesel,
                         validatePeselDuplicates: _validatePeselDuplicates,
                         validateUnitName: _validateUnitName,
                         validateRank: _validateRank,
-                        validateDischargeDate: false,
+                        validateDischargeDate: _validateDischargeDate,
                         unitNameReferenceList: unitRefList,
                         rankReferenceList: rankRefList
                     );

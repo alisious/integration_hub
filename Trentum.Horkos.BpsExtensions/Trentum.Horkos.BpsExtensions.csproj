@@ -41,7 +41,16 @@
   <ItemGroup>
     <Compile Include="ActionParamsHelpers.cs" />
     <Compile Include="DataTableHelpers.cs" />
+    <Compile Include="ListValidationConfig.cs" />
+    <Compile Include="StartPersonalFileAction.cs" />
+    <Compile Include="StartPersonalFileActionConfig.cs" />
+    <Compile Include="ValidateDischargedListAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ValidateAnnualListAction.cs" />
+    <Compile Include="ValidateDischargedListActionConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ValidateAnnualListActionConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

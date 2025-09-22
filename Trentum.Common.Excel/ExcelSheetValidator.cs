@@ -34,6 +34,8 @@ public static class ExcelSheetValidator
         bool validatePeselDuplicates = true,
         bool validateUnitName = false,
         bool validateRank = false,
+        bool validateDischargeDate = false,
+        string dischargeDateHeader = "Data zwolnienia",
         IEnumerable<string>? unitNameReferenceList = null,
         IEnumerable<string>? rankReferenceList = null)
     {
@@ -92,6 +94,10 @@ public static class ExcelSheetValidator
                 keepCols.Add(col);
         }
 
+        // >>> ZACHOWAJ "Data zwolnienia", jeśli włączono walidację <<<
+        if (validateDischargeDate && ExcelCommon.TryResolveColumn(headers, dischargeDateHeader, out var cDischargeKeep))
+            keepCols.Add(cDischargeKeep);
+
         var lastUsedColBeforeTrim = ws.LastColumnUsed()?.ColumnNumber() ?? headers.Values.DefaultIfEmpty(1).Max();
         for (int c = lastUsedColBeforeTrim; c >= 1; c--)
         {
@@ -122,6 +128,11 @@ public static class ExcelSheetValidator
 
         int? stopienCol = ExcelCommon.TryResolveColumn(headers, "Stopień", out var cStopien) ? cStopien : (int?)null;
         int? unitCol = ExcelCommon.TryResolveColumn(headers, "Nazwa jednostki wojskowej", out var cUnit) ? cUnit : (int?)null;
+        // >>> Lokalizacja kolumny "Data zwolnienia" (po przycięciu)
+        int? dischargeDateCol = (validateDischargeDate &&
+                                 ExcelCommon.TryResolveColumn(headers, dischargeDateHeader, out var cDischarge))
+                                    ? cDischarge : (int?)null;
+
 
         // 5) Jeżeli brak wierszy danych – zapis i wyjście
         var lastRow = ws.LastRowUsed()?.RowNumber() ?? headerRow;
@@ -218,6 +229,24 @@ public static class ExcelSheetValidator
                     rowErrors.Add("Nieznana 'Nazwa jednostki wojskowej'");
             }
 
+            // >>> NOWOŚĆ: Walidacja kolumny "Data zwolnienia"
+            if (validateDischargeDate && dischargeDateCol is not null)
+            {
+                var cell = ws.Cell(r, dischargeDateCol.Value);
+
+                // Jeżeli jest wymagana, to „brak wartości” zgłosi już sekcja z requiredCols.
+                // Tutaj sprawdzamy tylko, czy WARTOŚĆ (jeśli jest) jest datą.
+                var txt = ExcelCommon.GetTrimmed(cell);
+                bool hasAnyValue = !string.IsNullOrWhiteSpace(txt)
+                                   || cell.DataType == XLDataType.Number
+                                   || cell.DataType == XLDataType.DateTime;
+
+                if (hasAnyValue && !TryGetExcelDate(cell, out _))
+                {
+                    rowErrors.Add("Nieprawidłowa wartość w 'Data zwolnienia' (oczekiwana data).");
+                }
+            }
+
             ws.Cell(r, statusCol).Value = rowErrors.Count == 0 ? "POPRAWNY" : string.Join("; ", rowErrors);
             if (rowErrors.Count == 0) valid++; else errors++;
         }
@@ -233,6 +262,50 @@ public static class ExcelSheetValidator
     }
 
     // --- helpers ---
+
+    /// <summary>
+    /// Akceptuje: komórkę typu DateTime, numer OADate, tekst parsowalny (pl-PL / Invariant).
+    /// Zwraca true, gdy uda się uzyskać DateTime.
+    /// </summary>
+    private static bool TryGetExcelDate(IXLCell cell, out DateTime dt)
+    {
+        dt = default;
+
+        if (cell.IsEmpty()) return false;
+
+        try
+        {
+            if (cell.DataType == XLDataType.DateTime)
+            {
+                dt = cell.GetDateTime();
+                return true;
+            }
+
+            if (cell.DataType == XLDataType.Number)
+            {
+                // Excelowa liczba dni od 1899-12-30
+                dt = DateTime.FromOADate(cell.GetDouble());
+                return true;
+            }
+
+            var s = cell.GetString().Trim();
+            if (s.Length == 0) return false;
+
+            if (DateTime.TryParse(s, System.Globalization.CultureInfo.GetCultureInfo("pl-PL"),
+                                  System.Globalization.DateTimeStyles.None, out dt))
+                return true;
+
+            if (DateTime.TryParse(s, System.Globalization.CultureInfo.InvariantCulture,
+                                  System.Globalization.DateTimeStyles.None, out dt))
+                return true;
+        }
+        catch
+        {
+            // ignorujemy – zwrócimy false poniżej
+        }
+
+        return false;
+    }
 
     private static void ApplyConditionalFormatting(IXLWorksheet ws, int headerRow, int statusCol, int lastRow)
     {
