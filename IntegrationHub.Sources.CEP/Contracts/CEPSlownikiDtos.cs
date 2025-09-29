@@ -1,4 +1,4 @@
-﻿namespace IntegrationHub.Sources.CEP.Contracts;
+﻿namespace IntegrationHub.Sources.CEP.ConnectedServices;
 
 // nagłówek słownika
 public sealed class SlownikNaglowekDto

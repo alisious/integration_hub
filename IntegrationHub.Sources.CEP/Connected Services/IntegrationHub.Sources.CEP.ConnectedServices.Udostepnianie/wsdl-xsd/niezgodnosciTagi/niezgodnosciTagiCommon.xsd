@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- edited with XMLSpy v2016 (x64) (http://www.altova.com) by Centralny Osrodek Informatyki (Centralny Osrodek Informatyki) -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:niezg="http://niezg.api.cepik.coi.gov.pl" targetNamespace="http://niezg.api.cepik.coi.gov.pl">
+	<annotation>
+		<documentation>Version: 1.4.0</documentation>
+	</annotation>
+	<include schemaLocation="niezgodnosciTagiUdostepnianie.xsd"/>
+	<include schemaLocation="niezgodnosciTagiZasilanie.xsd"/>	
+	<include schemaLocation="niezgodnosciTagiTypy.xsd"/>
+</schema>

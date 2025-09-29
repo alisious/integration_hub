@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2016 rel. 2 sp1 (x64) (http://www.altova.com) by Kamil Mętrak (Centralny Osrodek Informatyki) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:com="http://output.common.udo.api.cepik.coi.gov.pl" xmlns:niezg="http://niezg.api.cepik.coi.gov.pl" xmlns:pod="http://podmiot.common.udo.api.cepik.coi.gov.pl" targetNamespace="http://podmiot.common.udo.api.cepik.coi.gov.pl">
+    <xsd:annotation>
+        <xsd:documentation>
+            Version: 3.39.0
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:import namespace="http://niezg.api.cepik.coi.gov.pl" schemaLocation="../../niezgodnosciTagi/niezgodnosciTagiCommon.xsd"/>
+    <xsd:import namespace="http://output.common.udo.api.cepik.coi.gov.pl" schemaLocation="udostepnianieCommonOutput.xsd"/>
+    <xsd:complexType name="Adres">
+        <xsd:sequence>
+            <xsd:element name="kraj" type="com:WartoscSlownikowaPanstwoNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kraj</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTeryt" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod TERYT - wartość słownikowa: DICT.008 TERYT</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTerytWojewodztwa" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod TERYT wojewodztwa - wartość słownikowa: DICT.052 Słownik nazw województw</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaWojewodztwaStanu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa województwa lub stanu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTerytPowiatu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod TERYT powiatu - wartość słownikowa: DICT.053 Słownik nazw powiatów</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaPowiatuDzielnicy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa powiatu lub dzielnicy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTerytGminy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod TERYT gminy - wartość słownikowa: DICT.054 Słownik nazw gmin</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaGminy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa gminy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodRodzajuGminy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>kod rodzaju gminy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodPocztowy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod pocztowy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTerytMiejscowosci" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod TERYT miejscowości - wartość słownikowa: DICT.055 Słownik nazw miejscowości</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaMiejscowosci" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>nazwa miejscowości</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTerytMiejscowosciPodst" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod teryt mijescowości podstawowej</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaMiejscowosciPodst" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa miejscowości podstawowej</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kodTerytUlicy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>DICT.056 Słownik nazw ulic</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ulicaCecha" type="com:WartoscSlownikowaUdostepnianieRozszerzoneNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Cecha ulicy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaUlicy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa ulicy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="numerDomu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Numer domu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="numerLokalu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Numer lokalu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Osoba">
+        <xsd:sequence>
+            <xsd:element name="PESEL" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>PESEL</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="imiePierwsze" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Imię pierwsze</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="imieDrugie" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Imię drugie</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwisko" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwisko</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="dataUrodzenia" type="com:TypeDateNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Data urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="miejsceUrodzeniaKod" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod teryt miejsca urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="miejsceUrodzenia" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Miejsce urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresEmail" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>DEPRECATED: Adres email - pole jest nieużywane i planowane jest usunięcie w jednej z kolejnych wersji</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="numerTelefonu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>DEPRECATED: Numer telefonu - pole jest nieużywane i planowane jest usunięcie w jednej z kolejnych wersji</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="dataZgonu" type="com:TypeDateNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Data zgonu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adres" type="pod:Adres" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="zagranicznyDokumentPotwierdzajacyTozsamosc" type="pod:ZagranicznyDokumentPotwierdzajacyTozsamosc" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Zagraniczny dokument potwierdzający tożsamość (klasa)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Firma">
+        <xsd:sequence>
+            <xsd:element name="REGON" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>REGON</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmyDrukowana" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy drukowana</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmyNiepotwierdzona" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy niepotwierdzona</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresEmail" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres email</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="numerTelefonu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Numer telefonu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="formaWlasnosci" type="com:WartoscSlownikowaUdostepnianieRozszerzoneNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Forma własności - wartość słownikowa: DICT.252 Forma własności przedsiębiorstwa</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identyfikatorSystemowyREGON" type="com:TypeLong" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Identyfikator REGON z repliki w CEPiK</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adres" type="pod:Adres" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="firmaZagraniczna" type="pod:FirmaZagraniczna" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Dane firmy zagranicznej</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="FirmaZagraniczna">
+        <xsd:sequence>
+            <xsd:element name="krajZagranicznejWlasnosci" type="com:WartoscSlownikowaPanstwoNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kraj zagranicznej własności - wartość słownikowa: DICT.033 Państw i obywatelstw</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="zagranicznyNumerIdentyfikacyjny" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Zagraniczny numer identyfikacyjny</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ZagranicznyDokumentPotwierdzajacyTozsamosc">
+        <xsd:sequence>
+            <xsd:element name="seriaNumerDokumentu" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Seria i numer dokumentu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaDokumentu" type="com:WartoscSlownikowaUdostepnianieRozszerzone" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa dokumentu - wartość słownikowa: DICT.020 Typ dokumentu potwierdzającego tożsamość</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaPanstwaWydajacegoDokument" type="com:WartoscSlownikowaPanstwoNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa państwa wydającego dokument - wartość słownikowa: DICT.033 Państw i obywatelstw</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Podmiot">
+        <xsd:sequence>
+            <xsd:element name="identyfikatorSystemowyPodmiotu" type="com:TypeLong">
+                <xsd:annotation>
+                    <xsd:documentation>Identyfikator systemowy podmiotu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="wariantPodmiotu" type="com:TypeInt">
+                <xsd:annotation>
+                    <xsd:documentation>Wariant Podmiotu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:choice>
+                <xsd:element name="firma" type="pod:Firma" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>Firma</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="osoba" type="pod:Osoba" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>Osoba</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PodmiotUdoDokUproszczone">
+        <xsd:sequence>
+            <xsd:element name="niezgodnoscObiektowa" type="niezg:NiezgodnoscObiektowaUdostepnianie" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Niezgodność obiektowa (klasa)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identyfikatorSystemowyPodmiotu" type="com:TypeLong">
+                <xsd:annotation>
+                    <xsd:documentation>Identyfikator systemowy podmiotu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="wariantPodmiotu" type="com:TypeInt">
+                <xsd:annotation>
+                    <xsd:documentation>Wariant Podmiotu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:choice>
+                <xsd:element name="firma" type="pod:FirmaUdoDokUproszczone" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>Firma</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="osoba" type="pod:OsobaUdoDokUproszczone" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>Osoba</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="FirmaUdoDokUproszczone">
+        <xsd:sequence>
+            <xsd:element name="REGON" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>REGON</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmyDrukowana" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy drukowana</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmyNiepotwierdzona" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy niepotwierdzona</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="formaWlasnosci" type="com:WartoscSlownikowaUdostepnianieRozszerzoneNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Forma własności - wartość słownikowa: DICT.252 Forma własności przedsiębiorstwa</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identyfikatorSystemowyREGON" type="com:TypeLong" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Identyfikator REGON z repliki w CEPiK</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adres" type="pod:Adres" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="firmaZagraniczna" type="pod:FirmaZagraniczna" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Dane firmy zagranicznej</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="OsobaUdoDokUproszczone">
+        <xsd:sequence>
+            <xsd:element name="PESEL" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>PESEL</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="imiePierwsze" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Imię pierwsze</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="imieDrugie" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Imię drugie</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwisko" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwisko</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="dataUrodzenia" type="com:TypeDateNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Data urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="miejsceUrodzeniaKod" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod teryt miejsca urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="miejsceUrodzenia" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Miejsce urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="dataZgonu" type="com:TypeDateNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Data zgonu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="obywatelstwo1" type="com:WartoscSlownikowaPanstwo" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Pierwsze obywatelstwo</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="obywatelstwo2" type="com:WartoscSlownikowaPanstwo" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Drugie obywatelstwo</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adres" type="pod:Adres" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="zagranicznyDokumentPotwierdzajacyTozsamosc" type="pod:ZagranicznyDokumentPotwierdzajacyTozsamosc" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Zagraniczny dokument potwierdzający tożsamość (klasa)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PodmiotProfRej">
+        <xsd:sequence>
+            <xsd:element name="identyfikatorSystemowyPodmiotu" type="com:TypeLong">
+                <xsd:annotation>
+                    <xsd:documentation>Identyfikator systemowy podmiotu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="wariantPodmiotu" type="com:TypeInt">
+                <xsd:annotation>
+                    <xsd:documentation>Wariant Podmiotu</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:choice>
+                <xsd:element name="firma" type="pod:FirmaProfRej" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>Firma</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="osoba" type="pod:OsobaProfRej" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>Osoba</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="FirmaProfRej">
+        <xsd:sequence>
+            <xsd:element name="REGON" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>REGON</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identyfikatorSystemowyREGON" type="com:TypeLong" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Identyfikator REGON z repliki w CEPiK</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmy" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaFirmyDrukowana" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwa firmy drukowana</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adres" type="pod:Adres" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="OsobaProfRej">
+        <xsd:sequence>
+            <xsd:element name="PESEL" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>PESEL</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="imiePierwsze" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Imię pierwsze</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="imieDrugie" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Imię drugie</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwisko" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Nazwisko</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="dataUrodzenia" type="com:TypeDateNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Data urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="miejsceUrodzeniaKod" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Kod teryt miejsca urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="miejsceUrodzenia" type="com:TypeStringNiezg" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Miejsce urodzenia</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adres" type="pod:Adres" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Adres</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="zagranicznyDokumentPotwierdzajacyTozsamosc" type="pod:ZagranicznyDokumentPotwierdzajacyTozsamosc" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Zagraniczny dokument potwierdzający tożsamość (klasa)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

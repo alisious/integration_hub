@@ -20,6 +20,8 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
+using IntegrationHub.Infrastructure.Sql;
+using IntegrationHub.Infrastructure.Cepik;
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
 Log.Logger = new LoggerConfiguration()
@@ -64,7 +66,15 @@ builder.Services.AddDbContext<PiespDbContext>(options =>
 //Rejestracja ClientCertificateProvider
 builder.Services.AddSingleton<IClientCertificateProvider, ClientCertificateProvider>();
 
-builder.Services.AddHorkosDapper(builder.Configuration.GetConnectionString("IntegrationHubDB"));
+var integrationHubDbConnectionString = builder.Configuration.GetConnectionString("IntegrationHubDB")
+             ?? throw new InvalidOperationException("Missing ConnectionStrings:IntegrationHubDB.");
+
+builder.Services.AddHorkosDapper(integrationHubDbConnectionString);
+
+builder.Services.AddIntegrationHubSqlInfrastructure(integrationHubDbConnectionString);
+
+
+
 /**************************************************************/
 // ====== SRP CLIENT ======
 // Rejestracja konfiguracji SRP

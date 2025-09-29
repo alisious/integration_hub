@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pod="http://podmiot.common.udo.api.cepik.coi.gov.pl" targetNamespace="http://podmiot.common.udo.api.cepik.coi.gov.pl">
+    <xsd:annotation>
+        <xsd:documentation>
+            Version: 3.39.0
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <!-- common -->
+
+    <xsd:complexType name="Operator">
+        <xsd:sequence>
+            <xsd:element name="identyfikatorSystemuZewnetrznego">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Identyfikator systemu zewnętrznego zlecającego zapytanie masowe.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="1000"/>
+                        <xsd:whiteSpace value="collapse"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="identyfikatorUzytkownikaSystemuZewnetrznego" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Identyfikator użytkownika systemu zewnętrznego.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="1000"/>
+                        <xsd:whiteSpace value="collapse"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

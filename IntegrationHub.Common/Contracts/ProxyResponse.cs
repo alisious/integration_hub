@@ -51,3 +51,37 @@ public enum ProxyStatus
     TechnicalError
 }
 
+public static class ProxyResponses
+{
+    public static ProxyResponse<T> Success<T>(T data, string source, int sourceStatusCode, string requestId) =>
+        new()
+        {
+            Status = ProxyStatus.Success,
+            Data = data,
+            Source = source,
+            SourceStatusCode = sourceStatusCode,
+            RequestId = requestId
+        };
+
+    public static ProxyResponse<T> BusinessError<T>(string message, string source, int sourceStatusCode, string requestId) =>
+        new()
+        {
+            Status = ProxyStatus.BusinessError,
+            ErrorMessage = message,
+            Source = source,
+            SourceStatusCode = sourceStatusCode,
+            RequestId = requestId
+        };
+
+    public static ProxyResponse<T> TechnicalError<T>(string message, string source, int sourceStatusCode, string requestId) =>
+        new()
+        {
+            Status = ProxyStatus.TechnicalError,
+            ErrorMessage = message,
+            Source = source,
+            SourceStatusCode = sourceStatusCode,
+            RequestId = requestId
+        };
+}
+
+

@@ -1,4 +1,4 @@
-﻿using IntegrationHub.Sources.CEP.Contracts;
+﻿using IntegrationHub.Sources.CEP.ConnectedServices;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;

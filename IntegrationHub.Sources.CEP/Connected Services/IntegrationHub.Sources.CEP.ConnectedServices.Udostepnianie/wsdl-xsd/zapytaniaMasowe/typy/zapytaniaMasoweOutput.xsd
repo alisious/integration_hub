@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:out="http://output.cep.udo.api.cepik.coi.gov.pl" xmlns:comout="http://output.common.udo.api.cepik.coi.gov.pl" xmlns:comin="http://input.common.udo.api.cepik.coi.gov.pl" xmlns:inp="http://input.cep.udo.api.cepik.coi.gov.pl" xmlns:pod="http://podmiot.common.udo.api.cepik.coi.gov.pl" targetNamespace="http://output.cep.udo.api.cepik.coi.gov.pl">
+    <xsd:annotation>
+        <xsd:documentation>
+            Version: 3.39.0
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:import namespace="http://output.common.udo.api.cepik.coi.gov.pl" schemaLocation="../../apiUdostepnianie/typy/udostepnianieCommonOutput.xsd"/>
+    <xsd:import namespace="http://podmiot.common.udo.api.cepik.coi.gov.pl" schemaLocation="zapytaniaMasoweCommon.xsd"/>
+    <xsd:import namespace="http://input.cep.udo.api.cepik.coi.gov.pl" schemaLocation="zapytaniaMasoweInput.xsd" />
+
+    <!-- pobierzWynikZapytaniaMasowegoRezultat -->
+
+    <xsd:complexType name="PobierzWynikZapytaniaMasowegoRezultat">
+        <xsd:sequence>
+            <xsd:element name="zapytanieMasoweRozszerzone" type="out:ZapytanieMasoweRozszerzoneZWynikiem" />
+            <xsd:element name="parametryZapytaniaOWynikZapytania" type="inp:PobierzWynikZapytaniaMasowego" />
+            <xsd:element name="operator" type="pod:Operator" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ZapytanieMasoweRozszerzoneZWynikiem">
+        <xsd:complexContent>
+            <xsd:extension base="out:ZapytanieMasoweRozszerzone">
+                <xsd:sequence>
+                    <xsd:element name="wynikZapytania" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Plik przesyłany za pomocą MTOM zawierający wynik przetworzonego zapytania masowego.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <!-- pytanieOListeZapytanMasowychRezultat -->
+
+    <xsd:complexType name="PytanieOListeZapytanMasowychRezultat">
+        <xsd:sequence>
+            <xsd:element name="zapytanieMasoweRozszerzone" type="out:ZapytanieMasoweRozszerzone" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="operator" type="pod:Operator" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ZapytanieMasoweRozszerzone">
+        <xsd:complexContent>
+            <xsd:extension base="out:ZapytanieMasowe">
+                <xsd:sequence>
+                    <xsd:element name="dataWaznosci" type="xsd:dateTime" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Data i czas do kiedy jest możliwe pobranie rekordu.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <!-- zapytanieMasoweRezultat -->
+
+    <xsd:complexType name="ZapytanieMasoweRezultat">
+        <xsd:sequence>
+            <xsd:element name="zapytanieMasowe" type="out:ZapytanieMasowe" />
+            <xsd:element name="operator" type="pod:Operator" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ZapytanieMasowe">
+        <xsd:sequence>
+            <xsd:element name="identyfikatorZapytaniaMasowego" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Identyfikator zapytania masowego nadawany przez system CEPIK
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nazwaPlikuImportu" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Nazwa pliku który został przysłany do przetworzenia
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="255" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="dataPrzyjecia" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Data przyjęcia zapytania masowego do systemu CEPIK
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="statusZapytaniaMasowego" type="comout:WartoscSlownikowaUdostepnianieRozszerzone">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Status zapytania masowego - wartość słownikowa: DICT.001 Status zapytania.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

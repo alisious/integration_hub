@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:out="http://output.cep.udo.api.cepik.coi.gov.pl" xmlns:ex="http://exceptions.api.cepik.coi.gov.pl" xmlns:comout="http://output.common.udo.api.cepik.coi.gov.pl"  xmlns:pod="http://podmiot.common.udo.api.cepik.coi.gov.pl" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl" targetNamespace="http://output.cep.udo.api.cepik.coi.gov.pl">
+    <xsd:annotation>
+        <xsd:documentation>
+            Version: 3.39.0
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:include schemaLocation="../../apiUdostepnianie/typy/cepUdoOutput.xsd"/>
+    <xsd:import namespace="http://elementy.cep.udo.api.cepik.coi.gov.pl" schemaLocation="../../apiUdostepnianie/cepElementy.xsd" />
+    <xsd:import namespace="http://exceptions.api.cepik.coi.gov.pl" schemaLocation="../../exceptions/exceptions.xsd"/>
+
+    <xsd:element name="plikRaportu" type="out:RaportZapytanRezultat" />
+    
+    <xsd:complexType name="RaportZapytanRezultat">
+        <xsd:sequence>
+            <xsd:element name="rezultatZapytania" type="out:RezultatZapytania" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="RezultatZapytania">
+        <xsd:sequence>
+            <xsd:element name="identyfikator" type="out:Identyfikator" minOccurs="0" />
+            <xsd:element name="wynikZapytania" type="out:WynikZapytania" minOccurs="0" />
+            <xsd:element name="komunikatBledu" type="ex:CepikException" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Identyfikator">
+        <xsd:sequence>
+            <xsd:element name="identyfikatorZapytaniaWPakiecie">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Identyfikator zapytania na potrzeby wyszukania zapytania w pakiecie zwrotnym.
+                        Identyfikator jest nadawany przez pytającego.
+                        Może miec dowolną wartość (np. "nr. 1" lub "Pytanie o dokument Kowalskiego").
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="500"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="WynikZapytania">
+        <xsd:annotation>
+            <xsd:documentation>
+                Zawiera wynikowe dane zapytania
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element ref="elem:pytanieOPojazdRezultat" />
+            <xsd:element ref="elem:pytanieOPojazdRozszerzoneRezultat" />
+            <xsd:element ref="elem:pytanieOPodmiotRezultat" />
+            <xsd:element ref="elem:pytanieOPojazdNaDateRezultat" />
+            <xsd:element ref="elem:pytanieOPojazdNaDateRozszerzoneRezultat" />
+        </xsd:choice>
+    </xsd:complexType>
+</xsd:schema>

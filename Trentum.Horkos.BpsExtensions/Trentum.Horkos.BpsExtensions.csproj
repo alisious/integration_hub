@@ -40,10 +40,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ActionParamsHelpers.cs" />
+    <Compile Include="AddObligationOnCycleAction.cs" />
+    <Compile Include="AddObligationOnCycleActionConfig.cs" />
     <Compile Include="DataTableHelpers.cs" />
     <Compile Include="ListValidationConfig.cs" />
     <Compile Include="StartPersonalFileAction.cs" />
     <Compile Include="StartPersonalFileActionConfig.cs" />
+    <Compile Include="UpdateMultipleDocumentsOnCycle.cs" />
+    <Compile Include="UpdateMultipleDocumentsOnCycleConfig.cs" />
     <Compile Include="ValidateDischargedListAction.cs">
       <SubType>Code</SubType>
     </Compile>

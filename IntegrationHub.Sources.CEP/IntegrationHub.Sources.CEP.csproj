@@ -2,6 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+	<RootNamespace>IntegrationHub.Sources.CEP</RootNamespace>
+	<AssemblyName>IntegrationHub.Sources.CEP</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>

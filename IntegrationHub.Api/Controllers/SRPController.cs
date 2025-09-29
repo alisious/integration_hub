@@ -4,6 +4,7 @@ using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Contracts;
 using IntegrationHub.SRP.Extensions;
 using IntegrationHub.SRP.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
@@ -15,8 +16,10 @@ using System.Text;
 
 namespace IntegrationHub.Api.Controllers
 {
+    
     [ApiController]
     [Route("SRP")]
+    [Authorize(Roles = "User")]
     //[ApiExplorerSettings(GroupName = "SRP")]
     public class SRPController : ControllerBase
     {

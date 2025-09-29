@@ -1,0 +1,92 @@
+<!-- edited with XMLSpy v2016 rel. 2 sp1 (x64) (http://www.altova.com) by Kamil Mętrak (Centralny Osrodek Informatyki) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:com="http://input.common.udo.api.cepik.coi.gov.pl" targetNamespace="http://input.common.udo.api.cepik.coi.gov.pl">
+	<xsd:annotation>
+		<xsd:documentation>
+			Version: 3.39.0
+		</xsd:documentation>
+	</xsd:annotation>
+	<xsd:complexType name="Pytanie">
+		<xsd:sequence>
+			<xsd:element name="parametryPytania" type="com:ParametryPytania"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ParametryPytania">
+		<xsd:all>
+			<xsd:element name="identyfikatorTransakcjiNadrzednej" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Identyfikator zapytania, które wywołało bieżące zapytanie w systemie CEPIK</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="identyfikatorUzytkownikaSystemuZewnetrznego" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Identyfikator uzytkownika zadającego pytanie</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="identyfikatorSystemuZewnetrznego" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Identyfikator systemu, z którego wysłane jest zapytanie</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="limit" type="xsd:integer" nillable="true" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Limit zwracanych obiektów - nie może byc większy od globalnego limitu. Jest to limit obiektów najwyższego poziomu, czyli dla pytania o pojazd zwróci max. limit pojazdów, ale jeżeli pojazd ma większą liczbę badań technicznych to i tak zostana zwrócone wszystkie badania.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="wnioskodawca" type="com:Wnioskodawca">
+				<xsd:annotation>
+					<xsd:documentation>Dane wnioskodawcy</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="Wnioskodawca">
+		<xsd:all>
+			<xsd:element name="znakSprawy" type="xsd:string"/>
+			<xsd:element name="wnioskodawca" type="xsd:string"/>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="WartoscSlownikowaZasilanie">
+		<xsd:all>
+			<xsd:element name="kod" type="xsd:string"/>
+		</xsd:all>
+	</xsd:complexType>
+    <xsd:complexType name="WartoscSlownikowaZasilanieTekst">
+		<xsd:choice>
+			<xsd:element name="kod" type="xsd:string"/>
+            <xsd:element name="wartosc" type="xsd:string"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="ParametryCzasowe">
+		<xsd:all>
+			<xsd:element name="dataPrezentacji" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="identyfikatorCzynnosci" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+		</xsd:all>
+	</xsd:complexType>
+    <xsd:complexType name="ParametryCzasoweZHistoria">
+		<xsd:all>
+			<xsd:element name="dataPrezentacji" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="identyfikatorCzynnosci" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="wyszukiwaniePoDanychHistorycznych" type="xsd:boolean" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Czy przeszukiwac historyczne dane pojazdu (true) czy szukac tylko po danych aktualnych (false). Domyslnie przyjmowana wartosc: true</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+
+    <xsd:complexType name="ParametryCzasoweSkrocone">
+		<xsd:sequence>
+			<xsd:element name="dataWyszukania" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="wyszukiwaniePoDanychHistorycznych" type="xsd:boolean" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Czy przeszukiwac historyczne dane pojazdu (true) czy szukac tylko po danych aktualnych (false). Domyslnie przyjmowana wartosc: true</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+    <xsd:complexType name="ParametryCzasoweCzynnosciSkrocone">
+		<xsd:sequence>
+			<xsd:element name="dataZdarzenia" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
