@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using System.Net.Security;
@@ -274,21 +275,31 @@ builder.Services.AddSwaggerGen(options =>
     - Badge: 1111, PIN: 1111 (Dowódca patrolu)
     - Badge: 2222, PIN: 2222 (Oficer dy¿urny)"
     });
+    options.MapType<IFormFile>(() => new OpenApiSchema 
+    { 
+        Type = "string", 
+        Format = "binary" 
+    });
+    options.MapType<IFormFileCollection>(() => new OpenApiSchema
+    {
+        Type = "array",
+        Items = new OpenApiSchema { Type = "string", Format = "binary" }
+    });
 
-   // options.SwaggerDoc("SRP", new OpenApiInfo
-   // {
-   //     Title = "SRP API",
-   //     Version = "v1",
-   //     Description = @"SRP API"
-   // });
+    // options.SwaggerDoc("SRP", new OpenApiInfo
+    // {
+    //     Title = "SRP API",
+    //     Version = "v1",
+    //     Description = @"SRP API"
+    // });
 
-   // Automatycznie przypisuje kontrolery do odpowiednich grup
+    // Automatycznie przypisuje kontrolery do odpowiednich grup
 
-   //options.DocInclusionPredicate((docName, apiDesc) =>
-   //{
-   //    var groupName = apiDesc.GroupName ?? "default";
-   //    return string.Equals(groupName, docName, StringComparison.OrdinalIgnoreCase);
-   //});
+    //options.DocInclusionPredicate((docName, apiDesc) =>
+    //{
+    //    var groupName = apiDesc.GroupName ?? "default";
+    //    return string.Equals(groupName, docName, StringComparison.OrdinalIgnoreCase);
+    //});
 
 
     //options.DocInclusionPredicate((groupName, apiDesc) =>

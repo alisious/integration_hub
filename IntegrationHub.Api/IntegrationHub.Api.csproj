@@ -39,7 +39,7 @@
     <ProjectReference Include="..\IntegrationHub.PIESP\IntegrationHub.PIESP.csproj" />
     <ProjectReference Include="..\IntegrationHub.Sources.CEP\IntegrationHub.Sources.CEP.csproj" />
     <ProjectReference Include="..\IntegrationHub.SRP\IntegrationHub.SRP.csproj" />
-    <ProjectReference Include="..\Trentum.Common.Excel\Trentum.Common.Excel.csproj" />
+    <ProjectReference Include="..\Trentum.Common.Csv\Trentum.Common.Csv.csproj" />
     <ProjectReference Include="..\Trentum.Horkos.Abstractions\Trentum.Horkos.Abstractions.csproj" />
     <ProjectReference Include="..\Trentum.Horkos.Dapper\Trentum.Horkos.Dapper.csproj" />
   </ItemGroup>
