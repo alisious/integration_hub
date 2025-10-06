@@ -28,6 +28,21 @@ namespace IntegrationHub.PIESP.Controllers
             _duties = duties;
         }
 
+
+        /// <summary>
+        /// Pobiera listę zaplanowanych służb użytkownika. Opcjonalnie - na podany dzień.
+        /// </summary>
+        /// <param name="date">Data (domyślnie = null).</param>
+        /// <returns>Lista służb.</returns>
+        [HttpGet("my-planned-duties")]
+        public IActionResult GetDutiesPlannedForMe([FromQuery] DateTime? date = null)
+        {
+            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var duties = _duties.GetDutiesPlannedForUser(badge, date);
+            return Ok(duties);
+        }
+
+
         /// <summary>
         /// Pobiera listę służb użytkownika na podany dzień.
         /// </summary>
@@ -37,7 +52,7 @@ namespace IntegrationHub.PIESP.Controllers
         public IActionResult GetMyDuties([FromQuery] DateTime? date = null)
         {
             var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var duties = _duties.GetDutiesForUser(badge, date ?? DateTime.Today);
+            var duties = _duties.GetDutiesForUserOnDate(badge, date ?? DateTime.Today);
             return Ok(duties);
         }
 
@@ -93,7 +108,7 @@ namespace IntegrationHub.PIESP.Controllers
         public IActionResult FinishDuty(int dutyId, [FromBody] StartEndDutyRequest req)
         {
             var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userDuties = _duties.GetDutiesForUser(badge, req.DateTime);
+            var userDuties = _duties.GetDutiesForUserOnDate(badge, req.DateTime);
             if (!userDuties.Any(d => d.Id == dutyId))
                 return Forbid("You are not authorized to finish this duty.");
 

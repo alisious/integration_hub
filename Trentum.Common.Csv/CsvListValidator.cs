@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Trentum.Common.Csv;
 
+
 /// <summary>
 /// Podsumowanie walidacji CSV dla listy rocznej lub listy zwolnionych.
 /// </summary>
@@ -35,9 +36,10 @@ public sealed record CsvValidationSummary(
 /// Zasady:
 /// <list type="bullet">
 /// <item><description>Kolumna <c>Nr etatu</c> nie jest wymagana i nie trafia do pliku wynikowego.</description></item>
-/// <item><description>Wynik walidacji zwracany jest jako CSV (UTF-8) z dodatkową kolumną <c>STATUS WALIDACJI</c>.</description></item>
+/// <item><description>Wynik walidacji zwracany jest jako CSV z dodatkową kolumną <c>STATUS WALIDACJI</c>.</description></item>
 /// <item><description>Dla listy zwolnionych nagłówki <c>Imię pierwsze</c> i <c>Imię drugie</c> są wymagane; wartość w <c>Imię drugie</c> może być pusta.</description></item>
 /// <item><description>(Opcjonalnie) walidacja kolumny <c>Stopień</c> względem przekazanej listy stopni: <see cref="ValidateAnnualCsv"/> / <see cref="ValidateDischargedCsv"/> → <c>validateRank</c> + <c>validRanks</c>.</description></item>
+/// <item><description>(Opcjonalnie) walidacja kolumny <c>Nazwa jednostki wojskowej</c> względem listy referencyjnej: <see cref="ValidateAnnualCsv"/> / <see cref="ValidateDischargedCsv"/> → <c>validateUnit</c> + <c>validUnits</c>.</description></item>
 /// </list>
 /// </summary>
 public static class CsvListValidator
@@ -52,31 +54,20 @@ public static class CsvListValidator
             ["Stopień"] = new[] { "Stopień", "Stopien" },
             ["Imiona"] = new[] { "Imiona" },
 
-            ["Imię pierwsze"] = new[] { "Imię pierwsze", "Imie pierwsze", "Imie_pierwsze", "ImiePierwsze" },
-            ["Imię drugie"] = new[] { "Imię drugie", "Imie drugie", "Imie_drugie", "ImieDrugie" },
+            ["Imię pierwsze"] = new[] { "Imię pierwsze", "Imie pierwsze", "Imie_pierwsze", "ImiePierwsze", "Imię" },
+            ["Imię drugie"] = new[] { "Imię drugie", "Imie drugie", "Imie_drugie", "ImieDrugie", "Drugie imię" },
 
             ["Nazwisko"] = new[] { "Nazwisko" },
             ["PESEL"] = new[] { "PESEL" },
             ["Stanowisko"] = new[] { "Stanowisko" },
             ["Nr etatu"] = new[] { "Nr etatu", "Nr Etatu", "Nr_etatu", "NrEtatu" },
-            ["Nazwa jednostki wojskowej"] = new[]
-            {
-                "Nazwa jednostki wojskowej", "Nazwa jednostki", "Jednostka"
-            },
+            ["Nazwa jednostki wojskowej"] = new[] { "Nazwa jednostki wojskowej", "Nazwa jednostki", "Jednostka" },
             ["Data zwolnienia"] = new[] { "Data zwolnienia", "Data Zwolnienia", "Zwolnienie", "DataZwolnienia" },
         };
 
     /// <summary>
     /// Wykonuje walidację listy rocznej (bez kolumny <c>Data zwolnienia</c>) i zwraca wynik jako CSV.
     /// </summary>
-    /// <param name="inputCsv">Strumień wejściowy CSV (separator <c>;</c>, BOM wykrywany automatycznie).</param>
-    /// <param name="summary">Zwracane podsumowanie walidacji.</param>
-    /// <param name="headerRow">1-indeksowany numer wiersza nagłówka (domyślnie 1).</param>
-    /// <param name="validatePesel">Czy sprawdzać sumę kontrolną i datę w PESEL (domyślnie <c>true</c>).</param>
-    /// <param name="validatePeselDuplicates">Czy raportować duplikaty PESEL (domyślnie <c>true</c>).</param>
-    /// <param name="validateRank">Czy walidować wartość w kolumnie <c>Stopień</c> względem listy <paramref name="validRanks"/> (domyślnie <c>false</c>).</param>
-    /// <param name="validRanks">Lista dozwolonych stopni. Porównanie bez rozróżniania wielkości liter, z normalizacją spacji. Gdy <see langword="null"/> lub pusta i <paramref name="validateRank"/> = <see langword="true"/>, każdy wiersz dostanie błąd braku listy.</param>
-    /// <returns>Bajtowa zawartość pliku CSV z kolumną <c>STATUS WALIDACJI</c>.</returns>
     public static byte[] ValidateAnnualCsv(
         Stream inputCsv,
         out CsvValidationSummary summary,
@@ -84,7 +75,9 @@ public static class CsvListValidator
         bool validatePesel = true,
         bool validatePeselDuplicates = true,
         bool validateRank = false,
-        IEnumerable<string>? validRanks = null)
+        IEnumerable<string>? validRanks = null,
+        bool validateUnit = true,
+        IEnumerable<string>? validUnits = null)
     {
         var required = new[]
         {
@@ -109,21 +102,44 @@ public static class CsvListValidator
             out summary,
             valueOptionalColumns: null,
             validateRank: validateRank,
-            validRanks: validRanks
+            validRanks: validRanks,
+            validateUnit: validateUnit,
+            validUnits: validUnits
         );
     }
 
     /// <summary>
-    /// Wykonuje walidację listy zwolnionych (z kolumną <c>Data zwolnienia</c>) i zwraca wynik jako CSV.
+    /// Waliduje listę <b>zwolnionych</b> w formacie CSV (separator <c>;</c>) i zwraca wynik jako CSV
+    /// z dodatkową kolumną <c>STATUS WALIDACJI</c>.
+    /// Kolumny wymagane: <c>Stopień</c>, <c>Imię pierwsze</c>, <c>Imię drugie</c> (nagłówek wymagany, wartość może być pusta),
+    /// <c>Nazwisko</c>, <c>PESEL</c>, <c>Stanowisko</c>, <c>Nazwa jednostki wojskowej</c>, <c>Data zwolnienia</c>.
+    /// Kolumna <c>Nr etatu</c> jest ignorowana.
     /// </summary>
-    /// <param name="inputCsv">Strumień wejściowy CSV (separator <c>;</c>, BOM wykrywany automatycznie).</param>
+    /// <param name="inputCsv">Strumień wejściowy CSV (BOM wykrywany automatycznie).</param>
     /// <param name="summary">Zwracane podsumowanie walidacji.</param>
     /// <param name="headerRow">1-indeksowany numer wiersza nagłówka (domyślnie 1).</param>
     /// <param name="validatePesel">Czy sprawdzać sumę kontrolną i datę w PESEL (domyślnie <c>true</c>).</param>
-    /// <param name="validatePeselDuplicates">Czy raportować duplikaty PESEL (domyślnie <c>true</c>).</param>
-    /// <param name="validateRank">Czy walidować wartość w kolumnie <c>Stopień</c> względem listy <paramref name="validRanks"/> (domyślnie <c>false</c>).</param>
-    /// <param name="validRanks">Lista dozwolonych stopni. Porównanie bez rozróżniania wielkości liter, z normalizacją spacji. Gdy <see langword="null"/> lub pusta i <paramref name="validateRank"/> = <see langword="true"/>, każdy wiersz dostanie błąd braku listy.</param>
-    /// <returns>Bajtowa zawartość pliku CSV z kolumną <c>STATUS WALIDACJI</c>.</returns>
+    /// <param name="validatePeselDuplicates">Czy raportować zduplikowane wartości PESEL (domyślnie <c>true</c>).</param>
+    /// <param name="validateRank">
+    /// Czy weryfikować kolumnę <c>Stopień</c> względem listy referencyjnej przekazanej w <paramref name="validRanks"/> (domyślnie <c>false</c>).
+    /// Porównanie jest case-insensitive, z normalizacją spacji.
+    /// </param>
+    /// <param name="validRanks">Lista dozwolonych stopni (gdy <paramref name="validateRank"/> = <c>true</c>).</param>
+    /// <param name="validateDischargeDate">
+    /// Gdy <c>true</c> (domyślnie), kolumna <c>Data zwolnienia</c> musi zawierać <b>poprawną</b> datę w jednym z <b>dwóch</b> formatów:
+    /// <list type="bullet">
+    /// <item><description><c>rrrr-MM-dd</c> (np. <c>2025-09-30</c>)</description></item>
+    /// <item><description><c>dd.MM.rrrr</c> (np. <c>30.09.2025</c>)</description></item>
+    /// </list>
+    /// Inne zapisy (np. <c>2025/09/30</c>, <c>30-09-2025</c>) są <b>niedozwolone</b>. Dodatkowo walidowana jest realność daty
+    /// (np. <c>2024-02-29</c> ✔, <c>2023-02-29</c> ✖).
+    /// </param>
+    /// <param name="validateUnit">
+    /// Czy weryfikować kolumnę <c>Nazwa jednostki wojskowej</c> względem listy referencyjnej przekazanej w
+    /// <paramref name="validUnits"/> (domyślnie <c>true</c>). Porównanie jest case-insensitive, z normalizacją spacji.
+    /// </param>
+    /// <param name="validUnits">Lista dozwolonych nazw jednostek (gdy <paramref name="validateUnit"/> = <c>true</c>).</param>
+    /// <returns>Bajty wynikowego pliku CSV (UTF-8 z BOM) z kolumną <c>STATUS WALIDACJI</c>.</returns>
     public static byte[] ValidateDischargedCsv(
         Stream inputCsv,
         out CsvValidationSummary summary,
@@ -131,7 +147,10 @@ public static class CsvListValidator
         bool validatePesel = true,
         bool validatePeselDuplicates = true,
         bool validateRank = false,
-        IEnumerable<string>? validRanks = null)
+        IEnumerable<string>? validRanks = null,
+        bool validateDischargeDate = true,
+        bool validateUnit = true,
+        IEnumerable<string>? validUnits = null)
     {
         var required = new[]
         {
@@ -169,14 +188,16 @@ public static class CsvListValidator
             requiredHeaders: required,
             extraKeptHeaders: new[] { "Data zwolnienia", "Imię pierwsze", "Imię drugie" },
             dischargeDateRequired: true,
-            validateDischargeDate: true,
+            validateDischargeDate: validateDischargeDate,
             validatePesel: validatePesel,
             validatePeselDuplicates: validatePeselDuplicates,
             outputColumnOrder: outputOrder,
             out summary,
             valueOptionalColumns: optionalValueCols,
             validateRank: validateRank,
-            validRanks: validRanks
+            validRanks: validRanks,
+            validateUnit: validateUnit,
+            validUnits: validUnits
         );
     }
 
@@ -195,7 +216,9 @@ public static class CsvListValidator
         out CsvValidationSummary summary,
         ISet<string>? valueOptionalColumns,
         bool validateRank,
-        IEnumerable<string>? validRanks)
+        IEnumerable<string>? validRanks,
+        bool validateUnit,
+        IEnumerable<string>? validUnits)
     {
         valueOptionalColumns ??= new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -248,14 +271,23 @@ public static class CsvListValidator
             }
         }
 
-        // Zbuduj zbiór dozwolonych stopni (z normalizacją) – jeśli walidacja stopnia włączona
+        // Zbiory dozwolonych wartości (stopnie / jednostki)
         HashSet<string>? allowedRanks = null;
         if (validateRank)
         {
             if (validRanks is not null)
-                allowedRanks = new HashSet<string>(validRanks.Select(NormalizeRank), StringComparer.OrdinalIgnoreCase);
+                allowedRanks = new HashSet<string>(validRanks.Select(NormalizeKey), StringComparer.OrdinalIgnoreCase);
             else
-                allowedRanks = new HashSet<string>(StringComparer.OrdinalIgnoreCase); // pusty -> każdy wiersz zgłosi błąd listy
+                allowedRanks = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        HashSet<string>? allowedUnits = null;
+        if (validateUnit)
+        {
+            if (validUnits is not null)
+                allowedUnits = new HashSet<string>(validUnits.Select(NormalizeKey), StringComparer.OrdinalIgnoreCase);
+            else
+                allowedUnits = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
 
         // Duplikaty PESEL
@@ -318,22 +350,22 @@ public static class CsvListValidator
                     rowErrors.Add("Zduplikowany PESEL");
             }
 
-            // Data zwolnienia – jeśli dotyczy
+            // Data zwolnienia – ścisła walidacja formatów jeśli włączona
             if (validateDischargeDate)
             {
                 var dz = GetValue(row, headerMap, "Data zwolnienia");
                 if (!string.IsNullOrWhiteSpace(dz))
                 {
-                    if (!TryParseDate(dz, out _))
-                        rowErrors.Add("Nieprawidłowa wartość w 'Data zwolnienia' (oczekiwana data).");
+                    if (!TryParseAllowedDateExact(dz, out _))
+                        rowErrors.Add("Nieprawidłowa wartość w 'Data zwolnienia' (dozwolone formaty: rrrr-MM-dd lub dd.MM.rrrr).");
                 }
                 else if (dischargeDateRequired)
                 {
-                    // błąd jest już dodany w sekcji „wymagane wartości”
+                    // brak wartości – błąd zgłoszony już w sekcji „wymagane wartości”
                 }
             }
 
-            // Stopień – jeżeli włączono walidację względem listy
+            // Stopień – walidacja względem listy
             if (validateRank)
             {
                 var rankRaw = GetValue(row, headerMap, "Stopień");
@@ -345,12 +377,30 @@ public static class CsvListValidator
                     }
                     else
                     {
-                        var normalized = NormalizeRank(rankRaw);
+                        var normalized = NormalizeKey(rankRaw);
                         if (!allowedRanks.Contains(normalized))
                             rowErrors.Add($"Nieprawidłowa wartość w 'Stopień' (\"{rankRaw}\") – spoza listy dozwolonych.");
                     }
                 }
-                // puste 'Stopień' jest już raportowane przez sekcję „wymagane wartości”
+            }
+
+            // Nazwa jednostki wojskowej – walidacja względem listy
+            if (validateUnit)
+            {
+                var unitRaw = GetValue(row, headerMap, "Nazwa jednostki wojskowej");
+                if (!string.IsNullOrWhiteSpace(unitRaw))
+                {
+                    if (allowedUnits is null || allowedUnits.Count == 0)
+                    {
+                        rowErrors.Add("Brak listy dozwolonych jednostek dla walidacji 'Nazwa jednostki wojskowej'.");
+                    }
+                    else
+                    {
+                        var normalizedUnit = NormalizeKey(unitRaw);
+                        if (!allowedUnits.Contains(normalizedUnit))
+                            rowErrors.Add($"Nieprawidłowa wartość w 'Nazwa jednostki wojskowej' (\"{unitRaw}\") – spoza listy dozwolonych.");
+                    }
+                }
             }
 
             // Wiersz wynikowy
@@ -388,7 +438,7 @@ public static class CsvListValidator
         return EmitCsv(outRows, ';');
     }
 
-    // ================= Helpers: CSV, nagłówki, PESEL, daty, stopnie =================
+    // ================= Helpers: CSV, nagłówki, PESEL, daty, normalizacja =================
 
     private static Dictionary<string, int> BuildHeaderMap(IReadOnlyList<string> header)
     {
@@ -455,14 +505,8 @@ public static class CsvListValidator
                 {
                     if (c == '"')
                     {
-                        if (i + 1 < line.Length && line[i + 1] == '"')
-                        {
-                            sb.Append('"'); i += 2;
-                        }
-                        else
-                        {
-                            inQuotes = false; i++;
-                        }
+                        if (i + 1 < line.Length && line[i + 1] == '"') { sb.Append('"'); i += 2; }
+                        else { inQuotes = false; i++; }
                     }
                     else
                     {
@@ -477,11 +521,7 @@ public static class CsvListValidator
                 }
             }
 
-            if (inQuotes)
-            {
-                sb.AppendLine();
-                continue;
-            }
+            if (inQuotes) { sb.AppendLine(); continue; }
 
             fields.Add(sb.ToString()); sb.Clear();
             rows.Add(new List<string>(fields));
@@ -515,28 +555,25 @@ public static class CsvListValidator
         return null;
     }
 
+    private static readonly Encoding CsvUtf8Bom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true);
+
     private static byte[] EmitCsv(IEnumerable<string[]> rows, char sep)
     {
-        var sb = new StringBuilder(1 << 16);
-
-        foreach (var r in rows)
+        using var ms = new MemoryStream(capacity: 1 << 16);
+        // UTF-8 + BOM (EF BB BF)
+        using (var writer = new StreamWriter(ms, CsvUtf8Bom, bufferSize: 1 << 12, leaveOpen: true))
         {
-            for (int i = 0; i < r.Length; i++)
+            foreach (var r in rows)
             {
-                if (i > 0) sb.Append(sep);
-                sb.Append(QuoteIfNeeded(r[i] ?? "", sep));
+                for (int i = 0; i < r.Length; i++)
+                {
+                    if (i > 0) writer.Write(sep);
+                    writer.Write(QuoteIfNeeded(r[i] ?? "", sep));
+                }
+                writer.Write("\r\n");
             }
-            sb.Append("\r\n");
+            writer.Flush();
         }
-
-        // UTF-16 LE + BOM (Excel zawsze czyta poprawnie diakrytyki)
-        var enc = new UnicodeEncoding(bigEndian: false, byteOrderMark: true);
-        var preamble = enc.GetPreamble();  // FF FE
-        var payload = enc.GetBytes(sb.ToString());
-
-        using var ms = new MemoryStream(preamble.Length + payload.Length);
-        ms.Write(preamble, 0, preamble.Length);
-        ms.Write(payload, 0, payload.Length);
         return ms.ToArray();
     }
 
@@ -583,29 +620,37 @@ public static class CsvListValidator
         return true;
     }
 
-    private static bool TryParseDate(string s, out DateTime dt)
+    /// <summary>
+    /// Ścisłe parsowanie daty – dozwolone tylko: "yyyy-MM-dd" lub "dd.MM.yyyy".
+    /// </summary>
+    private static bool TryParseAllowedDateExact(string? s, out DateTime dt)
     {
-        if (DateTime.TryParse(s, Pl, DateTimeStyles.None, out dt)) return true;
-        if (DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt)) return true;
-
-        if (double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out var d))
-        {
-            try { dt = DateTime.FromOADate(d); return true; } catch { }
-        }
-
         dt = default;
-        return false;
+        if (string.IsNullOrWhiteSpace(s)) return false;
+
+        // usuń NBSP i przytnij
+        var txt = s.Replace('\u00A0', ' ').Trim();
+
+        var formats = new[] { "yyyy-MM-dd", "dd.MM.yyyy" };
+        return DateTime.TryParseExact(
+            txt,
+            formats,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out dt);
     }
 
     /// <summary>
-    /// Normalizuje zapis stopnia: przycina oraz redukuje wielokrotne spacje do pojedynczej.
+    /// Normalizuje zapis kluczy tekstowych (stopnie/jednostki): przycina oraz redukuje wielokrotne spacje do pojedynczej.
     /// Nie zmienia diakrytyków ani znaków interpunkcyjnych/skrótów.
     /// </summary>
-    private static string NormalizeRank(string rank)
+    private static string NormalizeKey(string s)
     {
-        if (string.IsNullOrWhiteSpace(rank)) return string.Empty;
-        var trimmed = rank.Trim();
-        // Zredukuj wielokrotne spacje do pojedynczej
+        if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+        var trimmed = s.Trim();
         return Regex.Replace(trimmed, @"\s+", " ");
     }
+
+    /// <summary>Alias dla wstecznej kompatybilności — normalizacja stopnia.</summary>
+    private static string NormalizeRank(string rank) => NormalizeKey(rank);
 }

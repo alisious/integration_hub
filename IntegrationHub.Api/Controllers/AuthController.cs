@@ -1,7 +1,9 @@
 ﻿using IntegrationHub.PIESP.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
+using System.Security.Claims;
+
 
 namespace IntegrationHub.PIESP.Controllers
 {
@@ -35,10 +37,29 @@ namespace IntegrationHub.PIESP.Controllers
         public async Task<IActionResult> ResetPin([FromBody] ResetPinRequest req)
         {
             var valid = await _supervisorService.ValidateSecurityCodeAsync(req.BadgeNumber, req.SecurityCode);
-            if (!valid) return BadRequest("Invalid security code.");
+            if (!valid) return BadRequest("Błędny kod bezpieczeństwa.");
             var user = await _authService.SetPinAsync(req.BadgeNumber, req.NewPin);
-            return user != null ? Ok() : NotFound();
+            return user != null ? Ok("Ustawiono nowy PIN.") : NotFound("Nie udało się ustawić nowego PIN.");
         }
+
+
+        /// <summary>
+        /// Zmienia PIN użytkownika.
+        /// </summary>
+        /// <param name="req">Numer odznaki, kod bezpieczeństwa i nowy PIN.</param>
+        /// <returns>Kod 200 przy sukcesie, 400 przy błędnym kodzie, 404 jeśli użytkownik nie istnieje.</returns>
+        [HttpPost("change-pin")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> ChangePin([FromBody] ChangePinRequest req)
+        {
+            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentPinIsValid = await _authService.ConfirmCurrentPinAsync(badge!, req.CurrentPin);
+            if (!currentPinIsValid) return BadRequest("Nieprawidłowy PIN.");
+                        
+            var user = await _authService.SetPinAsync(badge!, req.NewPin);
+            return user != null ? Ok("PIN został zmieniony.") : NotFound("Nie udało się zmienić PIN.");
+        }
+
 
         /// <summary>
         /// Loguje użytkownika i zwraca token JWT.
@@ -65,6 +86,14 @@ namespace IntegrationHub.PIESP.Controllers
         /// <param name="SecurityCode">Kod bezpieczeństwa otrzymany od przełożonego.</param>
         /// <param name="NewPin">Nowy PIN.</param>
         public record ResetPinRequest(string BadgeNumber, string SecurityCode, string NewPin);
+
+        /// <summary>
+        /// Model żądania resetu PIN-u.
+        /// </summary>
+        /// <param name="BadgeNumber">Numer odznaki użytkownika.</param>
+        /// <param name="CurrentPin">Aktualny PIN.</param>
+        /// <param name="NewPin">Nowy PIN.</param>
+        public record ChangePinRequest(string CurrentPin, string NewPin);
 
         /// <summary>
         /// Model żądania logowania.

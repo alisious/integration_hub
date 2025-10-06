@@ -1,49 +1,70 @@
-{
-  "extensions": [
-    {
-      "guid": "3d675d06-81d1-47ea-a78c-6a8d5cb74d8b",
-      "name": "UpdateMultipleDocumentsOnCycle",
-      "description": "",
-      "assembly": "Trentum.Horkos.BpsExtensions",
-      "class": "Trentum.Horkos.BpsExtensions.UpdateMultipleDocumentsOnCycle",
-      "type": "CustomAction"
-    },
-    {
-      "guid": "f0b0478d-4c0e-407f-953e-7d31e81dd45f",
-      "name": "AddObligationAction",
-      "description": "Akcja dodaje do osoby informacjÄ™ o zobowiÄ…zaniu na podstawie listy zobowiÄ…zanych.",
-      "assembly": "Trentum.Horkos.BpsExtensions",
-      "class": "Trentum.Horkos.BpsExtensions.AddObligationOnCycleAction",
-      "type": "CustomAction"
-    },
-    {
-      "guid": "302de48b-2bbc-4d82-a3e3-60857f7d7648",
-      "name": "StartPersonalFileAction",
-      "description": "Starowanie obiegu Akta osoby na podstawie listy osĂłb zobowiÄ…zanych.",
-      "assembly": "Trentum.Horkos.BpsExtensions",
-      "class": "Trentum.Horkos.BpsExtensions.StartPersonalFileAction",
-      "type": "CustomAction"
-    },
-    {
-      "guid": "38727b9c-8fb6-45be-95a2-3b48169121ec",
-      "name": "ValidateDischargedListAction",
-      "description": "Walidacja listy osÄ‚Ĺ‚b zwolnionych ze sÄąâ€šuÄąÄ˝by.",
-      "assembly": "Trentum.Horkos.BpsExtensions",
-      "class": "Trentum.Horkos.BpsExtensions.ValidateDischargedListAction",
-      "type": "CustomAction"
-    },
-    {
-      "guid": "a806770f-dfd3-48d5-9288-14753abf6e41",
-      "name": "ValidateAnnualListAction",
-      "description": "Walidacja rocznej listy osÄ‚Ĺ‚b zobowiĂ„â€¦zanych.",
-      "assembly": "Trentum.Horkos.BpsExtensions",
-      "class": "Trentum.Horkos.BpsExtensions.ValidateAnnualListAction",
-      "type": "CustomAction"
-    }
-  ],
-  "dependencies": [
-    "Trentum.Horkos.BpsExtensions"
-  ],
-  "serviceDependenciesPaths": [],
-  "portalDependenciesPaths": []
+﻿{
+    "extensions": [
+        {
+            "guid": "18f4a64c-c99c-40a4-aa1d-e8025f3ce61f",
+            "name": "ValidateCsvDischargedListAction",
+            "description": "",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.ValidateCsvDischargedListAction",
+            "type": "CustomAction"
+        },
+        {
+            "guid": "56a07c61-ac42-46a5-a9f1-b50e0ea901f7",
+            "name": "ValidateCsvAnnualListAction",
+            "description": "Walidacja listy rocznej przekazanej w formie pliku csv.",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.ValidateCsvAnnualListAction",
+            "type": "CustomAction"
+        },
+        {
+            "guid": "3d675d06-81d1-47ea-a78c-6a8d5cb74d8b",
+            "name": "UpdateMultipleDocumentsOnCycle",
+            "description": "",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.UpdateMultipleDocumentsOnCycle",
+            "type": "CustomAction"
+        },
+        {
+            "guid": "f0b0478d-4c0e-407f-953e-7d31e81dd45f",
+            "name": "AddObligationAction",
+            "description": "Akcja dodaje do osoby informacjĂ„â„˘ o zobowiĂ„â€¦zaniu na podstawie listy zobowiĂ„â€¦zanych.",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.AddObligationOnCycleAction",
+            "type": "CustomAction"
+        },
+        {
+            "guid": "302de48b-2bbc-4d82-a3e3-60857f7d7648",
+            "name": "StartPersonalFileAction",
+            "description": "Starowanie obiegu Akta osoby na podstawie listy osÄ‚Ĺ‚b zobowiĂ„â€¦zanych.",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.StartPersonalFileAction",
+            "type": "CustomAction"
+        },
+        {
+            "guid": "38727b9c-8fb6-45be-95a2-3b48169121ec",
+            "name": "ValidateDischargedListAction",
+            "description": "Walidacja listy osĂ„â€šÄąâ€šb zwolnionych ze sĂ„Ä…Ă˘â‚¬ĹˇuĂ„Ä…Ă„Ëťby.",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.ValidateDischargedListAction",
+            "type": "CustomAction"
+        },
+        {
+            "guid": "a806770f-dfd3-48d5-9288-14753abf6e41",
+            "name": "ValidateAnnualListAction",
+            "description": "Walidacja rocznej listy osĂ„â€šÄąâ€šb zobowiÄ‚â€žĂ˘â‚¬Â¦zanych.",
+            "assembly": "Trentum.Horkos.BpsExtensions",
+            "class": "Trentum.Horkos.BpsExtensions.ValidateAnnualListAction",
+            "type": "CustomAction"
+        }
+    ],
+    "dependencies": [
+        "Trentum.Horkos.BpsExtensions"
+    ],
+    "serviceDependenciesPaths": [
+        
+    ],
+    "portalDependenciesPaths": [
+        
+    ],
+    "version": null
 }

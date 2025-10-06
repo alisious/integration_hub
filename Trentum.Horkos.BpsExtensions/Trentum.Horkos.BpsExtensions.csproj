@@ -48,6 +48,10 @@
     <Compile Include="StartPersonalFileActionConfig.cs" />
     <Compile Include="UpdateMultipleDocumentsOnCycle.cs" />
     <Compile Include="UpdateMultipleDocumentsOnCycleConfig.cs" />
+    <Compile Include="ValidateCsvAnnualListAction.cs" />
+    <Compile Include="ValidateCsvAnnualListActionConfig.cs" />
+    <Compile Include="ValidateCsvDischargedListAction.cs" />
+    <Compile Include="ValidateCsvDischargedListActionConfig.cs" />
     <Compile Include="ValidateDischargedListAction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -71,6 +75,7 @@
     <PackageReference Include="WEBCON.BPS.2025.SDK.Libraries" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Trentum.Common.Csv\Trentum.Common.Csv.csproj" />
     <ProjectReference Include="..\Trentum.Common.Excel\Trentum.Common.Excel.csproj">
       <Private>True</Private>
     </ProjectReference>

@@ -1,0 +1,11 @@
+﻿Stopień;Imię pierwsze;Imię drugie;Nazwisko;PESEL;Stanowisko;Nazwa jednostki wojskowej;Data zwolnienia;STATUS WALIDACJI
+ppor.;Imię1;DrugieImię1;Nazwisko1;73102910162;Specjalista;18 Brygada OT Warszawa;2024-06-06;POPRAWNY
+cywil;Imię2;DrugieImię 2;Nazwisko2;79022305415;Specjalista;18 Brygada OT Warszawa;20.05.2024;"Nieprawidłowa wartość w 'Stopień' (""cywil"") – spoza listy dozwolonych."
+ppor.;Imię3;DrugieImię 3;Nazwisko3;77100411359;Specjalista;18 Brygada OT Warszawa;13.01.2024;POPRAWNY
+ppor.;Imię4;DrugieImię4;Nazwisko4;53021907977;Specjalista;18 Brygada OT Warszawa;2024;Nieprawidłowa wartość w 'Data zwolnienia' (dozwolone formaty: rrrr-MM-dd lub dd.MM.rrrr).
+ppor.;Imię5;DrugieImię5;Nazwisko5;65092308975;Specjalista;18 Brygada OT Warszawa;01.13.2024;Nieprawidłowa wartość w 'Data zwolnienia' (dozwolone formaty: rrrr-MM-dd lub dd.MM.rrrr).
+ppor.;Imię6;DrugieImię6;Nazwisko6;63070709376;Specjalista;18 Brygada OT Warszawa;13.01.2024;POPRAWNY
+ppor.;Imię7;DrugieImię7;Nazwisko7;69122601454;Specjalista;18 Brygada OT Warszawa;2024-04-30;POPRAWNY
+ppor.;Imię8;DrugieImię8;Nazwisko8;77061909559;Specjalista;18 Brygada OT Warszawa;30.04.2024;POPRAWNY
+ppor.;Imię9;DrugieImię9;Nazwisko9;77061909551;Specjalista;18 Brygada OT Warszawa;30.04.2024;PESEL niepoprawny: błędna suma kontrolna
+ppor.;Imię10;DrugieImię10;Nazwisko10;73020916558;Specjalista;19 Brygada OT Warszawa;01.01.2024;POPRAWNY

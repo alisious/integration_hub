@@ -3,6 +3,9 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using Trentum.Common.Csv;
 using Trentum.Horkos;
+using Microsoft.AspNetCore.Hosting;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace IntegrationHub.Api.Controllers;
 
@@ -12,17 +15,26 @@ namespace IntegrationHub.Api.Controllers;
 public class HorkosController : ControllerBase
 {
     private readonly IHorkosDictionaryService _dict;
+    private readonly ILogger<HorkosController> _log;
+    private readonly string _exportDir;
 
-    public HorkosController(IHorkosDictionaryService dict)
+    public HorkosController(
+        IHorkosDictionaryService dict,
+        ILogger<HorkosController> log,
+        IWebHostEnvironment env)
     {
         _dict = dict;
+        _log = log;
+
+        // Katalog docelowy: <ContentRoot>/App_Data/Horkos/Exports/
+        _exportDir = Path.Combine(env.ContentRootPath, "App_Data", "Horkos", "Exports");
+        Directory.CreateDirectory(_exportDir);
     }
 
     /// <summary>
     /// Walidacja listy ZWOLNIONYCH z pliku CSV (separator ';').
-    /// Wymagane nagłówki: Stopień, Imię pierwsze, Imię drugie (wartość może być pusta), Nazwisko, PESEL, Stanowisko, Nazwa jednostki wojskowej, Data zwolnienia.
-    /// Opcjonalnie: <c>validateRank=true</c> — sprawdza kolumnę „Stopień” względem listy referencyjnej z bazy.
-    /// Zwraca wynik walidacji jako plik CSV z dodatkową kolumną "STATUS WALIDACJI".
+    /// Opcjonalnie: validateRank=true — weryfikuje „Stopień”; validateUnit=true — weryfikuje „Nazwa jednostki wojskowej”
+    /// względem słowników referencyjnych. Zwraca CSV (UTF-8 z BOM) i zapisuje kopię pliku na dysk.
     /// </summary>
     [HttpPost("validate-discharged-list")]
     [Consumes("multipart/form-data")]
@@ -33,7 +45,7 @@ public class HorkosController : ControllerBase
     [RequestFormLimits(MultipartBodyLengthLimit = 50_000_000)]
     [SwaggerOperation(
         Summary = "Walidacja listy zwolnionych (CSV).",
-        Description = "Wynik: CSV z kolumną STATUS WALIDACJI. Ustaw validateRank=true aby zweryfikować wartości w kolumnie „Stopień” względem słownika.",
+        Description = "Wynik: CSV z kolumną STATUS WALIDACJI. Przełączniki: validateRank (Stopień), validateUnit (Nazwa jednostki wojskowej).",
         OperationId = "Tools_ValidateDischargedList_Csv",
         Tags = new[] { "Horkos CSV" }
     )]
@@ -42,10 +54,14 @@ public class HorkosController : ControllerBase
         if (request.File is null || request.File.Length == 0)
             return BadRequest("Brak pliku lub plik pusty.");
 
-        // Opcjonalnie pobierz listę dozwolonych stopni
+        // (opcjonalnie) słowniki referencyjne
         IReadOnlyList<string>? ranks = null;
         if (request.ValidateRank == true)
-            ranks = await _dict.GetRankReferenceListAsync(ct); // pobiera listę stopni z bazy (distinct, trim) :contentReference[oaicite:1]{index=1}
+            ranks = await _dict.GetRankReferenceListAsync(ct); // stopnie
+
+        IReadOnlyList<string>? units = null;
+        if (request.ValidateUnit == true)
+            units = await _dict.GetUnitNameReferenceListAsync(ct); // nazwy jednostek :contentReference[oaicite:2]{index=2}
 
         await using var inMs = new MemoryStream();
         await request.File.CopyToAsync(inMs, ct);
@@ -58,21 +74,36 @@ public class HorkosController : ControllerBase
             validatePesel: true,
             validatePeselDuplicates: true,
             validateRank: request.ValidateRank == true,
-            validRanks: ranks
+            validRanks: ranks,
+            validateDischargeDate: true,
+            validateUnit: request.ValidateUnit == true,
+            validUnits: units
         );
 
-        var baseName = Path.GetFileNameWithoutExtension(request.File.FileName);
-        if (string.IsNullOrWhiteSpace(baseName)) baseName = "lista_zwolnionych";
+        // dopnij BOM UTF-8 jeśli z jakiegoś powodu go nie ma
+        bytes = EnsureUtf8Bom(bytes);
 
-        return File(bytes, "text/csv; charset=utf-16", $"{baseName}_WYNIK.csv");
+        var baseName = SafeBaseName(null, "lista_zwolnionych");
+        var stamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+
+        // Zapis na dysk
+        var savedPath = await SaveCsvToDiskAsync(bytes, baseName, ct);
+        Response.Headers["X-Saved-File"] = savedPath;
+
+        // anty-cache:
+        Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+        Response.Headers["Pragma"] = "no-cache";
+        Response.Headers["Expires"] = "0";
+        // nagłówek diagnostyczny (pierwsze 3 bajty)
+        Response.Headers["X-Debug-First3"] = Convert.ToHexString(bytes.AsSpan(0, Math.Min(bytes.Length, 3)));
+
+        return File(bytes, "application/octet-stream", $"{baseName}_{stamp}_WYNIK.csv");
     }
 
     /// <summary>
     /// Walidacja ROCZNEJ listy z pliku CSV (separator ';').
-    /// Wymagane nagłówki: Stopień, Imiona, Nazwisko, PESEL, Stanowisko, Nazwa jednostki wojskowej.
-    /// Kolumna "Nr etatu" nie jest wymagana i nie pojawia się w wyniku.
-    /// Opcjonalnie: <c>validateRank=true</c> — sprawdza kolumnę „Stopień” względem listy referencyjnej z bazy.
-    /// Zwraca wynik walidacji jako plik CSV z dodatkową kolumną "STATUS WALIDACJI".
+    /// Opcjonalnie: validateRank=true — weryfikuje „Stopień”; validateUnit=true — weryfikuje „Nazwa jednostki wojskowej”
+    /// względem słowników referencyjnych. Zwraca CSV (UTF-8 z BOM) i zapisuje kopię pliku na dysk.
     /// </summary>
     [HttpPost("validate-annual-list")]
     [Consumes("multipart/form-data")]
@@ -83,7 +114,7 @@ public class HorkosController : ControllerBase
     [RequestFormLimits(MultipartBodyLengthLimit = 50_000_000)]
     [SwaggerOperation(
         Summary = "Walidacja rocznej listy (CSV).",
-        Description = "Wynik: CSV z kolumną STATUS WALIDACJI. Ustaw validateRank=true aby zweryfikować wartości w kolumnie „Stopień” względem słownika.",
+        Description = "Wynik: CSV z kolumną STATUS WALIDACJI. Przełączniki: validateRank (Stopień), validateUnit (Nazwa jednostki wojskowej).",
         OperationId = "Tools_ValidateAnnualList_Csv",
         Tags = new[] { "Horkos CSV" }
     )]
@@ -92,10 +123,14 @@ public class HorkosController : ControllerBase
         if (request.File is null || request.File.Length == 0)
             return BadRequest("Brak pliku lub plik pusty.");
 
-        // Opcjonalnie pobierz listę dozwolonych stopni
+        // (opcjonalnie) słowniki referencyjne
         IReadOnlyList<string>? ranks = null;
         if (request.ValidateRank == true)
-            ranks = await _dict.GetRankReferenceListAsync(ct); // słownik stopni HORKOS_STOPIEN :contentReference[oaicite:2]{index=2}
+            ranks = await _dict.GetRankReferenceListAsync(ct); // stopnie
+
+        IReadOnlyList<string>? units = null;
+        if (request.ValidateUnit == true)
+            units = await _dict.GetUnitNameReferenceListAsync(ct); // nazwy jednostek :contentReference[oaicite:3]{index=3}
 
         await using var inMs = new MemoryStream();
         await request.File.CopyToAsync(inMs, ct);
@@ -108,28 +143,80 @@ public class HorkosController : ControllerBase
             validatePesel: true,
             validatePeselDuplicates: true,
             validateRank: request.ValidateRank == true,
-            validRanks: ranks
+            validRanks: ranks,
+            validateUnit: request.ValidateUnit == true,
+            validUnits: units
         );
 
-        var baseName = Path.GetFileNameWithoutExtension(request.File.FileName);
-        if (string.IsNullOrWhiteSpace(baseName)) baseName = "lista_roczna";
+        // dopnij BOM UTF-8 jeśli z jakiegoś powodu go nie ma
+        bytes = EnsureUtf8Bom(bytes);
 
-        return File(bytes, "text/csv; charset=utf-16", $"{baseName}_WYNIK.csv");
+        var baseName = SafeBaseName(null, "lista_roczna");
+        var stamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+
+        // Zapis na dysk
+        var savedPath = await SaveCsvToDiskAsync(bytes, baseName, ct);
+        Response.Headers["X-Saved-File"] = savedPath;
+
+        // anty-cache:
+        Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+        Response.Headers["Pragma"] = "no-cache";
+        Response.Headers["Expires"] = "0";
+        // nagłówek diagnostyczny (pierwsze 3 bajty)
+        Response.Headers["X-Debug-First3"] = Convert.ToHexString(bytes.AsSpan(0, Math.Min(bytes.Length, 3)));
+
+        return File(bytes, "application/octet-stream", $"{baseName}_{stamp}_WYNIK.csv");
     }
 
-    /// <summary>
-    /// Dane wejściowe dla walidatorów CSV.
-    /// </summary>
+    /// <summary>Wejściowe parametry walidacji CSV.</summary>
     public sealed class ValidateCsvRequest
     {
-        /// <summary>Plik CSV z danymi (separator średnik ';').</summary>
-        [Required]
-        public IFormFile File { get; set; } = default!;
-
-        /// <summary>Nr wiersza z nagłówkiem (1-indeksowany, domyślnie 1).</summary>
+        [Required] public IFormFile File { get; set; } = default!;
+        /// <summary>Nr wiersza nagłówka (1-indeksowany), domyślnie 1.</summary>
         public int? HeaderRow { get; set; }
-
-        /// <summary>Gdy <c>true</c>, kolumna „Stopień” jest weryfikowana względem słownika.</summary>
+        /// <summary>Gdy true – weryfikuje kolumnę „Stopień” względem słownika.</summary>
         public bool? ValidateRank { get; set; }
+        /// <summary>Gdy true – weryfikuje kolumnę „Nazwa jednostki wojskowej” względem słownika.</summary>
+        public bool? ValidateUnit { get; set; }
+    }
+
+    // ===== helpers =====
+
+    private static string SafeBaseName(string? name, string fallback)
+    {
+        var n = string.IsNullOrWhiteSpace(name) ? fallback : name!;
+        var safe = string.Join("_", n.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)).Trim('_');
+        return string.IsNullOrWhiteSpace(safe) ? fallback : safe;
+    }
+
+    private async Task<string> SaveCsvToDiskAsync(byte[] data, string baseName, CancellationToken ct)
+    {
+        var fileName = $"{baseName}_{DateTime.Now:yyyyMMdd_HHmmss}_WYNIK.csv";
+        var fullPath = Path.Combine(_exportDir, fileName);
+
+        try
+        {
+            await System.IO.File.WriteAllBytesAsync(fullPath, data, ct);
+            _log.LogInformation("CSV saved to disk: {Path}", fullPath);
+            return fullPath;
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Failed to save CSV to disk at {Path}", fullPath);
+            Response.Headers["X-Saved-File"] = "ERROR:" + ex.GetType().Name;
+            return fullPath;
+        }
+    }
+
+    private static byte[] EnsureUtf8Bom(byte[] bytes)
+    {
+        if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+            return bytes; // already has BOM
+
+        var bom = new byte[] { 0xEF, 0xBB, 0xBF };
+        var fixedBytes = new byte[bom.Length + bytes.Length];
+        Buffer.BlockCopy(bom, 0, fixedBytes, 0, bom.Length);
+        Buffer.BlockCopy(bytes, 0, fixedBytes, bom.Length, bytes.Length);
+        return fixedBytes;
     }
 }

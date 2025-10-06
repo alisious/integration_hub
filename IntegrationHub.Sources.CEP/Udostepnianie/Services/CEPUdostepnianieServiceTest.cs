@@ -1,0 +1,108 @@
+﻿// IntegrationHub.Sources.CEP.Services/CEPUdostepnianieServiceTest.cs
+using System;
+using System.IO;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using IntegrationHub.Common.Contracts;                     // ProxyResponse<T>, ProxyStatus
+using IntegrationHub.Sources.CEP.Services;                 // ICEPUdostepnianieService
+using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;  // PytanieOPojazdRequest, PytanieOPojazdResponse
+using IntegrationHub.Sources.CEP.Udostepnianie.Mappers;    // PytanieOPojazdResponseXmlMapper
+using IntegrationHub.Sources.CEP.Udostepnianie.Validation; // PytanieOPojazdRequestValidator (+ ValidationResultExtensions)
+
+namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
+{
+    /// <summary>
+    /// Implementacja testowa serwisu CEPUdostepnianie – czyta gotowy XML z katalogu TestData/CEP
+    /// i mapuje go na DTO. Przydatne do uruchamiania API bez dostępu do środowisk zewnętrznych.
+    /// </summary>
+    public sealed class CEPUdostepnianieServiceTest : ICEPUdostepnianieService
+    {
+        private readonly ILogger<CEPUdostepnianieServiceTest> _logger;
+        private readonly string _testDataDir;
+
+        public CEPUdostepnianieServiceTest(ILogger<CEPUdostepnianieServiceTest> logger, IHostEnvironment env)
+        {
+            _logger = logger;
+            // <contentRoot>\TestData\CEP
+            _testDataDir = Path.Combine(env.ContentRootPath, "TestData", "CEP");
+        }
+
+        /// <summary>
+        /// Wersja testowa: ignoruje realne wywołanie SOAP i zwraca zmapowany plik XML:
+        /// ..\TestData\CEP\pytanieOPojazd_RESPONSE.xml
+        /// </summary>
+        public async Task<ProxyResponse<PytanieOPojazdResponse>> PytanieOPojazdAsync(
+            PytanieOPojazdRequest body, string? requestId = null, CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja zgodnie z produkcyjną ścieżką
+            var validator = new PytanieOPojazdRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId); // BusinessError / 400
+                return new ProxyResponse<PytanieOPojazdResponse>
+                {
+                    RequestId = baseResp.RequestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Wczytaj plik testowy i zmapuj przez mapper XML→DTO
+            var xmlPath = Path.Combine(_testDataDir, "pytanieOPojazd_RESPONSE.xml");
+            try
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    return Error<PytanieOPojazdResponse>(requestId, HttpStatusCode.InternalServerError,
+                        ProxyStatus.TechnicalError, $"Brak pliku z danymi testowymi: {xmlPath}");
+                }
+
+                var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
+                var dto = PytanieOPojazdResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOPojazdResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
+            {
+                _logger.LogWarning(oce, "Test CEP canceled by caller. RID={RequestId}", requestId);
+                return Error<PytanieOPojazdResponse>(requestId, HttpStatusCode.RequestTimeout,
+                    ProxyStatus.TechnicalError, "Operacja została anulowana.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd testowego odczytu CEPUdostepnianie. RID={RequestId}", requestId);
+                return Error<PytanieOPojazdResponse>(requestId, HttpStatusCode.InternalServerError,
+                    ProxyStatus.TechnicalError, ex.Message);
+            }
+        }
+
+        // === pomocnicze ===
+        private static ProxyResponse<T> Error<T>(string requestId, HttpStatusCode code, ProxyStatus status, string message)
+        {
+            return new ProxyResponse<T>
+            {
+                RequestId = requestId,
+                Source = "CEP.Udostepnianie.Test",
+                Status = status,
+                SourceStatusCode = (int)code,
+                ErrorMessage = message
+            };
+        }
+    }
+}

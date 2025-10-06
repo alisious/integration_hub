@@ -23,6 +23,7 @@ using System.Text;
 using Trentum.Horkos;
 using IntegrationHub.Infrastructure.Sql;
 using IntegrationHub.Infrastructure.Cepik;
+using IntegrationHub.Sources.CEP.Udostepnianie.Services;
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
 Log.Logger = new LoggerConfiguration()
@@ -177,6 +178,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();
 builder.Services.AddScoped<SupervisorService>();
 builder.Services.AddTransient<ISrpSoapInvoker, SrpSoapInvoker>();
+builder.Services.AddTransient<ICepSoapInvoker, CepSoapInvoker>();
 
 
 if (srpConfig!.TestMode)
@@ -185,7 +187,7 @@ if (srpConfig!.TestMode)
     // Jeœli TestMode, zarejestruj PeselService jako PeselServiceTest
     builder.Services.AddTransient<IPeselService, PeselServiceTest>();
     builder.Services.AddTransient<IRdoService, RdoServiceTest>();
-    Log.Warning("SRP dzia³a w TRYBIE TESTOWYM.");
+    Log.Warning("SRP dzia³a w trybie testowym.");
 }
 else
 {
@@ -197,20 +199,15 @@ else
 if (cepConfig!.TestMode)
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiServiceTest>();
-    Log.Warning("CEP dzia³a w TRYBIE TESTOWYM.");
+    builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieServiceTest>();
+    Log.Warning("CEP dzia³a w trybie testowym.");
 }
 else
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiService>();
+    builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieService>();
     Log.Information("CEP dzia³a w trybie produkcyjnym.");
 }
-
-
-
-
-
-
-
 
 
 // ====== CONTROLLERS ======

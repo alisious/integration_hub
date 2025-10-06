@@ -20,7 +20,7 @@ namespace IntegrationHub.Api.Middleware
             {
                 await _next(context);
             }
-            catch (SrpSoapException ex)
+            catch (SoapIntegrationException ex)
             {
                 _logger.LogError(ex, "SRP error: {Method} {Path} [{ReqId}]",
                     context.Request.Method, context.Request.Path, ex.RequestId);

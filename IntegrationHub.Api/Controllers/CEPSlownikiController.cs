@@ -1,6 +1,6 @@
 ﻿using IntegrationHub.Common.Contracts;                 // + ProxyResponse, ProxyStatus
 using IntegrationHub.Infrastructure.Cepik;
-using IntegrationHub.Sources.CEP.ConnectedServices;
+using IntegrationHub.Sources.CEP.Contracts;
 using IntegrationHub.Sources.CEP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

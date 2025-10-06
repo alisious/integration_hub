@@ -45,7 +45,7 @@ namespace IntegrationHub.SRP.Services
                                        soapAction, requestId, (int)response.StatusCode);
 
                 if (fault is null &&  !response.IsSuccessStatusCode)
-                    throw new SrpSoapException($"HTTP {(int)response.StatusCode} from SRP",
+                    throw new SoapIntegrationException($"HTTP {(int)response.StatusCode} from SRP",
                         endpointUrl, soapAction, requestId, response.StatusCode);
 
                 return new SoapInvokeResult(response.StatusCode, xml, fault);
@@ -55,17 +55,17 @@ namespace IntegrationHub.SRP.Services
                 // HttpClient mapuje ConnectTimeout/AttemptTimeout na TaskCanceledException.
                 // Zwracamy jednoznaczny komunikat dla logów/klienta.
                 _logger.LogError(tce, "Nieosiągalny host. Connect timeout podczas wywołania SOAP: {Action}. RequestId={RequestId}", soapAction, requestId);
-                throw new SrpSoapException("Timeout połączenia (ConnectTimeout) do SRP. Nieosiągalny host.", endpointUrl, soapAction, requestId, null, tce);
+                throw new SoapIntegrationException("Timeout połączenia (ConnectTimeout) do SRP. Nieosiągalny host.", endpointUrl, soapAction, requestId, null, tce);
             }
             catch (TimeoutException tex)
             {
                 _logger.LogError(tex, "Timeout during SOAP call: {Action}. RequestId={RequestId}", soapAction, requestId);
-                throw new SrpSoapException("Timeout calling SRP", endpointUrl, soapAction, requestId, null, tex);
+                throw new SoapIntegrationException("Timeout calling SRP", endpointUrl, soapAction, requestId, null, tex);
             }
             catch (CommunicationException cex)
             {
                 _logger.LogError(cex, "Communication error during SOAP call: {Action}. RequestId={RequestId}", soapAction, requestId);
-                throw new SrpSoapException("Communication error calling SRP", endpointUrl, soapAction, requestId, null, cex);
+                throw new SoapIntegrationException("Communication error calling SRP", endpointUrl, soapAction, requestId, null, cex);
             }
         }
     }

@@ -27,6 +27,9 @@ namespace Trentum.Horkos.BpsExtensions
         [ConfigEditableDataSourceID(DisplayName = "Słownik stopni wojskowych", Description = "Słownik stopni wojskowych, na jego podstawie walidowane są stopnie wojskowe osób z listy.")]
         public int? RankDataSourceID { get; set; }
 
+        [ConfigEditableText(DisplayName = "Atrybut z nazwą stopnia",Description = "Nazwa pola w bazie danych zawierającego nazwę stopnia, na podstawie której ma odbywać się walidacja wartości. Domyślnie: WFD_AttText1")]
+        public string RankDataSourceAttribute { get; set; } = "WFD_AttText1";
+
         [ConfigEditableDataSourceID(DisplayName = "Słownik jednostek wojskowych", Description = "Słownik jednostek wojskowych, na jego podstawie walidowane są nazwy jednostek wojskowych - miejsc służby osób z listy.")]
         public int? UnitDataSourceID { get; set; }
 

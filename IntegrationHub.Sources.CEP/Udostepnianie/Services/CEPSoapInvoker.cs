@@ -1,0 +1,81 @@
+﻿// IntegrationHub.Sources.CEP.Udostepnianie/Services/CepSoapInvoker.cs
+using IntegrationHub.Common.Exceptions;
+using IntegrationHub.Common.Interfaces;
+using IntegrationHub.Sources.CEP.Config;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Text;
+
+namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
+{
+    public interface ICepSoapInvoker
+    {
+        Task<(HttpStatusCode Status, string Body)> InvokeAsync(
+            CEPConfig cfg,
+            string endpointUrl,
+            string soapAction,
+            string envelope,
+            string requestId,
+            CancellationToken ct = default);
+    }
+
+    public sealed class CepSoapInvoker : ICepSoapInvoker
+    {
+        private readonly ILogger<CepSoapInvoker> _logger;
+        private readonly IClientCertificateProvider _certProvider;
+
+        public CepSoapInvoker(IClientCertificateProvider certProvider, ILogger<CepSoapInvoker> logger)
+        {
+            _certProvider = certProvider;
+            _logger = logger;
+        }
+
+        public async Task<(HttpStatusCode Status, string Body)> InvokeAsync(
+            CEPConfig cfg, string endpointUrl, string soapAction, string envelope, string requestId, CancellationToken ct = default)
+        {
+            var handler = new HttpClientHandler { ClientCertificateOptions = ClientCertificateOption.Manual };
+            var clientCert = _certProvider.GetClientCertificate(cfg);
+            handler.ClientCertificates.Add(clientCert);
+
+            if (cfg.TrustServerCerificate)
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+            using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(Math.Max(5, cfg.TimeoutSeconds)) };
+            using var content = new StringContent(envelope, Encoding.UTF8, "text/xml");
+            content.Headers.Add("SOAPAction", soapAction);
+
+            _logger.LogInformation("CEP SOAP start: {Action}, RequestId={RequestId}, Endpoint={Endpoint}", soapAction, requestId, endpointUrl);
+
+            try
+            {
+                using var resp = await client.PostAsync(endpointUrl, content, ct);
+                var body = await resp.Content.ReadAsStringAsync(ct);
+
+                _logger.LogInformation("CEP SOAP done: {Action}, RequestId={RequestId}, HTTP={Status}", soapAction, requestId, (int)resp.StatusCode);
+                return (resp.StatusCode, body);
+            }
+            // === anulowanie wywołania przez wywołującego ===
+            catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
+            {
+                _logger.LogWarning(oce, "CEP SOAP canceled by caller: {Action}, RequestId={RequestId}", soapAction, requestId);
+                throw new SoapIntegrationException("Żądanie SOAP zostało anulowane przez wywołującego.",
+                    endpointUrl, soapAction, requestId, null, oce);
+            }
+            // === timeout (brak ct.IsCancellationRequested) ===
+            catch (TaskCanceledException tce) // typowy scenariusz timeoutu HttpClient
+            {
+                _logger.LogError(tce, "CEP SOAP timeout: {Action}, RequestId={RequestId}", soapAction, requestId);
+                throw new SoapIntegrationException("Przekroczono limit czasu połączenia do usługi SOAP.",
+                    endpointUrl, soapAction, requestId, null, tce);
+            }
+            // === błąd komunikacji HTTP/transportu ===
+            catch (HttpRequestException hre)
+            {
+                _logger.LogError(hre, "CEP SOAP communication error: {Action}, RequestId={RequestId}", soapAction, requestId);
+                throw new SoapIntegrationException($"Błąd komunikacji HTTP: {hre.Message}",
+                    endpointUrl, soapAction, requestId, hre.StatusCode, hre);
+            }
+        }
+
+    }
+}

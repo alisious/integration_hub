@@ -35,8 +35,50 @@ namespace IntegrationHub.PIESP.Services
             if (user == null) return null;
             user.PinHash = PinHasher.Hash(newPin);
             await _context.SaveChangesAsync();
+            _logger.LogInformation("PIN użytkownika: {BadgeNumber} został zmieniony.", badge);
             return user;
         }
+
+
+        public async Task<bool> ConfirmCurrentPinAsync(string badge, string pin)
+        {
+
+            try
+            {
+                _logger.LogInformation("Szukam użytkownika: {BadgeNumber}", badge);
+                var user = await _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.BadgeNumber == badge);
+
+                if (user == null)
+                {
+                    _logger.LogWarning("Nieudana walidacja PIN'u użytkownika: Nie znaleziono użytkownika z numerem odznaki: {BadgeNumber}.", badge);
+                    return false;
+                }
+
+                if (PinHasher.Verify(pin, user.PinHash))
+                {
+                    _logger.LogInformation("Udana walidacja PIN'u dla użytkownika z odznaką: {BadgeNumber}", badge);
+                    return true;
+                }
+                else
+                {
+                    _logger.LogWarning("Nieudana walidacja PIN'u użytkownika: Nieprawidłowy PIN dla numeru odznaki: {BadgeNumber}.", badge);
+                    return false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Nieznany błąd walidacji PIN'u użytkownika.");
+            }
+            return false;
+
+
+
+
+        }
+
 
         public async Task<User?> LoginAsync(string badge, string pin)
         {

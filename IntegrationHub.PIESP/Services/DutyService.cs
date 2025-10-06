@@ -18,13 +18,52 @@ namespace IntegrationHub.PIESP.Services
             _context = context;
         }
 
-        public IEnumerable<Duty> GetDutiesForUser(string badge, DateTime date)
+        public IEnumerable<Duty> GetDutiesForUserOnDate(string badge, DateTime date)
         {
             return _context.Set<Duty>()
                 .Where(d => d.BadgeNumber == badge && d.PlannedStartDate.Date == date.Date)
                 .AsNoTracking()
                 .ToList();
         }
+
+        public IEnumerable<Duty> GetAllDutiesForUser(string badge,bool notFinished = true)
+        {
+            if (notFinished)
+            {
+                return _context.Set<Duty>()
+                .Where(d => d.BadgeNumber == badge && d.Status != DutyStatus.Finished)
+                .AsNoTracking()
+                .ToList();
+            }
+            else
+            {
+                return _context.Set<Duty>()
+                .Where(d => d.BadgeNumber == badge)
+                .AsNoTracking()
+                .ToList();
+            }
+            
+        }
+
+        public IEnumerable<Duty> GetDutiesPlannedForUser(string badge, DateTime? date)
+        {
+            if (date.HasValue)
+            {
+                return _context.Set<Duty>()
+                .Where(d => d.BadgeNumber == badge && d.Status == DutyStatus.Planned && d.PlannedStartDate.Date == date.Value.Date)
+                .AsNoTracking()
+                .ToList();
+            }
+            else
+            {
+                return _context.Set<Duty>()
+                .Where(d => d.BadgeNumber == badge && d.Status == DutyStatus.Planned)
+                .AsNoTracking()
+                .ToList();
+            }
+
+        }
+
 
         public Duty? GetDutyForUser(int dutyId, string badge)
         {
