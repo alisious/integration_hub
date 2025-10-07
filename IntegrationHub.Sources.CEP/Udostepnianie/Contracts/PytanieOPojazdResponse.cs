@@ -22,7 +22,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Contracts
         [JsonPropertyName("wnioskodawca")] public string? Wnioskodawca { get; set; }
     }
 
-    public sealed class PojazdDto
+    public class PojazdDto
     {
         [JsonPropertyName("aktualnyIdPojazdu")] public AktualnyIdPojazduDto? AktualnyIdPojazdu { get; set; }
         [JsonPropertyName("stanPojazdu")] public StanPojazduDto? StanPojazdu { get; set; }

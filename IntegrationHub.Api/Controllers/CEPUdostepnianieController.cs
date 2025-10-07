@@ -68,5 +68,47 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 };
             }
         }
+
+        /// <summary>
+        /// Wywołuje usługę CEPIK – Pytanie o pojazd (rozszerzone).
+        /// Zwraca bezpośrednio ProxyResponse<PytanieOPojazdRozszerzoneResponse>.
+        /// </summary>
+        [HttpPost("pytanie-o-pojazd-rozszerzone")]
+        [Consumes("application/json")]
+        [Produces(typeof(ProxyResponse<PytanieOPojazdRozszerzoneResponse>))]
+        public async Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzone(
+            [FromBody] PytanieOPojazdRequest body,
+            CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+
+            try
+            {
+                var result = await _service.PytanieOPojazdRozszerzoneAsync(body, requestId, ct);
+
+                if (result.Status != ProxyStatus.Success)
+                {
+                    _logger.LogWarning(
+                        "CEPUdostepnianie.PytanieOPojazdRozszerzone: status={ProxyStatus}, http={Http}, reqId={ReqId}",
+                        result.Status, result.SourceStatusCode, result.RequestId);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOPojazdRozszerzone. reqId={ReqId}", requestId);
+
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Controller",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = 500,
+                    ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
+                };
+            }
+        }
+
     }
 }

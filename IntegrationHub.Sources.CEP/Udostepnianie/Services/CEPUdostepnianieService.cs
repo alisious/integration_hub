@@ -22,6 +22,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             PytanieOPojazdRequest body,
             string? requestId = null,
             CancellationToken ct = default);
+        Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(
+            PytanieOPojazdRequest body, string? requestId = null, CancellationToken ct = default);
         // łatwe rozszerzenie o kolejne operacje:
         // Task<ProxyResponse<PytanieODokumentPojazduResponse>> PytanieODokumentPojazduAsync(...);
         // Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(...);
@@ -136,6 +138,104 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             {
                 _logger.LogError(ex, "Błąd PytanieOPojazdAsync, RequestId={RequestId}", requestId);
                 return new ProxyResponse<PytanieOPojazdResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(
+            PytanieOPojazdRequest body,
+            string? requestId = null,
+            CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja ta sama co dla zwykłego pytania
+            var validator = new PytanieOPojazdRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = baseResp.RequestId,
+                    Source = baseResp.Source,
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Koperta SOAP — wariant „rozszerzony”
+            var envelope = CepUdostepnianieEnvelopeHelper.PreparePytanieOPojazdRozszerzoneEnvelope(body, requestId);
+
+            // 3) Endpoint
+            var endpointUrl = _cfg.ShareServiceUrl;
+            if (string.IsNullOrWhiteSpace(endpointUrl))
+            {
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = "Brak ShareServiceUrl w konfiguracji CEP."
+                };
+            }
+
+            // 4) SOAPAction
+            const string soapAction = CEPUdostepnianieSoapActions.PytanieOPojazdRozszerzone;
+
+            try
+            {
+                // 5) Wywołanie SOAP
+                var (status, xml) = await _invoker.InvokeAsync(_cfg, endpointUrl, soapAction, envelope, requestId, ct);
+
+                if ((int)status < 200 || (int)status >= 300)
+                {
+                    return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)status,
+                        ErrorMessage = $"HTTP {(int)status}"
+                    };
+                }
+
+                // 6) Mapowanie XML → DTO (rozszerzony)
+                var dto = PytanieOPojazdRozszerzoneResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (SoapIntegrationException sie)
+            {
+                _logger.LogError(sie, "SOAP error ({Action}) RequestId={RequestId}", soapAction, requestId);
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int?)(sie.HttpStatus ?? HttpStatusCode.BadGateway),
+                    ErrorMessage = sie.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd PytanieOPojazdRozszerzoneAsync, RequestId={RequestId}", requestId);
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
                 {
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie",

@@ -92,6 +92,70 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
         }
 
+        public async Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(
+     PytanieOPojazdRequest body, string? requestId = null, CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            var validator = new PytanieOPojazdRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = baseResp.RequestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            var xmlPath = Path.Combine(_testDataDir, "pytanieOPojazdRozszerzone_LU638JU_RESPONSE.xml");
+            try
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie.Test",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                    };
+                }
+
+                var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
+                var dto = PytanieOPojazdRozszerzoneResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
+            {
+                _logger.LogWarning(oce, "Test CEP (rozszerzone) canceled by caller. RID={RequestId}", requestId);
+                return Error<PytanieOPojazdRozszerzoneResponse>(
+                    requestId, HttpStatusCode.RequestTimeout, ProxyStatus.TechnicalError, "Operacja została anulowana.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd testowego odczytu CEPUdostepnianie (rozszerzone). RID={RequestId}", requestId);
+                return Error<PytanieOPojazdRozszerzoneResponse>(
+                    requestId, HttpStatusCode.InternalServerError, ProxyStatus.TechnicalError, ex.Message);
+            }
+        }
+
+
+
+
         // === pomocnicze ===
         private static ProxyResponse<T> Error<T>(string requestId, HttpStatusCode code, ProxyStatus status, string message)
         {

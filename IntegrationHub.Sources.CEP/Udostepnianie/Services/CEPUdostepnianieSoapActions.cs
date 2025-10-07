@@ -12,5 +12,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
         public const string PytanieOPojazdRozszerzone = "pytanieOPojazdRozszerzone";
         public const string PytanieODokumentPojazdu = "pytanieODokumentPojazdu";
         public const string PytanieOPodmiot = "pytanieOPodmiot";
+        public const string PytanieOHistorieLicznika = "pytanieOHistorieLicznika";
+        public const string PytanieOListeCzynnosciPojazdu = "pytanieOListeCzynnosciPojazdu";
+
     }
 }
