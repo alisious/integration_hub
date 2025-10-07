@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntegrationHub.Sources.CEP.Udostepnianie.Validation
+namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
 {
     public interface IRequestValidator<TRequest>
     {

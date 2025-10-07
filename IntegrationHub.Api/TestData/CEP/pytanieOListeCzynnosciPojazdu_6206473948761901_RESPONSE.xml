@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+   <Body>
+      <pytanieOListeCzynnosciPojazduRezultat xmlns="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+         <daneRezultatu xmlns="">
+            <identyfikatorTransakcji>a60d4442-9cc6-447a-8fdd-d7f726874e21</identyfikatorTransakcji>
+            <iloscZwroconychRekordow>8</iloscZwroconychRekordow>
+            <znacznikCzasowy>2025-10-04T13:10:49</znacznikCzasowy>
+            <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+            <znakSprawy>P003</znakSprawy>
+            <wnioskodawca>ŻW</wnioskodawca>
+         </daneRezultatu>
+         <parametryZapytania xmlns="">
+            <pytanieOListeCzynnosciPojazdu>
+               <parametryPytania xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <!--You may enter the following 5 items in any order-->
+                  <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+                  <!--Optional:-->
+                  <limit>10</limit>
+                  <wnioskodawca>
+                     <!--You may enter the following 2 items in any order-->
+                     <znakSprawy>P003</znakSprawy>
+                     <wnioskodawca>ŻW</wnioskodawca>
+                  </wnioskodawca>
+               </parametryPytania>
+               <parametryCzynnosci xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <!--You may enter the following 2 items in any order-->
+                  <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+               </parametryCzynnosci>
+            </pytanieOListeCzynnosciPojazdu>
+         </parametryZapytania>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>8220108207363312</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T23:59:59</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>SKP.Z.POJ.PRE-R</kodCzynnosci>
+               <modul>SKP</modul>
+               <opis>Pre-rejestracja pojazdu zagranicznego przez SKP</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>2020-03-16T15:23:40</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_10107959</kod>
+               <nazwa>F.H.U. "GILEWSKI" - Andrzej Gilewski</nazwa>
+               <numerEwidencyjny>DSW/021/P</numerEwidencyjny>
+               <identyfikatorREGON>89018691700000</identyfikatorREGON>
+               <REGON>890186917</REGON>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_SKP</kod>
+                  <wartoscOpisowaSkrocona>Stacja Kontroli Pojazdów</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:59</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2024-12-16T13:08:54</dataStanu>
+            <dataOdnotowania>2024-12-16T13:08:54</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>4286126932658454</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T23:59:59</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>SKP.Z.POJ.OBT-P</kodCzynnosci>
+               <modul>SKP</modul>
+               <opis>Okresowe badanie techniczne pojazdu - wynik pozytywny</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>2020-03-16T15:23:40</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_10107959</kod>
+               <nazwa>F.H.U. "GILEWSKI" - Andrzej Gilewski</nazwa>
+               <numerEwidencyjny>DSW/021/P</numerEwidencyjny>
+               <identyfikatorREGON>89018691700000</identyfikatorREGON>
+               <REGON>890186917</REGON>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_SKP</kod>
+                  <wartoscOpisowaSkrocona>Stacja Kontroli Pojazdów</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:59</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2024-12-16T13:22:36</dataStanu>
+            <dataOdnotowania>2024-12-16T13:22:36</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>3240590003176683</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>CEP.Z.POJ.RE-SP</kodCzynnosci>
+               <modul>CEP_UdS</modul>
+               <opis>Pierwsza rejestracja pojazdu sprowadzonego</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_0219</kod>
+               <nazwa>STAROSTWO POWIATOWE W ŚWIDNICY</nazwa>
+               <numerEwidencyjny>0219</numerEwidencyjny>
+               <identyfikatorREGON>1176465</identyfikatorREGON>
+               <REGON>000579589</REGON>
+               <nazwaOrganuWydajacego>STAROSTA ŚWIDNICKI</nazwaOrganuWydajacego>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_STAROSTA</kod>
+                  <wartoscOpisowaSkrocona>Starosta</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:46</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2025-03-03T10:05:45</dataStanu>
+            <dataOdnotowania>2025-03-03T10:11:11</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>7672227408195475</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>CEP.Z.DR.PE</kodCzynnosci>
+               <modul>CEP_UdS</modul>
+               <opis>Zamówienie DR do personalizacji</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_0219</kod>
+               <nazwa>STAROSTWO POWIATOWE W ŚWIDNICY</nazwa>
+               <numerEwidencyjny>0219</numerEwidencyjny>
+               <identyfikatorREGON>1176465</identyfikatorREGON>
+               <REGON>000579589</REGON>
+               <nazwaOrganuWydajacego>STAROSTA ŚWIDNICKI</nazwaOrganuWydajacego>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_STAROSTA</kod>
+                  <wartoscOpisowaSkrocona>Starosta</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:46</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2025-03-04T08:05:47</dataStanu>
+            <dataOdnotowania>2025-03-04T08:05:49</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>1790271357326012</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>CEP.Z.DR.WY</kodCzynnosci>
+               <modul>CEP_UdS</modul>
+               <opis>Wydanie spersonalizowanego DR</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_0219</kod>
+               <nazwa>STAROSTWO POWIATOWE W ŚWIDNICY</nazwa>
+               <numerEwidencyjny>0219</numerEwidencyjny>
+               <identyfikatorREGON>1176465</identyfikatorREGON>
+               <REGON>000579589</REGON>
+               <nazwaOrganuWydajacego>STAROSTA ŚWIDNICKI</nazwaOrganuWydajacego>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_STAROSTA</kod>
+                  <wartoscOpisowaSkrocona>Starosta</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:46</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2025-03-13T11:43:47</dataStanu>
+            <dataOdnotowania>2025-03-13T11:43:52</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>3646913419303815</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-01-01T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>CEP.Z.POJ.ZM-ZB</kodCzynnosci>
+               <modul>CEP_UdS</modul>
+               <opis>Odnotowanie zmiany praw własności pojazdu - zbycie</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>1900-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_0219</kod>
+               <nazwa>STAROSTWO POWIATOWE W ŚWIDNICY</nazwa>
+               <numerEwidencyjny>0219</numerEwidencyjny>
+               <identyfikatorREGON>1176465</identyfikatorREGON>
+               <REGON>000579589</REGON>
+               <nazwaOrganuWydajacego>STAROSTA ŚWIDNICKI</nazwaOrganuWydajacego>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_STAROSTA</kod>
+                  <wartoscOpisowaSkrocona>Starosta</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:46</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2025-03-14T00:00:00</dataStanu>
+            <dataOdnotowania>2025-05-07T09:26:28</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>6708942694203613</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>0001-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>UFG.Z.POL.OC</kodCzynnosci>
+               <modul>UFG</modul>
+               <opis>ODNOTOWANIE POLISY OC</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>1901-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_10097728</kod>
+               <nazwa>Ubezpieczeniowy Fundusz Gwarancyjny</nazwa>
+               <identyfikatorREGON>1183591</identyfikatorREGON>
+               <REGON>010000400</REGON>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_UFG</kod>
+                  <wartoscOpisowaSkrocona>Ubezpieczeniowy Fundusz Gwarancyjny</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:59</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2025-03-31T00:00:00</dataStanu>
+            <dataOdnotowania>2025-04-01T20:04:56</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+         <czynnoscCEP xmlns="">
+            <identyfikatorCzynnosci>7088241641469095</identyfikatorCzynnosci>
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <rodzajCzynnosci>
+               <dataOd>0001-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kodCzynnosci>UFG.Z.POL.OC</kodCzynnosci>
+               <modul>UFG</modul>
+               <opis>ODNOTOWANIE POLISY OC</opis>
+            </rodzajCzynnosci>
+            <podmiotUprawniony>
+               <dataOd>1901-01-01T00:00:00</dataOd>
+               <dataDo>9999-12-31T00:00:00</dataDo>
+               <statusRekordu>A</statusRekordu>
+               <kod>DICT061_10097728</kod>
+               <nazwa>Ubezpieczeniowy Fundusz Gwarancyjny</nazwa>
+               <identyfikatorREGON>1183591</identyfikatorREGON>
+               <REGON>010000400</REGON>
+               <typ>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <kod>DICT077_UFG</kod>
+                  <wartoscOpisowaSkrocona>Ubezpieczeniowy Fundusz Gwarancyjny</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2017-10-06T14:14:59</dataAktualizacji>
+                  <status>A</status>
+               </typ>
+            </podmiotUprawniony>
+            <dataStanu>2025-03-31T00:00:00</dataStanu>
+            <dataOdnotowania>2025-07-04T20:31:31</dataOdnotowania>
+            <czyKorekta>false</czyKorekta>
+         </czynnoscCEP>
+      </pytanieOListeCzynnosciPojazduRezultat>
+   </Body>
+</Envelope>

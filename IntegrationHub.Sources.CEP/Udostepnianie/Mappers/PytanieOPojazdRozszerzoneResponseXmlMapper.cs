@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿// IntegrationHub.Sources.CEP.Udostepnianie.Mappers/PytanieOPojazdRozszerzoneResponseXmlMapper.cs
 using System.Xml.Linq;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
@@ -17,9 +17,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             var rezultat = body?.Elements().FirstOrDefault(x => x.Name.LocalName == "pytanieOPojazdRozszerzoneRezultat");
 
             var resp = new PytanieOPojazdRozszerzoneResponse();
-
-            if (rezultat is null)
-                return resp;
+            if (rezultat is null) return resp;
 
             // ===== daneRezultatu -> Meta
             var daneRez = rezultat.ElementAnyNs("daneRezultatu");
@@ -27,12 +25,12 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 resp.Meta = new MetaRozszerzone
                 {
-                    IdentyfikatorTransakcji = daneRez.Val("identyfikatorTransakcji"),
-                    IloscZwroconychRekordow = daneRez.Val("iloscZwroconychRekordow").ToInt(),
-                    ZnacznikCzasowy = daneRez.Val("znacznikCzasowy"),
-                    IdentyfikatorSystemuZewnetrznego = daneRez.Val("identyfikatorSystemuZewnetrznego"),
-                    ZnakSprawy = daneRez.Val("znakSprawy"),
-                    Wnioskodawca = daneRez.Val("wnioskodawca")
+                    IdentyfikatorTransakcji = daneRez.ValueOf("identyfikatorTransakcji"),
+                    IloscZwroconychRekordow = daneRez.ValueOf("iloscZwroconychRekordow").ToInt(),
+                    ZnacznikCzasowy = daneRez.ValueOf("znacznikCzasowy"),
+                    IdentyfikatorSystemuZewnetrznego = daneRez.ValueOf("identyfikatorSystemuZewnetrznego"),
+                    ZnakSprawy = daneRez.ValueOf("znakSprawy"),
+                    Wnioskodawca = daneRez.ValueOf("wnioskodawca")
                 };
             }
 
@@ -42,18 +40,17 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 resp.ParametryZapytania = new ParametryZapytaniaRozszerzone
                 {
-                    NumerRejestracyjny = echo.Desc("parametryPojazdu")?.Desc("parametryDanychPojazdu")?
-                        .Desc("parametryOznaczeniaPojazdu")?.Val("numerRejestracyjny"),
-                    ZnakSprawy = echo.Desc("parametryPytania")?.Desc("wnioskodawca")?.Val("znakSprawy"),
-                    Wnioskodawca = echo.Desc("parametryPytania")?.Desc("wnioskodawca")?.Val("wnioskodawca"),
-                    IdentyfikatorSystemuZewnetrznego = echo.Desc("parametryPytania")?.Val("identyfikatorSystemuZewnetrznego")
+                    NumerRejestracyjny = echo.Desc("parametryPojazdu")?.Desc("parametryDanychPojazdu")
+                        ?.Desc("parametryOznaczeniaPojazdu")?.ValueOf("numerRejestracyjny"),
+                    ZnakSprawy = echo.Desc("parametryPytania")?.Desc("wnioskodawca")?.ValueOf("znakSprawy"),
+                    Wnioskodawca = echo.Desc("parametryPytania")?.Desc("wnioskodawca")?.ValueOf("wnioskodawca"),
+                    IdentyfikatorSystemuZewnetrznego = echo.Desc("parametryPytania")?.ValueOf("identyfikatorSystemuZewnetrznego")
                 };
             }
 
             // ===== pojazdRozszerzone
             var poj = rezultat.ElementAnyNs("pojazdRozszerzone");
-            if (poj == null)
-                return resp;
+            if (poj == null) return resp;
 
             var p = new PojazdRozszerzoneDto();
 
@@ -61,10 +58,10 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             var aid = poj.Desc("aktualnyIdentyfikatorPojazdu");
             if (aid != null)
             {
-                p.AktualnyIdentyfikatorPojazdu = new AktualnyIdentyfikatorPojazduDto
+                p.AktualnyIdentyfikatorPojazdu = new AktualnyIdPojazduDto
                 {
-                    IdentyfikatorSystemowyPojazdu = aid.Val("identyfikatorSystemowyPojazdu"),
-                    TokenAktualnosci = aid.Val("tokenAktualnosci")
+                    IdentyfikatorSystemowyPojazdu = aid.ValueOf("identyfikatorSystemowyPojazdu"),
+                    TokenAktualnosci = aid.ValueOf("tokenAktualnosci")
                 };
             }
 
@@ -74,8 +71,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.StanPojazdu = new StanPojazduRozszerzonyDto
                 {
-                    IdentyfikatorSystemowyStanuRejestracjiPojazdu = st.Val("identyfikatorSystemowyStanuRejestracjiPojazdu"),
-                    DataPoczatkuObowiazywaniaStanu = st.Val("dataPoczatkuObowiazywaniaStanu"),
+                    IdentyfikatorSystemowyStanuRejestracjiPojazdu = st.ValueOf("identyfikatorSystemowyStanuRejestracjiPojazdu"),
+                    DataPoczatkuObowiazywaniaStanu = st.ValueOf("dataPoczatkuObowiazywaniaStanu"),
                     StanPojazdu = st.Desc("stanPojazdu")?.ToSlownikZakresowy(),
                     TypRejestracji = st.Desc("typrejestracji")?.ToSlownikZakresowy()
                 };
@@ -87,7 +84,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.DaneOpisujacePojazd = new DaneOpisujacePojazdRozszerzoneDto
                 {
-                    IdentyfikatorSystemowyDanychPojazdu = dop.Val("identyfikatorSystemowyDanychPojazdu"),
+                    IdentyfikatorSystemowyDanychPojazdu = dop.ValueOf("identyfikatorSystemowyDanychPojazdu"),
                     Marka = dop.Desc("marka")?.ToMarkaModel(),
                     Model = dop.Desc("model")?.ToMarkaModel(),
                     Rodzaj = dop.Desc("rodzaj")?.ToRodzajPodrodzaj(),
@@ -98,8 +95,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                     CzyWybityNumerIdentyfikacyjny = dop.Desc("czyWybityNumerIdentyfikacyjny")?.ToSlownikZakresowy(),
                     RodzajTabliczkiZnamionowej = dop.Desc("rodzajTabliczkiZnamionowej")?.ToSlownikZakresowy(),
                     SposobProdukcji = dop.Desc("sposobProdukcji")?.ToSlownikRozszerzony(),
-                    NumerPodwoziaNadwoziaRamy = dop.Val("numerPodwoziaNadwoziaRamy"),
-                    RokProdukcji = dop.Val("rokProdukcji").ToInt(),
+                    NumerPodwoziaNadwoziaRamy = dop.ValueOf("numerPodwoziaNadwoziaRamy"),
+                    RokProdukcji = dop.ValueOf("rokProdukcji").ToInt(),
                     RodzajKodowaniaRPP = dop.Desc("rodzajKodowaniaRPP")?.ToKodRpp()
                 };
             }
@@ -110,17 +107,17 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.HomologacjaPojazdu = new HomologacjaRozszerzonaDto
                 {
-                    IdentyfikatorSystemowyHomologacjiPojazdu = hom.Val("identyfikatorSystemowyHomologacjiPojazdu"),
-                    IdentyfikatorPozycjiKatalogowej = hom.Val("identyfikatorPozycjiKatalogowej"),
+                    IdentyfikatorSystemowyHomologacjiPojazdu = hom.ValueOf("identyfikatorSystemowyHomologacjiPojazdu"),
+                    IdentyfikatorPozycjiKatalogowej = hom.ValueOf("identyfikatorPozycjiKatalogowej"),
                     WersjaPojazdu = hom.Desc("wersjaPojazdu")?.ToHomologacjaPozycja(),
                     WariantPojazdu = hom.Desc("wariantPojazdu")?.ToHomologacjaPozycja(),
                     TypPojazdu = hom.Desc("typPojazdu")?.ToHomologacjaTyp(),
-                    NumerDokumentuHomologacji = hom.Val("numerDokumentuHomologacji"),
+                    NumerDokumentuHomologacji = hom.ValueOf("numerDokumentuHomologacji"),
                     KodKategoriiHomologacji = hom.Desc("kodKategoriiHomologacji")?.ToHomologacjaKategoria(),
                     HomologacjaITS = hom.Desc("homologacjaITS")?.ToHomologacjaITS(),
-                    TypWartoscOpisowa = hom.Val("typWartoscOpisowa"),
-                    WariantWartoscOpisowa = hom.Val("wariantWartoscOpisowa"),
-                    WersjaWartoscOpisowa = hom.Val("wersjaWartoscOpisowa")
+                    TypWartoscOpisowa = hom.ValueOf("typWartoscOpisowa"),
+                    WariantWartoscOpisowa = hom.ValueOf("wariantWartoscOpisowa"),
+                    WersjaWartoscOpisowa = hom.ValueOf("wersjaWartoscowa") ?? hom.ValueOf("wersjaWartoscOpisowa")
                 };
             }
 
@@ -130,10 +127,10 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.DanePierwszejRejestracji = new PierwszaRejestracjaRozszerzonaDto
                 {
-                    IdentyfikatorSystemowyPierwszejRejestracjiPojazdu = pr.Val("identyfikatorSystemowyPierwszejRejestracjiPojazdu"),
-                    DataPierwszejRejestracjiWKraju = pr.Val("dataPierwszejRejestracjiWKraju"),
-                    DataPierwszejRejestracjiZaGranica = pr.Val("dataPierwszejRejestracjiZaGranica"),
-                    DataPierwszejRejestracji = pr.Val("dataPierwszejRejestracji")
+                    IdentyfikatorSystemowyPierwszejRejestracjiPojazdu = pr.ValueOf("identyfikatorSystemowyPierwszejRejestracjiPojazdu"),
+                    DataPierwszejRejestracjiWKraju = pr.ValueOf("dataPierwszejRejestracjiWKraju"),
+                    DataPierwszejRejestracjiZaGranica = pr.ValueOf("dataPierwszejRejestracjiZaGranica"),
+                    DataPierwszejRejestracji = pr.ValueOf("dataPierwszejRejestracji")
                 };
             }
 
@@ -143,16 +140,16 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.InformacjeSkp = new InformacjeSkpDto
                 {
-                    IdentyfikatorSystemowyInformacjiSkp = skp.Val("identyfikatorSystemowyInformacjiSKP"),
-                    IdentyfikatorCzynnosci = skp.Val("identyfikatorCzynnosci"),
+                    IdentyfikatorSystemowyInformacjiSkp = skp.ValueOf("identyfikatorSystemowyInformacjiSKP"),
+                    IdentyfikatorCzynnosci = skp.ValueOf("identyfikatorCzynnosci"),
                     StacjaKontroliPojazdow = skp.Desc("stacjaKontroliPojazdow")?.ToSkpPodmiot(),
                     RodzajCzynnosciSkp = skp.Desc("rodzajCzynnosciSKP")?.ToSlownikZakresowy(),
-                    NumerZaswiadczenia = skp.Val("numerZaswiadczenia"),
+                    NumerZaswiadczenia = skp.ValueOf("numerZaswiadczenia"),
                     WynikCzynnosci = skp.Desc("wynikCzynnosci")?.ToSlownikRozszerzony(),
-                    WpisDoDokumentuPojazdu = skp.Val("wpisDoDokumentuPojazdu").ToBool(),
-                    WydanieZaswiadczenia = skp.Val("wydanieZaswiadczenia").ToBool(),
-                    DataGodzWykonaniaCzynnosciSkp = skp.Val("dataGodzWykonaniaCzynnosciSKP"),
-                    TrybAwaryjny = skp.Val("trybAwaryjny").ToBool(),
+                    WpisDoDokumentuPojazdu = skp.ValueOf("wpisDoDokumentuPojazdu").ToBool(),
+                    WydanieZaswiadczenia = skp.ValueOf("wydanieZaswiadczenia").ToBool(),
+                    DataGodzWykonaniaCzynnosciSkp = skp.ValueOf("dataGodzWykonaniaCzynnosciSKP"),
+                    TrybAwaryjny = skp.ValueOf("trybAwaryjny").ToBool(),
                     TerminKolejnegoBadaniaTechnicznego = skp.Desc("terminKolejnegoBadaniaTechnicznego")?.ToTerminKolejnegoBadania(),
                     StanLicznika = skp.Desc("stanLicznika")?.ToStanLicznika()
                 };
@@ -164,23 +161,19 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.DaneTechnicznePojazdu = new DaneTechnicznePojazduRozszerzoneDto
                 {
-                    IdentyfikatorSystemowyDanychTechnicznych = dt.Val("identyfikatorSystemowyDanychTechnicznych"),
-                    PojemnoscSilnika = dt.Val("pojemnoscSilnika").ToInt(),
-                    MocSilnika = dt.Val("mocSilnika").ToInt(),
-                    MasaWlasna = dt.Val("masaWlasna").ToInt(),
-                    MasaCalkowita = dt.Val("maksymalnaMasaCalkowita").ToInt(), // jeżeli w XML pole to „maksymalna...”
-                    DopuszczalnaMasaCalkowita = dt.Val("dopuszczalnaMasaCalkowita").ToInt(),
-                    DopuszczalnaMasaCalkowitaZespoluPojazdow = dt.Val("dopuszczalnaMasaCalkowitaZestawu").ToInt(),
-                    DopuszczalnaLadownoscCalkowita = dt.Val("dopuszczalnaLadownosc").ToInt(),
-                    MaksymalnaMasaCalkowitaCiagnietejPrzyczepyZHamulcem = dt.Val("dopuszczalnaMasaCalkowitaPrzyczepyZHam").ToInt(),
-                    MaksymalnaMasaCalkowitaCiagnietejPrzyczepyBezHamulca = dt.Val("dopuszczalnaMasaCalkowitaPrzyczepyBezHam").ToInt(),
-                    LiczbaOsi = dt.Val("liczbaOsi").ToInt(),
-                    LiczbaMiejscOgolem = null, // w wielu odpowiedziach brak – zostawiamy null
-                    LiczbaMiejscSiedzacych = dt.Val("liczbaMiejscSiedzacych").ToInt(),
-                    ReduktorKatalityczny = dt.Val("reduktorKatalityczny"),
-                    CzyHak = dt.Val("czyHak"),
-                    CzyKierownicaPoPrawejStronie = dt.Val("czyKierownicaPoPrawejStronie"),
-                    MaksymalnyDopuszczalnyNaciskOsi = dt.Val("masaNaOs").ToDecimal(),
+                    IdentyfikatorSystemowyDanychTechnicznych = dt.ValueOf("identyfikatorSystemowyDanychTechnicznych"),
+                    PojemnoscSilnika = dt.ValueOf("pojemnoscSilnika").ToInt(),
+                    MocSilnika = dt.ValueOf("mocSilnika").ToInt(),
+                    MasaWlasna = dt.ValueOf("masaWlasna").ToInt(),
+                    MasaCalkowita = dt.ValueOf("maksymalnaMasaCalkowita").ToInt(),
+                    DopuszczalnaMasaCalkowita = dt.ValueOf("dopuszczalnaMasaCalkowita").ToInt(),
+                    DopuszczalnaMasaCalkowitaZespoluPojazdow = dt.ValueOf("dopuszczalnaMasaCalkowitaZestawu").ToInt(),
+                    DopuszczalnaLadownoscCalkowita = dt.ValueOf("dopuszczalnaLadownosc").ToInt(),
+                    MaksymalnaMasaCalkowitaCiagnietejPrzyczepyZHamulcem = dt.ValueOf("dopuszczalnaMasaCalkowitaPrzyczepyZHam").ToInt(),
+                    MaksymalnaMasaCalkowitaCiagnietejPrzyczepyBezHamulca = dt.ValueOf("dopuszczalnaMasaCalkowitaPrzyczepyBezHam").ToInt(),
+                    LiczbaOsi = dt.ValueOf("liczbaOsi").ToInt(),
+                    LiczbaMiejscSiedzacych = dt.ValueOf("liczbaMiejscSiedzacych").ToInt(),
+                    MaksymalnyDopuszczalnyNaciskOsi = dt.ValueOf("masaNaOs").ToDecimal(),
                     PoziomEmisjiSpalinEuroDlaGmin = dt.Desc("poziomEmisjiSpalinEURODlaGmin")?.ToSlownikRozszerzony(),
                     PaliwoPodstawowe = dt.Desc("paliwoPodstawowe")?.ToPaliwoPodstawowe()
                 };
@@ -192,10 +185,10 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.DanePojazduSprowadzonego = new PojazdSprowadzonyRozszerzonyDto
                 {
-                    IdentyfikatorSystemowyPojazduSprowadzonego = spr.Val("identyfikatorSystemowyPojazduSprowadzonego"),
-                    NumerRejestracyjnyZagraniczny = spr.Val("numerRejestracyjnyZagraniczny"),
+                    IdentyfikatorSystemowyPojazduSprowadzonego = spr.ValueOf("identyfikatorSystemowyPojazduSprowadzonego"),
+                    NumerRejestracyjnyZagraniczny = spr.ValueOf("numerRejestracyjnyZagraniczny"),
                     KrajZagranicznejRejestracji = spr.Desc("krajZagranicznejRejestracji")?.ToKraj(),
-                    PoprzedniVinZagranicznejRejestracji = spr.Val("poprzedniVINZagranicznejRejestracji")
+                    PoprzedniVinZagranicznejRejestracji = spr.ValueOf("poprzedniVINZagranicznejRejestracji")
                 };
             }
 
@@ -204,9 +197,9 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.RejestracjePojazdu.Add(new RejestracjaPojazduRozszerzonaDto
                 {
-                    IdentyfikatorSystemowyRejestracji = re.Val("identyfikatorSystemowyRejestracji"),
+                    IdentyfikatorSystemowyRejestracji = re.ValueOf("identyfikatorSystemowyRejestracji"),
                     OrganRejestrujacy = re.Desc("organRejestrujacy")?.ToOrgan(),
-                    DataRejestracjiPojazdu = re.Val("dataRejestracjiPojazdu"),
+                    DataRejestracjiPojazdu = re.ValueOf("dataRejestracjiPojazdu"),
                     TypRejestracji = re.Desc("typrejestracji")?.ToSlownikZakresowy()
                 });
             }
@@ -216,18 +209,18 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 var dokDto = new DokumentPojazduRozszerzonyDto
                 {
-                    IdentyfikatorSystemowyDokumentuPojazdu = d.Val("identyfikatorSystemowyDokumentuPojazdu"),
+                    IdentyfikatorSystemowyDokumentuPojazdu = d.ValueOf("identyfikatorSystemowyDokumentuPojazdu"),
                     TypDokumentu = d.Desc("typDokumentu")?.ToSlownikRozszerzony(),
-                    DokumentSeriaNumer = d.Val("dokumentSeriaNumer"),
-                    CzyWtornik = d.Val("czyWtornik"),
-                    DataWydaniaDokumentu = d.Val("dataWydaniaDokumentu"),
+                    DokumentSeriaNumer = d.ValueOf("dokumentSeriaNumer"),
+                    CzyWtornik = d.ValueOf("czyWtornik"),
+                    DataWydaniaDokumentu = d.ValueOf("dataWydaniaDokumentu"),
                     OrganWydajacyDokument = d.Desc("organWydajacyDokument")?.ToOrgan(),
                     DanePierwszejRejestracji = d.Desc("danePierwszejRejestracji")?.ToPierwszaRejestracja(),
                     DaneOpisujacePojazd = d.Desc("daneOpisujacePojazd")?.ToDaneOpisujace(),
                     HomologacjaPojazdu = d.Desc("homologacjaPojazdu")?.ToHomologacjaRozszerzona(),
                     DaneTechnicznePojazdu = d.Desc("daneTechnicznePojazdu")?.ToDaneTechniczne(),
                     StanDokumentu = d.Desc("stanDokumentu")?.ToStanOznaczenia(),
-                    CzyAktualny = d.Val("czyAktualny"),
+                    CzyAktualny = d.ValueOf("czyAktualny")
                 };
 
                 foreach (var ozn in d.DescMany("oznaczeniePojazdu"))
@@ -238,17 +231,16 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                 p.DokumentPojazdu.Add(dokDto);
             }
 
-
             // własność / najnowszyWariantPodmiotu
             var nvp = poj.Desc("najnowszyWariantPodmiotu");
             if (nvp != null)
             {
                 p.NajnowszyWariantPodmiotu = new NajnowszyWariantPodmiotuDto
                 {
-                    IdentyfikatorSystemowyWlasnosci = nvp.Val("identyfikatorSystemowyWlasnosci"),
+                    IdentyfikatorSystemowyWlasnosci = nvp.ValueOf("identyfikatorSystemowyWlasnosci"),
                     KodWlasnosci = nvp.Desc("kodWlasnosci")?.ToSlownikZakresowy(),
-                    DataZmianyPrawWlasnosci = nvp.Val("dataZmianyPrawWlasnosci"),
-                    DataOdnotowania = nvp.Val("dataOdnotowania"),
+                    DataZmianyPrawWlasnosci = nvp.ValueOf("dataZmianyPrawWlasnosci"),
+                    DataOdnotowania = nvp.ValueOf("dataOdnotowania"),
                     ZmianaWlasnosci = nvp.Desc("zmianaWlasnosci")?.ToZmianaWlasnosci(),
                     Podmiot = nvp.Desc("podmiot")?.ToPodmiot()
                 };
@@ -260,11 +252,11 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.DanePolisyOc = new PolisaOcRozszerzonaDto
                 {
-                    IdentyfikatorPolisy = oc.Val("identyfikatorPolisy"),
-                    NumerPolisy = oc.Val("numerPolisy"),
-                    DataZawarciaPolisy = oc.Val("dataZawarciaPolisy"),
-                    DataPoczatkuObowiazywaniaPolisy = oc.Val("dataPoczatkuObowiazywaniaPolisy"),
-                    DataKoncaObowiazywaniaPolisy = oc.Val("dataKoncaObowiazywaniaPolisy"),
+                    IdentyfikatorPolisy = oc.ValueOf("identyfikatorPolisy"),
+                    NumerPolisy = oc.ValueOf("numerPolisy"),
+                    DataZawarciaPolisy = oc.ValueOf("dataZawarciaPolisy"),
+                    DataPoczatkuObowiazywaniaPolisy = oc.ValueOf("dataPoczatkuObowiazywaniaPolisy"),
+                    DataKoncaObowiazywaniaPolisy = oc.ValueOf("dataKoncaObowiazywaniaPolisy"),
                     RodzajUbezpieczenia = oc.Desc("rodzajUbezpieczenia")?.ToSlownikZakresowy(),
                     DaneZU = oc.Desc("daneZU")?.ToZu(),
                     WariantUbezpieczenia = oc.Desc("wariantUbezpieczenia")?.ToWariantUbezpieczenia()
@@ -277,9 +269,9 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.OznaczenieAktualnyNrRejestracyjny = new OznaczenieAktualnyNrRejestracyjnyDto
                 {
-                    IdentyfikatorSystemowyOznaczenia = anr.Val("identyfikatorSystemowyOznaczenia"),
+                    IdentyfikatorSystemowyOznaczenia = anr.ValueOf("identyfikatorSystemowyOznaczenia"),
                     TypOznaczenia = anr.Desc("typOznaczenia")?.ToSlownikRozszerzony(),
-                    NumerOznaczenia = anr.Val("numerOznaczenia")
+                    NumerOznaczenia = anr.ValueOf("numerOznaczenia")
                 };
             }
 
@@ -289,8 +281,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             {
                 p.AktualnyStanLicznika = new AktualnyStanLicznikaDto
                 {
-                    HistoriaLicznikaWymagaWeryfikacji = asl.Val("historiaLicznikaWymagaWeryfikacji").ToBool(),
-                    LicznikWymieniony = asl.Val("licznikWymieniony").ToBool(),
+                    HistoriaLicznikaWymagaWeryfikacji = asl.ValueOf("historiaLicznikaWymagaWeryfikacji").ToBool(),
+                    LicznikWymieniony = asl.ValueOf("licznikWymieniony").ToBool(),
                     StanLicznika = asl.Desc("stanLicznika")?.ToStanLicznika()
                 };
             }
@@ -299,47 +291,16 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             return resp;
         }
 
-        // ====================== HELPERS ======================
-
-        private static XElement? ElementAnyNs(this XElement parent, XName name) => parent.Element(name);
-        private static XElement? ElementAnyNs(this XElement parent, string localName) =>
-            parent.Elements().FirstOrDefault(e => e.Name.LocalName == localName);
-
-        private static IEnumerable<XElement> ElementsAnyNs(this XElement parent, string localName) =>
-            parent.Elements().Where(e => e.Name.LocalName == localName);
-
-        private static XElement? Desc(this XElement parent, string local) => parent.ElementAnyNs(local);
-        private static IEnumerable<XElement> DescMany(this XElement parent, string local) => parent.ElementsAnyNs(local);
-
-        private static string? Val(this XElement? el, string local) =>
-            el?.ElementsAnyNs(local).FirstOrDefault()?.Value;
-
-        private static int? ToInt(this string? s) =>
-            int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var i) ? i : null;
-
-        private static decimal? ToDecimal(this string? s) =>
-            decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var d) ? d : null;
-
-        private static bool? ToBool(this string? s)
-        {
-            if (s == null) return null;
-            if (bool.TryParse(s, out var b)) return b;
-            // czasem w odpowiedziach przychodzą „1/0”, „T/N”
-            if (s == "1" || s.Equals("T", StringComparison.OrdinalIgnoreCase) || s.Equals("TAK", StringComparison.OrdinalIgnoreCase)) return true;
-            if (s == "0" || s.Equals("N", StringComparison.OrdinalIgnoreCase) || s.Equals("NIE", StringComparison.OrdinalIgnoreCase)) return false;
-            return null;
-        }
-
-        // --------- typed mappers ---------
+        // ===== typed mappers (specyficzne dla „Rozszerzone”) =====
 
         private static SlownikZakresowyDto ToSlownikZakresowy(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            Status = e.Val("status"),
-            Kod = e.Val("kod"),
-            WartoscOpisowaSkrocona = e.Val("wartoscOpisowaSkrocona"),
-            WartoscOpisowa = e.Val("wartoscOpisowa")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            Status = e.ValueOf("status"),
+            Kod = e.ValueOf("kod"),
+            WartoscOpisowaSkrocona = e.ValueOf("wartoscOpisowaSkrocona"),
+            WartoscOpisowa = e.ValueOf("wartoscOpisowa")
         };
 
         private static SlownikRozszerzonyDto ToSlownikRozszerzony(this XElement e)
@@ -353,37 +314,37 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                 Kod = s.Kod,
                 WartoscOpisowaSkrocona = s.WartoscOpisowaSkrocona,
                 WartoscOpisowa = s.WartoscOpisowa,
-                Zrodlo = e.Val("zrodlo"),
-                Oznaczenie = e.Val("oznaczenie")
+                Zrodlo = e.ValueOf("zrodlo"),
+                Oznaczenie = e.ValueOf("oznaczenie")
             };
         }
 
         private static SkpPodmiotDto ToSkpPodmiot(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            Kod = e.Val("kod"),
-            Nazwa = e.Val("nazwa"),
-            NumerEwidencyjny = e.Val("numerEwidencyjny"),
-            IdentyfikatorREGON = e.Val("identyfikatorREGON"),
-            REGON = e.Val("REGON"),
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            Kod = e.ValueOf("kod"),
+            Nazwa = e.ValueOf("nazwa"),
+            NumerEwidencyjny = e.ValueOf("numerEwidencyjny"),
+            IdentyfikatorREGON = e.ValueOf("identyfikatorREGON"),
+            REGON = e.ValueOf("REGON"),
             Typ = e.Desc("typ")?.ToSlownikZakresowy()
         };
 
         private static TerminKolejnegoBadaniaDto ToTerminKolejnegoBadania(this XElement e) => new()
         {
-            DataKolejnegoBadania = e.Val("dataKolejnegoBadania")
+            DataKolejnegoBadania = e.ValueOf("dataKolejnegoBadania")
         };
 
         private static StanLicznikaDto ToStanLicznika(this XElement e) => new()
         {
-            IdentyfikatorSystemowyStanuLicznika = e.Val("identyfikatorSystemowyStanuLicznika"),
-            WartoscStanuLicznika = e.Val("wartoscStanuLicznika").ToInt(),
+            IdentyfikatorSystemowyStanuLicznika = e.ValueOf("identyfikatorSystemowyStanuLicznika"),
+            WartoscStanuLicznika = e.ValueOf("wartoscStanuLicznika").ToInt(),
             JednostkaStanuLicznika = e.Desc("jednostkaMiary")?.ToSlownikZakresowy(),
-            DataSpisaniaLicznika = e.Val("dataSpisaniaLicznika"),
+            DataSpisaniaLicznika = e.ValueOf("dataSpisaniaLicznika"),
             PodmiotWprowadzajacy = e.Desc("podmiotWprowadzajacy")?.ToSkpPodmiot(),
-            DataOdnotowania = e.Val("dataOdnotowania")
+            DataOdnotowania = e.ValueOf("dataOdnotowania")
         };
 
         private static PaliwoPodstawoweDto ToPaliwoPodstawowe(this XElement e) => new()
@@ -393,106 +354,106 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
 
         private static RodzajPaliwaDto ToRodzajPaliwa(this XElement e) => new()
         {
-            KodPaliwa = e.Val("kodPaliwa"),
-            WartoscOpisowa = e.Val("wartoscOpisowa"),
-            Kod = e.Val("kod"),
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            Status = e.Val("status"),
-            Zrodlo = e.Val("zrodlo")
+            KodPaliwa = e.ValueOf("kodPaliwa"),
+            WartoscOpisowa = e.ValueOf("wartoscOpisowa"),
+            Kod = e.ValueOf("kod"),
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            Status = e.ValueOf("status"),
+            Zrodlo = e.ValueOf("zrodlo")
         };
 
         private static HomologacjaPozycjaDto ToHomologacjaPozycja(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            Kod = e.Val("kod"),
-            KodWersji = e.Val("kodWersji"),
-            WersjaHomologacji = e.Val("wersjaHomologacji"),
-            KodWariantu = e.Val("kodWariantu"),
-            NazwaWariantu = e.Val("nazwaWariantu"),
-            Zrodlo = e.Val("zrodlo")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            Kod = e.ValueOf("kod"),
+            KodWersji = e.ValueOf("kodWersji"),
+            WersjaHomologacji = e.ValueOf("wersjaHomologacji"),
+            KodWariantu = e.ValueOf("kodWariantu"),
+            NazwaWariantu = e.ValueOf("nazwaWariantu"),
+            Zrodlo = e.ValueOf("zrodlo")
         };
 
         private static HomologacjaTypDto ToHomologacjaTyp(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            Kod = e.Val("kod"),
-            WartoscOpisowa = e.Val("wartoscOpisowa"),
-            Zrodlo = e.Val("zrodlo")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            Kod = e.ValueOf("kod"),
+            WartoscOpisowa = e.ValueOf("wartoscOpisowa"),
+            Zrodlo = e.ValueOf("zrodlo")
         };
 
         private static HomologacjaKategoriaDto ToHomologacjaKategoria(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            KodKatHom = e.Val("kodKatHom"),
-            WartoscOpisowa = e.Val("wartoscOpisowa"),
-            Kod = e.Val("kod")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            KodKatHom = e.ValueOf("kodKatHom"),
+            WartoscOpisowa = e.ValueOf("wartoscOpisowa"),
+            Kod = e.ValueOf("kod")
         };
 
         private static HomologacjaITSDto ToHomologacjaITS(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            IdentyfikatorPozycjiKatalogowej = e.Val("identyfikatorPozycjiKatalogowej"),
-            NumerSwiadectwa = e.Val("numerSwiadectwa")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            IdentyfikatorPozycjiKatalogowej = e.ValueOf("identyfikatorPozycjiKatalogowej"),
+            NumerSwiadectwa = e.ValueOf("numerSwiadectwa")
         };
 
         private static MarkaModelDto ToMarkaModel(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            KodMarki = e.Val("kodMarki"),
-            WartoscOpisowa = e.Val("wartoscOpisowa"),
-            Kod = e.Val("kod"),
-            PozycjeSzczegolowe = e.Val("pozycjeSzczegolowe")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            KodMarki = e.ValueOf("kodMarki"),
+            WartoscOpisowa = e.ValueOf("wartoscOpisowa"),
+            Kod = e.ValueOf("kod"),
+            PozycjeSzczegolowe = e.ValueOf("pozycjeSzczegolowe")
         };
 
         private static RodzajPodrodzajDto ToRodzajPodrodzaj(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            KodRodzaj = e.Val("kodRodzaj"),
-            Rodzaj = e.Val("rodzaj"),
-            KodPodrodzaj = e.Val("kodPodrodzaj"),
-            Podrodzaj = e.Val("podrodzaj"),
-            Wersja = e.Val("wersja"),
-            Zrodlo = e.Val("zrodlo")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            KodRodzaj = e.ValueOf("kodRodzaj"),
+            Rodzaj = e.ValueOf("rodzaj"),
+            KodPodrodzaj = e.ValueOf("kodPodrodzaj"),
+            Podrodzaj = e.ValueOf("podrodzaj"),
+            Wersja = e.ValueOf("wersja"),
+            Zrodlo = e.ValueOf("zrodlo")
         };
 
         private static KodRppDto ToKodRpp(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            KodRPP = e.Val("kodRPP"),
-            Rodzaj = e.Val("rodzaj"),
-            Podrodzaj = e.Val("podrodzaj"),
-            Przeznaczenie = e.Val("przeznaczenie"),
-            Wersja = e.Val("wersja"),
-            Kod = e.Val("kod"),
-            Zrodlo = e.Val("zrodlo")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            KodRPP = e.ValueOf("kodRPP"),
+            Rodzaj = e.ValueOf("rodzaj"),
+            Podrodzaj = e.ValueOf("podrodzaj"),
+            Przeznaczenie = e.ValueOf("przeznaczenie"),
+            Wersja = e.ValueOf("wersja"),
+            Kod = e.ValueOf("kod"),
+            Zrodlo = e.ValueOf("zrodlo")
         };
 
         private static PierwszaRejestracjaRozszerzonaDto ToPierwszaRejestracja(this XElement e) => new()
         {
-            IdentyfikatorSystemowyPierwszejRejestracjiPojazdu = e.Val("identyfikatorSystemowyPierwszejRejestracjiPojazdu"),
-            DataPierwszejRejestracjiWKraju = e.Val("dataPierwszejRejestracjiWKraju"),
-            DataPierwszejRejestracjiZaGranica = e.Val("dataPierwszejRejestracjiZaGranica"),
-            DataPierwszejRejestracji = e.Val("dataPierwszejRejestracji")
+            IdentyfikatorSystemowyPierwszejRejestracjiPojazdu = e.ValueOf("identyfikatorSystemowyPierwszejRejestracjiPojazdu"),
+            DataPierwszejRejestracjiWKraju = e.ValueOf("dataPierwszejRejestracjiWKraju"),
+            DataPierwszejRejestracjiZaGranica = e.ValueOf("dataPierwszejRejestracjiZaGranica"),
+            DataPierwszejRejestracji = e.ValueOf("dataPierwszejRejestracji")
         };
 
         private static DaneOpisujacePojazdRozszerzoneDto ToDaneOpisujace(this XElement e) => new()
         {
-            IdentyfikatorSystemowyDanychPojazdu = e.Val("identyfikatorSystemowyDanychPojazdu"),
+            IdentyfikatorSystemowyDanychPojazdu = e.ValueOf("identyfikatorSystemowyDanychPojazdu"),
             Marka = e.Desc("marka")?.ToMarkaModel(),
             Model = e.Desc("model")?.ToMarkaModel(),
             Rodzaj = e.Desc("rodzaj")?.ToRodzajPodrodzaj(),
@@ -503,159 +464,159 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             CzyWybityNumerIdentyfikacyjny = e.Desc("czyWybityNumerIdentyfikacyjny")?.ToSlownikZakresowy(),
             RodzajTabliczkiZnamionowej = e.Desc("rodzajTabliczkiZnamionowej")?.ToSlownikZakresowy(),
             SposobProdukcji = e.Desc("sposobProdukcji")?.ToSlownikRozszerzony(),
-            NumerPodwoziaNadwoziaRamy = e.Val("numerPodwoziaNadwoziaRamy"),
-            RokProdukcji = e.Val("rokProdukcji").ToInt(),
+            NumerPodwoziaNadwoziaRamy = e.ValueOf("numerPodwoziaNadwoziaRamy"),
+            RokProdukcji = e.ValueOf("rokProdukcji").ToInt(),
             RodzajKodowaniaRPP = e.Desc("rodzajKodowaniaRPP")?.ToKodRpp()
         };
 
-        private static OrganDto ToOrgan(this XElement e) => new()
+        private static OrganRozszerzonyDto ToOrgan(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            Kod = e.Val("kod"),
-            Nazwa = e.Val("nazwa"),
-            NumerEwidencyjny = e.Val("numerEwidencyjny"),
-            IdentyfikatorREGON = e.Val("identyfikatorREGON"),
-            REGON = e.Val("REGON"),
-            NazwaOrganuWydajacego = e.Val("nazwaOrganuWydajacego"),
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            Kod = e.ValueOf("kod"),
+            Nazwa = e.ValueOf("nazwa"),
+            NumerEwidencyjny = e.ValueOf("numerEwidencyjny"),
+            IdentyfikatorREGON = e.ValueOf("identyfikatorREGON"),
+            REGON = e.ValueOf("REGON"),
+            NazwaOrganuWydajacego = e.ValueOf("nazwaOrganuWydajacego"),
             Typ = e.Desc("typ")?.ToSlownikZakresowy()
         };
 
-        private static StanOznaczeniaDto ToStanOznaczenia(this XElement e) => new()
+        private static StanOznaczeniaRozszerzoneDto ToStanOznaczenia(this XElement e) => new()
         {
-            IdentyfikatorSystemowyStanuOznaczeniaPojazdu = e.Val("identyfikatorSystemowyStanuOznaczeniaPojazdu"),
-            DataPoczatkuObowiazywania = e.Val("dataPoczatkuObowiazywania"),
+            IdentyfikatorSystemowyStanuOznaczeniaPojazdu = e.ValueOf("identyfikatorSystemowyStanuOznaczeniaPojazdu"),
+            DataPoczatkuObowiazywania = e.ValueOf("dataPoczatkuObowiazywania"),
             Stan = e.Desc("stanOznaczenia")?.ToSlownikZakresowy(),
             OrganUstanawiajacyStan = e.Desc("organUstanawiajacyStan")?.ToOrgan(),
-            DataOdnotowaniaStanu = e.Val("dataOdnotowaniaStanu")
+            DataOdnotowaniaStanu = e.ValueOf("dataOdnotowaniaStanu")
         };
 
-        private static OznaczeniePojazduDto ToOznaczeniePojazdu(this XElement e) => new()
+        private static OznaczeniePojazduRozszerzoneDto ToOznaczeniePojazdu(this XElement e) => new()
         {
-            IdentyfikatorSystemowyOznaczenia = e.Val("identyfikatorSystemowyOznaczenia"),
+            IdentyfikatorSystemowyOznaczenia = e.ValueOf("identyfikatorSystemowyOznaczenia"),
             TypOznaczenia = e.Desc("typOznaczenia")?.ToSlownikRozszerzony(),
-            NumerOznaczenia = e.Val("numerOznaczenia"),
+            NumerOznaczenia = e.ValueOf("numerOznaczenia"),
             RodzajTablicyRejestracyjnej = e.Desc("rodzajTablicyRejestracyjnej")?.ToSlownikZakresowy(),
             WzorTablicyRejestracyjnej = e.Desc("wzorTablicyRejestracyjnej")?.ToSlownikZakresowy(),
             KolorTablicyRejestracyjnej = e.Desc("kolorTablicyRejestracyjnej")?.ToSlownikZakresowy(),
-            CzyWtornik = e.Val("czyWtornik"),
+            CzyWtornik = e.ValueOf("czyWtornik"),
             StanOznaczenia = e.Desc("stanOznaczenia")?.ToStanOznaczenia()
         };
 
         private static ZmianaWlasnosciDto ToZmianaWlasnosci(this XElement e) => new()
         {
             SposobZmianyPrawWlasnosci = e.Desc("sposobZmianyPrawWlasnosci")?.ToSlownikRozszerzony(),
-            DataOdnotowania = e.Val("dataOdnotowania")
+            DataOdnotowania = e.ValueOf("dataOdnotowania")
         };
 
         private static PodmiotDto ToPodmiot(this XElement e) => new()
         {
-            IdentyfikatorSystemowyPodmiotu = e.Val("identyfikatorSystemowyPodmiotu"),
-            WariantPodmiotu = e.Val("wariantPodmiotu"),
+            IdentyfikatorSystemowyPodmiotu = e.ValueOf("identyfikatorSystemowyPodmiotu"),
+            WariantPodmiotu = e.ValueOf("wariantPodmiotu"),
             Firma = e.Desc("firma")?.ToFirma()
         };
 
         private static FirmaDto ToFirma(this XElement e) => new()
         {
-            REGON = e.Val("REGON"),
-            NazwaFirmy = e.Val("nazwaFirmy"),
-            NazwaFirmyDrukowana = e.Val("nazwaFirmyDrukowana"),
+            REGON = e.ValueOf("REGON"),
+            NazwaFirmy = e.ValueOf("nazwaFirmy"),
+            NazwaFirmyDrukowana = e.ValueOf("nazwaFirmyDrukowana"),
             FormaWlasnosci = e.Desc("formaWlasnosci")?.ToSlownikZakresowy(),
-            IdentyfikatorSystemowyREGON = e.Val("identyfikatorSystemowyREGON"),
+            IdentyfikatorSystemowyREGON = e.ValueOf("identyfikatorSystemowyREGON"),
             Adres = e.Desc("adres")?.ToAdres()
         };
 
         private static AdresDto ToAdres(this XElement e) => new()
         {
             Kraj = e.Desc("kraj")?.ToKraj(),
-            KodTeryt = e.Val("kodTeryt"),
-            KodTerytWojewodztwa = e.Val("kodTerytWojewodztwa"),
-            NazwaWojewodztwaStanu = e.Val("nazwaWojewodztwaStanu"),
-            KodTerytPowiatu = e.Val("kodTerytPowiatu"),
-            NazwaPowiatuDzielnicy = e.Val("nazwaPowiatuDzielnicy"),
-            KodTerytGminy = e.Val("kodTerytGminy"),
-            NazwaGminy = e.Val("nazwaGminy"),
-            KodRodzajuGminy = e.Val("kodRodzajuGminy"),
-            KodPocztowy = e.Val("kodPocztowy"),
-            KodTerytMiejscowosci = e.Val("kodTerytMiejscowosci"),
-            NazwaMiejscowosci = e.Val("nazwaMiejscowosci"),
-            NazwaMiejscowosciPodst = e.Val("nazwaMiejscowosciPodst"),
-            KodTerytUlicy = e.Val("kodTerytUlicy"),
+            KodTeryt = e.ValueOf("kodTeryt"),
+            KodTerytWojewodztwa = e.ValueOf("kodTerytWojewodztwa"),
+            NazwaWojewodztwaStanu = e.ValueOf("nazwaWojewodztwaStanu"),
+            KodTerytPowiatu = e.ValueOf("kodTerytPowiatu"),
+            NazwaPowiatuDzielnicy = e.ValueOf("nazwaPowiatuDzielnicy"),
+            KodTerytGminy = e.ValueOf("kodTerytGminy"),
+            NazwaGminy = e.ValueOf("nazwaGminy"),
+            KodRodzajuGminy = e.ValueOf("kodRodzajuGminy"),
+            KodPocztowy = e.ValueOf("kodPocztowy"),
+            KodTerytMiejscowosci = e.ValueOf("kodTerytMiejscowosci"),
+            NazwaMiejscowosci = e.ValueOf("nazwaMiejscowosci"),
+            NazwaMiejscowosciPodst = e.ValueOf("nazwaMiejscowosciPodst"),
+            KodTerytUlicy = e.ValueOf("kodTerytUlicy"),
             UlicaCecha = e.Desc("ulicaCecha")?.ToSlownikZakresowy(),
-            NazwaUlicy = e.Val("nazwaUlicy"),
-            NumerDomu = e.Val("numerDomu")
+            NazwaUlicy = e.ValueOf("nazwaUlicy"),
+            NumerDomu = e.ValueOf("numerDomu")
         };
 
         private static KrajDto ToKraj(this XElement e) => new()
         {
-            DataOd = e.Val("dataOd"),
-            DataDo = e.Val("dataDo"),
-            StatusRekordu = e.Val("statusRekordu"),
-            KodNumeryczny = e.Val("kodNumeryczny"),
-            KodIsoAlfa2 = e.Val("kodIsoAlfa2"),
-            KodIsoAlfa3 = e.Val("kodIsoAlfa3"),
-            KodMks = e.Val("kodMks"),
-            CzyNalezyDoUE = e.Val("czyNalezyDoUE").ToBool(),
-            Nazwa = e.Val("nazwa"),
-            Obywatelstwo = e.Val("obywatelstwo"),
-            DataAktualizacji = e.Val("dataAktualizacji")
+            DataOd = e.ValueOf("dataOd"),
+            DataDo = e.ValueOf("dataDo"),
+            StatusRekordu = e.ValueOf("statusRekordu"),
+            KodNumeryczny = e.ValueOf("kodNumeryczny"),
+            KodIsoAlfa2 = e.ValueOf("kodIsoAlfa2"),
+            KodIsoAlfa3 = e.ValueOf("kodIsoAlfa3"),
+            KodMks = e.ValueOf("kodMks"),
+            CzyNalezyDoUE = e.ValueOf("czyNalezyDoUE").ToBool(),
+            Nazwa = e.ValueOf("nazwa"),
+            Obywatelstwo = e.ValueOf("obywatelstwo"),
+            DataAktualizacji = e.ValueOf("dataAktualizacji")
         };
 
         private static HomologacjaRozszerzonaDto ToHomologacjaRozszerzona(this XElement e) => new()
         {
-            IdentyfikatorSystemowyHomologacjiPojazdu = e.Val("identyfikatorSystemowyHomologacjiPojazdu"),
-            IdentyfikatorPozycjiKatalogowej = e.Val("identyfikatorPozycjiKatalogowej"),
+            IdentyfikatorSystemowyHomologacjiPojazdu = e.ValueOf("identyfikatorSystemowyHomologacjiPojazdu"),
+            IdentyfikatorPozycjiKatalogowej = e.ValueOf("identyfikatorPozycjiKatalogowej"),
             WersjaPojazdu = e.Desc("wersjaPojazdu")?.ToHomologacjaPozycja(),
             WariantPojazdu = e.Desc("wariantPojazdu")?.ToHomologacjaPozycja(),
             TypPojazdu = e.Desc("typPojazdu")?.ToHomologacjaTyp(),
-            NumerDokumentuHomologacji = e.Val("numerDokumentuHomologacji"),
+            NumerDokumentuHomologacji = e.ValueOf("numerDokumentuHomologacji"),
             KodKategoriiHomologacji = e.Desc("kodKategoriiHomologacji")?.ToHomologacjaKategoria(),
             HomologacjaITS = e.Desc("homologacjaITS")?.ToHomologacjaITS(),
-            TypWartoscOpisowa = e.Val("typWartoscOpisowa"),
-            WariantWartoscOpisowa = e.Val("wariantWartoscOpisowa"),
-            WersjaWartoscOpisowa = e.Val("wersjaWartoscOpisowa")
+            TypWartoscOpisowa = e.ValueOf("typWartoscOpisowa"),
+            WariantWartoscOpisowa = e.ValueOf("wariantWartoscOpisowa"),
+            WersjaWartoscOpisowa = e.ValueOf("wersjaWartoscOpisowa")
         };
 
         private static DaneTechnicznePojazduRozszerzoneDto ToDaneTechniczne(this XElement e) => new()
         {
-            IdentyfikatorSystemowyDanychTechnicznych = e.Val("identyfikatorSystemowyDanychTechnicznych"),
-            PojemnoscSilnika = e.Val("pojemnoscSilnika").ToInt(),
-            MocSilnika = e.Val("mocSilnika").ToInt(),
-            MasaWlasna = e.Val("masaWlasna").ToInt(),
-            MasaCalkowita = e.Val("maksymalnaMasaCalkowita").ToInt(),
-            DopuszczalnaMasaCalkowita = e.Val("dopuszczalnaMasaCalkowita").ToInt(),
-            DopuszczalnaMasaCalkowitaZespoluPojazdow = e.Val("dopuszczalnaMasaCalkowitaZestawu").ToInt(),
-            DopuszczalnaLadownoscCalkowita = e.Val("dopuszczalnaLadownosc").ToInt(),
-            MaksymalnaMasaCalkowitaCiagnietejPrzyczepyZHamulcem = e.Val("dopuszczalnaMasaCalkowitaPrzyczepyZHam").ToInt(),
-            MaksymalnaMasaCalkowitaCiagnietejPrzyczepyBezHamulca = e.Val("dopuszczalnaMasaCalkowitaPrzyczepyBezHam").ToInt(),
-            LiczbaOsi = e.Val("liczbaOsi").ToInt(),
-            LiczbaMiejscSiedzacych = e.Val("liczbaMiejscSiedzacych").ToInt(),
-            MaksymalnyDopuszczalnyNaciskOsi = e.Val("masaNaOs").ToDecimal(),
+            IdentyfikatorSystemowyDanychTechnicznych = e.ValueOf("identyfikatorSystemowyDanychTechnicznych"),
+            PojemnoscSilnika = e.ValueOf("pojemnoscSilnika").ToInt(),
+            MocSilnika = e.ValueOf("mocSilnika").ToInt(),
+            MasaWlasna = e.ValueOf("masaWlasna").ToInt(),
+            MasaCalkowita = e.ValueOf("maksymalnaMasaCalkowita").ToInt(),
+            DopuszczalnaMasaCalkowita = e.ValueOf("dopuszczalnaMasaCalkowita").ToInt(),
+            DopuszczalnaMasaCalkowitaZespoluPojazdow = e.ValueOf("dopuszczalnaMasaCalkowitaZestawu").ToInt(),
+            DopuszczalnaLadownoscCalkowita = e.ValueOf("dopuszczalnaLadownosc").ToInt(),
+            MaksymalnaMasaCalkowitaCiagnietejPrzyczepyZHamulcem = e.ValueOf("dopuszczalnaMasaCalkowitaPrzyczepyZHam").ToInt(),
+            MaksymalnaMasaCalkowitaCiagnietejPrzyczepyBezHamulca = e.ValueOf("dopuszczalnaMasaCalkowitaPrzyczepyBezHam").ToInt(),
+            LiczbaOsi = e.ValueOf("liczbaOsi").ToInt(),
+            LiczbaMiejscSiedzacych = e.ValueOf("liczbaMiejscSiedzacych").ToInt(),
+            MaksymalnyDopuszczalnyNaciskOsi = e.ValueOf("masaNaOs").ToDecimal(),
             PoziomEmisjiSpalinEuroDlaGmin = e.Desc("poziomEmisjiSpalinEURODlaGmin")?.ToSlownikRozszerzony(),
             PaliwoPodstawowe = e.Desc("paliwoPodstawowe")?.ToPaliwoPodstawowe()
         };
 
-        private static OznaczeniePojazduDto ToOznaczeniePojazduSimple(this XElement e) => new()
+        private static OznaczeniePojazduRozszerzoneDto ToOznaczeniePojazduSimple(this XElement e) => new()
         {
-            IdentyfikatorSystemowyOznaczenia = e.Val("identyfikatorSystemowyOznaczenia"),
+            IdentyfikatorSystemowyOznaczenia = e.ValueOf("identyfikatorSystemowyOznaczenia"),
             TypOznaczenia = e.Desc("typOznaczenia")?.ToSlownikRozszerzony(),
-            NumerOznaczenia = e.Val("numerOznaczenia")
+            NumerOznaczenia = e.ValueOf("numerOznaczenia")
         };
 
         private static ZakladUbezpieczenDto ToZu(this XElement e) => new()
         {
-            IdentyfikatorSystemowyZakladuUbezpieczen = e.Val("identyfikatorSystemowyZakladuUbezpieczen"),
-            IdentyfikatorBiznesowyZakladuUbezpieczen = e.Val("identyfikatorBiznesowyZakladuUbezpieczen"),
-            OdmowaUdostepnienia = e.Val("odmowaUdostepnienia").ToBool(),
-            NazwaZakladuUbezpieczen = e.Val("nazwaZakladuUbezpieczen"),
-            NazwaHandlowaZakladuUbezpieczeniowego = e.Val("nazwaHandlowaZakladuUbezpieczeniowego")
+            IdentyfikatorSystemowyZakladuUbezpieczen = e.ValueOf("identyfikatorSystemowyZakladuUbezpieczen"),
+            IdentyfikatorBiznesowyZakladuUbezpieczen = e.ValueOf("identyfikatorBiznesowyZakladuUbezpieczen"),
+            OdmowaUdostepnienia = e.ValueOf("odmowaUdostepnienia").ToBool(),
+            NazwaZakladuUbezpieczen = e.ValueOf("nazwaZakladuUbezpieczen"),
+            NazwaHandlowaZakladuUbezpieczeniowego = e.ValueOf("nazwaHandlowaZakladuUbezpieczeniowego")
         };
 
         private static WariantUbezpieczeniaDto ToWariantUbezpieczenia(this XElement e) => new()
         {
-            DataPoczatkuWariantu = e.Val("dataPoczatkuWariantu"),
-            DataKoncaWariantu = e.Val("dataKoncaWariantu")
+            DataPoczatkuWariantu = e.ValueOf("dataPoczatkuWariantu"),
+            DataKoncaWariantu = e.ValueOf("dataKoncaWariantu")
         };
     }
 }

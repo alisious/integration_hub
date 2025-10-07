@@ -11,7 +11,7 @@ using IntegrationHub.Common.Contracts;                     // ProxyResponse<T>, 
 using IntegrationHub.Sources.CEP.Services;                 // ICEPUdostepnianieService
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;  // PytanieOPojazdRequest, PytanieOPojazdResponse
 using IntegrationHub.Sources.CEP.Udostepnianie.Mappers;    // PytanieOPojazdResponseXmlMapper
-using IntegrationHub.Sources.CEP.Udostepnianie.Validation; // PytanieOPojazdRequestValidator (+ ValidationResultExtensions)
+using IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation; // PytanieOPojazdRequestValidator (+ ValidationResultExtensions)
 
 namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
 {
@@ -93,7 +93,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
         }
 
         public async Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(
-     PytanieOPojazdRequest body, string? requestId = null, CancellationToken ct = default)
+            PytanieOPojazdRequest body, string? requestId = null, CancellationToken ct = default)
         {
             requestId ??= Guid.NewGuid().ToString("N");
 
@@ -153,7 +153,152 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
         }
 
+        public async Task<ProxyResponse<PytanieODokumentPojazduResponse>> PytanieODokumentPojazduAsync(
+            PytanieODokumentPojazduRequest body, string? requestId = null, CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
 
+            // 1) Walidacja
+            var validator = new PytanieODokumentPojazduRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Plik testowy
+            var xmlPath = Path.Combine(_testDataDir, "pytanieODokumentPojazdu_3391181117602887_RESPONSE.xml");
+            try
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    return new ProxyResponse<PytanieODokumentPojazduResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie.Test",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                    };
+                }
+
+                var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
+                var dto = PytanieODokumentPojazduResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
+            {
+                _logger.LogWarning(oce, "Test CEP canceled by caller. RID={RequestId}", requestId);
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.RequestTimeout,
+                    ErrorMessage = "Operacja została anulowana."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd testowego odczytu CEPUdostepnianie (Dokument). RID={RequestId}", requestId);
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<ProxyResponse<PytanieOListeCzynnosciPojazduResponse>> PytanieOListeCzynnosciPojazduAsync(
+            PytanieOListeCzynnosciPojazduRequest body, string? requestId = null, CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            var validator = new PytanieOListeCzynnosciPojazduRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            var xmlPath = Path.Combine(_testDataDir, "pytanieOListeCzynnosciPojazdu_6206473948761901_RESPONSE.xml");
+            try
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie.Test",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                    };
+                }
+
+                var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
+                var dto = PytanieOListeCzynnosciPojazduResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.RequestTimeout,
+                    ErrorMessage = "Operacja została anulowana."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd testowego odczytu CEPUdostepnianie (ListaCzynnosci). RID={RequestId}", requestId);
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
 
 
         // === pomocnicze ===

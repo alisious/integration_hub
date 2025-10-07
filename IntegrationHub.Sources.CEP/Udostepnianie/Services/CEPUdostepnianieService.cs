@@ -6,7 +6,7 @@ using IntegrationHub.Sources.CEP.Udostepnianie.Helpers;            // CepUdostep
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;  // PytanieOPojazdResponse
 using IntegrationHub.Sources.CEP.Udostepnianie.Mappers;    // PytanieOPojazdResponseXmlMapper
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;   // ICepSoapInvoker
-using IntegrationHub.Sources.CEP.Udostepnianie.Validation; // PytanieOPojazdRequestValidator (+ ValidationResultExtensions)
+using IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation; // PytanieOPojazdRequestValidator (+ ValidationResultExtensions)
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -23,10 +23,19 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             string? requestId = null,
             CancellationToken ct = default);
         Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(
-            PytanieOPojazdRequest body, string? requestId = null, CancellationToken ct = default);
-        // łatwe rozszerzenie o kolejne operacje:
-        // Task<ProxyResponse<PytanieODokumentPojazduResponse>> PytanieODokumentPojazduAsync(...);
-        // Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(...);
+            PytanieOPojazdRequest body, 
+            string? requestId = null, 
+            CancellationToken ct = default);
+        Task<ProxyResponse<PytanieODokumentPojazduResponse>> PytanieODokumentPojazduAsync(
+            PytanieODokumentPojazduRequest body,
+            string? requestId = null,
+            CancellationToken ct = default);
+
+        Task<ProxyResponse<PytanieOListeCzynnosciPojazduResponse>> PytanieOListeCzynnosciPojazduAsync(
+            PytanieOListeCzynnosciPojazduRequest body,
+            string? requestId = null,
+            CancellationToken ct = default);
+
     }
 
     public sealed class CEPUdostepnianieService : ICEPUdostepnianieService
@@ -71,7 +80,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
 
             // 2) Koperta SOAP z helpera (identyfikatorSystemuZewnetrznego="ŻW", wnioskodawca="ŻW",
             //    znakSprawy=requestId, parametryCzasowe z body – dataPrezentacji, wyszukiwaniePoDanychHistorycznych=false domyślnie)
-            var envelope = CepUdostepnianieEnvelopeHelper.PreparePytanieOPojazdEnvelope(body, requestId);
+            var envelope = PytanieOPojazdEnvelope.Create(body, requestId);
 
             // 3) Endpoint z konfiguracji
             var endpointUrl = _cfg.ShareServiceUrl;
@@ -172,7 +181,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
 
             // 2) Koperta SOAP — wariant „rozszerzony”
-            var envelope = CepUdostepnianieEnvelopeHelper.PreparePytanieOPojazdRozszerzoneEnvelope(body, requestId);
+            var envelope = PytanieOPojazdRozszerzoneEnvelope.Create(body, requestId);
 
             // 3) Endpoint
             var endpointUrl = _cfg.ShareServiceUrl;
@@ -245,5 +254,203 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 };
             }
         }
+
+        public async Task<ProxyResponse<PytanieODokumentPojazduResponse>> PytanieODokumentPojazduAsync(
+            PytanieODokumentPojazduRequest body,
+            string? requestId = null,
+            CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja
+            var validator = new PytanieODokumentPojazduRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = baseResp.RequestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Koperta SOAP
+            var envelope = PytanieODokumentPojazduEnvelope.Create(body, requestId);
+
+            // 3) Endpoint
+            var endpointUrl = _cfg.ShareServiceUrl;
+            if (string.IsNullOrWhiteSpace(endpointUrl))
+            {
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = "Brak ShareServiceUrl w konfiguracji CEP."
+                };
+            }
+
+            // 4) SOAPAction
+            const string soapAction = CEPUdostepnianieSoapActions.PytanieODokumentPojazdu;
+
+            try
+            {
+                // 5) Wywołanie SOAP
+                var (status, xml) = await _invoker.InvokeAsync(_cfg, endpointUrl, soapAction, envelope, requestId, ct);
+
+                if ((int)status < 200 || (int)status >= 300)
+                {
+                    return new ProxyResponse<PytanieODokumentPojazduResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)status,
+                        ErrorMessage = $"HTTP {(int)status}"
+                    };
+                }
+
+                // 6) Mapowanie XML → DTO
+                var dto = PytanieODokumentPojazduResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (SoapIntegrationException sie)
+            {
+                _logger.LogError(sie, "SOAP error ({Action}) RequestId={RequestId}", soapAction, requestId);
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int?)(sie.HttpStatus ?? HttpStatusCode.BadGateway),
+                    ErrorMessage = sie.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd PytanieODokumentPojazduAsync, RequestId={RequestId}", requestId);
+                return new ProxyResponse<PytanieODokumentPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        // IMPLEMENTACJA w CEPUdostepnianieService
+        public async Task<ProxyResponse<PytanieOListeCzynnosciPojazduResponse>> PytanieOListeCzynnosciPojazduAsync(
+            PytanieOListeCzynnosciPojazduRequest body,
+            string? requestId = null,
+            CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja
+            var validator = new PytanieOListeCzynnosciPojazduRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = baseResp.RequestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Koperta SOAP
+            var envelope = PytanieOListeCzynnosciPojazduEnvelope.Create(body, requestId);
+
+            // 3) Endpoint
+            var endpointUrl = _cfg.ShareServiceUrl;
+            if (string.IsNullOrWhiteSpace(endpointUrl))
+            {
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = "Brak ShareServiceUrl w konfiguracji CEP."
+                };
+            }
+
+            // 4) SOAPAction
+            const string soapAction = CEPUdostepnianieSoapActions.PytanieOListeCzynnosciPojazdu;
+
+            try
+            {
+                // 5) Wywołanie SOAP
+                var (status, xml) = await _invoker.InvokeAsync(_cfg, endpointUrl, soapAction, envelope, requestId, ct);
+
+                if ((int)status < 200 || (int)status >= 300)
+                {
+                    return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)status,
+                        ErrorMessage = $"HTTP {(int)status}"
+                    };
+                }
+
+                // 6) Mapowanie XML → DTO
+                var dto = PytanieOListeCzynnosciPojazduResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (SoapIntegrationException sie)
+            {
+                _logger.LogError(sie, "SOAP error ({Action}) RequestId={RequestId}", soapAction, requestId);
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int?)(sie.HttpStatus ?? HttpStatusCode.BadGateway),
+                    ErrorMessage = sie.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd PytanieOListeCzynnosciPojazduAsync, RequestId={RequestId}", requestId);
+                return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
     }
 }

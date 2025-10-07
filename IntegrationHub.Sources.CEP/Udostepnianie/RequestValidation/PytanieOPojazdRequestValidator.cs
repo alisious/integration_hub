@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
-namespace IntegrationHub.Sources.CEP.Udostepnianie.Validation
+namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
 {
     /// <summary>
     /// Waliduje minimalne kryteria zapytania i normalizuje pola requestu.

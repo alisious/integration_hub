@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.CEP.Udostepnianie/Mappers/PytanieOPojazdResponseXmlMapper.cs
+﻿// IntegrationHub.Sources.CEP.Udostepnianie.Mappers/PytanieOPojazdResponseXmlMapper.cs
 using System.Xml.Linq;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
@@ -17,7 +17,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
 
             var resp = new PytanieOPojazdResponse();
 
-            // ---- daneRezultatu
+            // daneRezultatu -> Meta
             var daneRez = rezultat?.ElementAnyNs("daneRezultatu");
             if (daneRez is not null)
             {
@@ -32,7 +32,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                 };
             }
 
-            // ---- pojazd
+            // pojazd
             var poj = rezultat?.ElementAnyNs("pojazd");
             if (poj is null) return resp;
 
@@ -87,7 +87,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             var hom = poj.ElementAnyNs("homologacjaPojazdu");
             if (hom is not null)
             {
-                p.Homologacja = new HomologacjaDto
+                p.Homologacja = new HomologacjaBasicDto
                 {
                     IdHomologacji = hom.ValueOf("identyfikatorSystemowyHomologacjiPojazdu"),
                     WersjaKod = hom.ElementAnyNs("wersjaPojazdu")?.ValueOf("kod"),
@@ -196,18 +196,5 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             resp.Pojazd = p;
             return resp;
         }
-
-        // ==== helpers (bezpieczne) ====
-        private static XElement? ElementAnyNs(this XElement parent, string local) =>
-            parent.Elements().FirstOrDefault(e => e.Name.LocalName == local);
-
-        private static IEnumerable<XElement> ElementsAnyNs(this XElement parent, string local) =>
-            parent.Elements().Where(e => e.Name.LocalName == local);
-
-        private static string? ValueOf(this XElement? parent, string local) =>
-            parent?.ElementsAnyNs(local).FirstOrDefault()?.Value;
-
-        private static int? ToInt(this string? s) => int.TryParse(s, out var i) ? i : null;
-        private static decimal? ToDecimal(this string? s) => decimal.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var d) ? d : null;
     }
 }

@@ -2,7 +2,7 @@
 using System.Net;
 using IntegrationHub.Common.Contracts; // ProxyResponse, ProxyStatus
 
-namespace IntegrationHub.Sources.CEP.Udostepnianie.Validation
+namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
 {
     public static class ValidationResultExtensions
     {
