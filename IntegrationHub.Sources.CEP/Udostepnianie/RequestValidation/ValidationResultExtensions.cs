@@ -6,7 +6,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
 {
     public static class ValidationResultExtensions
     {
-        private const string SourceName = "CEP";
+        private const string SourceName = "CEP.Udostepnianie";
 
         public static ProxyResponse<object> ToProxyResponse(this ValidationResult vr, string requestId)
         {
@@ -16,9 +16,14 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
                 RequestId = requestId,
                 Source = SourceName,
                 Status = ProxyStatus.BusinessError,
-                SourceStatusCode = (int)HttpStatusCode.BadRequest,
+                SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
                 ErrorMessage = vr.MessageError ?? "Błąd walidacji żądania."
             };
         }
+
+        /// Zwraca ProxyResponse<object> jeśli walidacja NIE jest poprawna; w przeciwnym razie null.
+        public static ProxyResponse<object>? ToProxyResponseOrNull(this ValidationResult vr, string requestId)
+            => vr.IsValid ? null : vr.ToProxyResponse(requestId);
+
     }
 }

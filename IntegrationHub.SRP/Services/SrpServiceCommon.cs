@@ -96,7 +96,7 @@ internal static class SrpServiceCommon
             RequestId = requestId,
             Source = "SRP",
             Status = status,
-            SourceStatusCode = (int)code,
+            SourceStatusCode = ((int)code).ToString(),
             ErrorMessage = message
         };
 }

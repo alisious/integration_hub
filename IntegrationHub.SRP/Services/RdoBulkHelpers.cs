@@ -41,7 +41,7 @@ public static class RdoBulkHelpers
                     RequestId = Guid.NewGuid().ToString(),
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.RequestTimeout,
+                    SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
                     ErrorMessage = "Przerwano (CancellationToken)."
                 }));
             }
@@ -52,7 +52,7 @@ public static class RdoBulkHelpers
                     RequestId = Guid.NewGuid().ToString(),
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                     ErrorMessage = ex.Message
                 }));
             }

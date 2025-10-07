@@ -2,6 +2,7 @@
 using IntegrationHub.Common.Exceptions;
 using IntegrationHub.Common.Interfaces;
 using IntegrationHub.Sources.CEP.Config;
+using IntegrationHub.Sources.CEP.Udostepnianie.Mappers;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text;
@@ -52,6 +53,19 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 var body = await resp.Content.ReadAsStringAsync(ct);
 
                 _logger.LogInformation("CEP SOAP done: {Action}, RequestId={RequestId}, HTTP={Status}", soapAction, requestId, (int)resp.StatusCode);
+                // === NOWOŚĆ: wykrycie SOAP Fault i rzutowanie SoapFaultException ===
+                // CEPIK potrafi odesłać <Fault/> także z HTTP 200, dlatego sprawdzamy treść zawsze.
+                var fault = FaultResponseXmlMapper.ParseOrNull(body);
+                if (fault is not null)
+                {
+                    var finalCode = fault.Kod ?? fault.FaultCode;
+                    var finalMsg = fault.Komunikat ?? fault.FaultString ?? "SOAP Fault returned by service.";
+                    _logger.LogWarning("CEP SOAP Fault: {Action}, RID={RequestId}, FaultCode={FaultCode}, Message={Message}",
+                        soapAction, requestId, finalCode, finalMsg);
+
+                    throw new SoapFaultException(finalMsg, endpointUrl, soapAction, requestId, finalCode);
+                }
+
                 return (resp.StatusCode, body);
             }
             // === anulowanie wywołania przez wywołującego ===

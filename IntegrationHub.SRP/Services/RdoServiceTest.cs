@@ -91,7 +91,7 @@ namespace IntegrationHub.SRP.Services
                         RequestId = requestId,
                         Data = responseObj,
                         Status = ProxyStatus.Success,
-                        SourceStatusCode = (int)HttpStatusCode.OK,
+                        SourceStatusCode = ((int)HttpStatusCode.OK).ToString(),
                         Source = "SRP"
                     };
             }
@@ -110,7 +110,7 @@ namespace IntegrationHub.SRP.Services
                 RequestId = requestId,
                 Source = "SRP",
                 Status = status,
-                SourceStatusCode = (int)code,
+                SourceStatusCode = ((int)code).ToString(),
                 ErrorMessage = message
             };
         }

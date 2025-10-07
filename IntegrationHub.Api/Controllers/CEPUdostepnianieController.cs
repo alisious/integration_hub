@@ -114,7 +114,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie.Controller",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = 500,
+                    SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }
@@ -209,7 +209,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie.Controller",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = 500,
+                    SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }
@@ -285,7 +285,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie.Controller",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = 500,
+                    SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }
@@ -338,7 +338,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie.Controller",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = 500,
+                    SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }
@@ -399,7 +399,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie.Controller",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = 500,
+                    SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }
@@ -465,7 +465,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                     RequestId = requestId,
                     Source = "CEP.Udostepnianie.Controller",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = 500,
+                    SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }

@@ -53,7 +53,7 @@ public sealed class CEPSlownikiController : ControllerBase
                 RequestId = requestId,
                 Source = "CEP",
                 Status = ProxyStatus.Success,
-                SourceStatusCode = (int)HttpStatusCode.OK,
+                SourceStatusCode = ((int)HttpStatusCode.OK).ToString(),
                 Data = data
             };
         }
@@ -71,7 +71,7 @@ public sealed class CEPSlownikiController : ControllerBase
                 RequestId = requestId,
                 Source = "CEP",
                 Status = ProxyStatus.TechnicalError,          // jak w SRP przy błędach technicznych
-                SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                 ErrorMessage = ex.Message
             };
         }
@@ -111,7 +111,7 @@ public sealed class CEPSlownikiController : ControllerBase
                 RequestId = requestId,
                 Source = "IntegrationHubDB",
                 Status = ProxyStatus.Success,
-                SourceStatusCode = (int)HttpStatusCode.OK,
+                SourceStatusCode = ((int)HttpStatusCode.OK).ToString(),
                 Data = data
             };
         }
@@ -128,7 +128,7 @@ public sealed class CEPSlownikiController : ControllerBase
                 RequestId = requestId,
                 Source = "IntegrationHubDB",
                 Status = ProxyStatus.TechnicalError,
-                SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                 ErrorMessage = ex.Message
             };
         }

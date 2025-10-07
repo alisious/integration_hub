@@ -54,7 +54,7 @@ namespace IntegrationHub.Api.Controllers
                     RequestId = requestId,
                     Source = "SRP",
                     Status = ProxyStatus.BusinessError,
-                    SourceStatusCode = (int)HttpStatusCode.BadRequest,
+                    SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
                     ErrorMessage = "Brak numeru PESEL i ID osoby do wyszukania zdjęcia."
                 };
             }
@@ -94,7 +94,7 @@ namespace IntegrationHub.Api.Controllers
                     Data = getCurrentPhotoResponse,
                     Source = "SRP",
                     Status = ProxyStatus.Success,
-                    SourceStatusCode = (int)HttpStatusCode.OK
+                    SourceStatusCode = ((int)HttpStatusCode.OK).ToString()
                 };
 
             }
@@ -106,7 +106,7 @@ namespace IntegrationHub.Api.Controllers
                     RequestId = requestId,
                     Source = "SRP",
                     Status = ProxyStatus.BusinessError,
-                    SourceStatusCode = (int)HttpStatusCode.BadRequest,
+                    SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
                     ErrorMessage = fe.Message
                 };
             }
@@ -118,7 +118,7 @@ namespace IntegrationHub.Api.Controllers
                     RequestId = requestId,
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.RequestTimeout,
+                    SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
                     ErrorMessage = "Przekroczono czas oczekiwania na odpowiedz uslugi SRP: udostepnijDaneAktualnychDowodowPoPesel."
                 };
             }
@@ -130,7 +130,7 @@ namespace IntegrationHub.Api.Controllers
                     RequestId = requestId,
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.BadGateway,
+                    SourceStatusCode = ((int)HttpStatusCode.BadGateway).ToString(),
                     ErrorMessage = $"Blad komunikacji z usluga SRP: udostepnijDaneAktualnychDowodowPoPesel. {cex.Message}"
                 };
             }
@@ -142,7 +142,7 @@ namespace IntegrationHub.Api.Controllers
                     RequestId = requestId,
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                     ErrorMessage = ex.Message
                 };
             }
@@ -173,7 +173,7 @@ namespace IntegrationHub.Api.Controllers
                     Data = null,
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                     ErrorMessage = ex.Message
                 };
             }
@@ -224,7 +224,7 @@ namespace IntegrationHub.Api.Controllers
                     Data = null,
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                     ErrorMessage = ex.Message
                 };
             }
@@ -250,7 +250,7 @@ namespace IntegrationHub.Api.Controllers
                     Data = null,
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
                     ErrorMessage = ex.Message
                 };
             }

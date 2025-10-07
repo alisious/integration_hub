@@ -80,7 +80,7 @@ namespace IntegrationHub.SRP.Services
                     Data = responseObj,
                     Source = "SRP",
                     Status = ProxyStatus.Success,
-                    SourceStatusCode = (int)HttpStatusCode.OK
+                    SourceStatusCode = ((int)HttpStatusCode.OK).ToString()
                 };
             }
             catch (ArgumentException aex)
@@ -166,7 +166,7 @@ namespace IntegrationHub.SRP.Services
                     Data = responseObj,
                     Source = "SRP",
                     Status = ProxyStatus.Success,
-                    SourceStatusCode = (int)HttpStatusCode.OK
+                    SourceStatusCode = ((int)HttpStatusCode.OK).ToString()      
                 };
             }
             catch (Exception ex)
@@ -185,7 +185,7 @@ namespace IntegrationHub.SRP.Services
                 RequestId = requestId,
                 Source = "SRP",
                 Status = status,
-                SourceStatusCode = (int)code,
+                SourceStatusCode = ((int)code).ToString(),
                 ErrorMessage = message
             };
         }

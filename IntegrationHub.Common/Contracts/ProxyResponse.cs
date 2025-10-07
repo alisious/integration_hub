@@ -30,7 +30,7 @@ public class ProxyResponse<T>
     /// <summary>
     /// Kod statusu zwrócony przez system zewnętrzny (np. HTTP status code, kod błędu domenowego).
     /// </summary>
-    public int? SourceStatusCode { get; set; }
+    public string? SourceStatusCode { get; set; }
 
     /// <summary>
     /// Unikalny identyfikator żądania, pozwalający śledzić przebieg requestu w logach i systemach integracyjnych.
@@ -53,7 +53,7 @@ public enum ProxyStatus
 
 public static class ProxyResponses
 {
-    public static ProxyResponse<T> Success<T>(T data, string source, int sourceStatusCode, string requestId) =>
+    public static ProxyResponse<T> Success<T>(T data, string source, string sourceStatusCode, string requestId) =>
         new()
         {
             Status = ProxyStatus.Success,
@@ -63,7 +63,7 @@ public static class ProxyResponses
             RequestId = requestId
         };
 
-    public static ProxyResponse<T> BusinessError<T>(string message, string source, int sourceStatusCode, string requestId) =>
+    public static ProxyResponse<T> BusinessError<T>(string message, string source, string sourceStatusCode, string requestId) =>
         new()
         {
             Status = ProxyStatus.BusinessError,
@@ -73,7 +73,7 @@ public static class ProxyResponses
             RequestId = requestId
         };
 
-    public static ProxyResponse<T> TechnicalError<T>(string message, string source, int sourceStatusCode, string requestId) =>
+    public static ProxyResponse<T> TechnicalError<T>(string message, string source, string sourceStatusCode, string requestId) =>
         new()
         {
             Status = ProxyStatus.TechnicalError,

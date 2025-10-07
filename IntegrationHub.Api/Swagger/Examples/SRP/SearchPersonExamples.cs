@@ -14,7 +14,7 @@ public sealed class SearchPerson200Example : IExamplesProvider<ProxyResponse<Sea
         RequestId = "0f1c2e3d-1234-5678-9abc-def012345678",
         Source = "SRP",
         Status = ProxyStatus.Success,
-        SourceStatusCode = StatusCodes.Status200OK,
+        SourceStatusCode = (StatusCodes.Status200OK).ToString(),
         Data = new SearchPersonResponse
         {
             // Uzupełnij minimalnie zgodnie z Twoim typem
@@ -45,7 +45,7 @@ public sealed class SearchPerson400Example : IExamplesProvider<ProxyResponse<Sea
         RequestId = "9d8c7b6a-4321-8765-9abc-def012345678",
         Source = "SRP",
         Status = ProxyStatus.BusinessError,
-        SourceStatusCode = StatusCodes.Status400BadRequest,
+        SourceStatusCode = (StatusCodes.Status400BadRequest).ToString(),
         ErrorMessage = "Podaj PESEL albo (nazwisko + imię).",
         Data = null
     };
