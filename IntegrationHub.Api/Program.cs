@@ -174,6 +174,9 @@ var cepConfig = builder.Configuration.GetSection("ExternalServices:CEP").Get<CEP
 
 
 // ====== DEPENDENCY INJECTION ======
+builder.Services.AddSingleton<SqlAuditSink>();
+builder.Services.AddSingleton<IAuditSink>(sp => sp.GetRequiredService<SqlAuditSink>());
+builder.Services.AddHostedService<SqlAuditSink.Worker>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();
 builder.Services.AddScoped<SupervisorService>();
@@ -415,6 +418,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 
 // ====== MIDDLEWARE ======
 app.UseMiddleware<ErrorLoggingMiddleware>();
+app.UseMiddleware<ApiAuditMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 

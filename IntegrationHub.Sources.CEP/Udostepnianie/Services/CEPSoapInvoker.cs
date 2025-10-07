@@ -1,8 +1,10 @@
 ﻿// IntegrationHub.Sources.CEP.Udostepnianie/Services/CepSoapInvoker.cs
 using IntegrationHub.Common.Exceptions;
 using IntegrationHub.Common.Interfaces;
+using IntegrationHub.Infrastructure.Audit;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Udostepnianie.Mappers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text;
@@ -24,11 +26,15 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
     {
         private readonly ILogger<CepSoapInvoker> _logger;
         private readonly IClientCertificateProvider _certProvider;
+        private readonly IAuditSink _audit;                 
+        private readonly IConfiguration _cfg;
 
-        public CepSoapInvoker(IClientCertificateProvider certProvider, ILogger<CepSoapInvoker> logger)
+        public CepSoapInvoker(IClientCertificateProvider certProvider, ILogger<CepSoapInvoker> logger, IAuditSink audit, IConfiguration cfg)
         {
             _certProvider = certProvider;
             _logger = logger;
+            _audit = audit;
+            _cfg = cfg;
         }
 
         public async Task<(HttpStatusCode Status, string Body)> InvokeAsync(
@@ -41,6 +47,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             if (cfg.TrustServerCerificate)
                 handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
+            var started = ValueStopwatch.StartNew();
             using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(Math.Max(5, cfg.TimeoutSeconds)) };
             using var content = new StringContent(envelope, Encoding.UTF8, "text/xml");
             content.Headers.Add("SOAPAction", soapAction);
@@ -63,8 +70,38 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     _logger.LogWarning("CEP SOAP Fault: {Action}, RID={RequestId}, FaultCode={FaultCode}, Message={Message}",
                         soapAction, requestId, finalCode, finalMsg);
 
+                    // Zapisz log wywołania do SQL (z Fault)
+                    await _audit.Enqueue(new SourceCallLogItem(
+                        requestId,
+                        "CEP.Udostepnianie",
+                        endpointUrl,
+                        soapAction,
+                        (int)resp.StatusCode,
+                        finalCode,
+                        finalMsg,
+                        (int)started.GetElapsedTime().TotalMilliseconds,
+                        null,
+                        AuditBodyHelper.PrepareBody(envelope, _cfg),
+                        AuditBodyHelper.PrepareBody(body, _cfg)
+                    ), ct);
+
                     throw new SoapFaultException(finalMsg, endpointUrl, soapAction, requestId, finalCode);
                 }
+
+                // Zapisz log sukcesu
+                await _audit.Enqueue(new SourceCallLogItem(
+                    requestId,
+                    "CEP.Udostepnianie",
+                    endpointUrl,
+                    soapAction,
+                    (int)resp.StatusCode,
+                    null,
+                    null,
+                    (int)started.GetElapsedTime().TotalMilliseconds,
+                    null,
+                    AuditBodyHelper.PrepareBody(envelope, _cfg),
+                    AuditBodyHelper.PrepareBody(body, _cfg)
+                ), ct);
 
                 return (resp.StatusCode, body);
             }

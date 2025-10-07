@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IntegrationHub.Common\IntegrationHub.Common.csproj" />
+    <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
