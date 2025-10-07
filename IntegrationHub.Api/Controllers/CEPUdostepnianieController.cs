@@ -344,5 +344,134 @@ namespace IntegrationHub.Sources.CEP.Controllers
             }
         }
 
+        /// <summary>
+        /// CEPIK – Pytanie o historię licznika.
+        /// Zwraca <see cref="ProxyResponse{T}"/> z listą historycznych odczytów licznika.
+        /// </summary>
+        /// <remarks>
+        /// <b>Reguły walidacji</b><br/>
+        /// Zapytanie jest akceptowane, gdy podasz: <code>identyfikatorSystemowyPojazdu</code>.
+        /// Wszystkie pola są trimowane.
+        /// </remarks>
+        [HttpPost("pytanie-o-historie-licznika")]
+        [Consumes("application/json")]
+        [Produces(typeof(ProxyResponse<PytanieOHistorieLicznikaResponse>))]
+        [ProducesResponseType(typeof(ProxyResponse<PytanieOHistorieLicznikaResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<PytanieOHistorieLicznikaResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<PytanieOHistorieLicznikaResponse>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "CEPIK – Pytanie o historię licznika",
+            Description =
+                "<b>Reguły walidacji</b><br/>" +
+                "Wymagane jest podanie: <code>identyfikatorSystemowyPojazdu</code>." +
+                "<ul><li>Wszystkie pola są trimowane.</li></ul>" +
+                "<b>Środowisko testowe:</b>" +
+                "<ul>" +
+                "W środowisku testowym znajduje się historia licznika dla:" +
+                "<li>identyfikatorSystemowyPojazdu = 6206473948761901</li>" +
+                "</ul>"
+        )]
+        public async Task<ProxyResponse<PytanieOHistorieLicznikaResponse>> PytanieOHistorieLicznika(
+            [FromBody] PytanieOHistorieLicznikaRequest body,
+            CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+
+            try
+            {
+                var result = await _service.PytanieOHistorieLicznikaAsync(body, requestId, ct);
+
+                if (result.Status != ProxyStatus.Success)
+                {
+                    _logger.LogWarning(
+                        "CEPUdostepnianie.PytanieOHistorieLicznika: status={ProxyStatus}, http={Http}, reqId={ReqId}",
+                        result.Status, result.SourceStatusCode, result.RequestId);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOHistorieLicznika. reqId={ReqId}", requestId);
+
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Controller",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = 500,
+                    ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
+                };
+            }
+        }
+
+        /// <summary>
+        /// CEPIK – Pytanie o podmiot.
+        /// Zwraca <see cref="ProxyResponse{T}"/> z danymi podmiotu (wariant osoba).
+        /// </summary>
+        /// <remarks>
+        /// <b>Reguły walidacji (minimalne kryteria wyszukiwania)</b><br/>
+        /// Zapytanie jest akceptowane, gdy spełniony jest warunek:
+        /// <list type="bullet">
+        /// <item><description><c>identyfikatorSystemowyPodmiotu</c> – wymagane.</description></item>
+        /// </list>
+        /// Wszystkie pola są trimowane.
+        /// </remarks>
+        [HttpPost("pytanie-o-podmiot")]
+        [Consumes("application/json")]
+        [Produces(typeof(ProxyResponse<PytanieOPodmiotResponse>))]
+        [ProducesResponseType(typeof(ProxyResponse<PytanieOPodmiotResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<PytanieOPodmiotResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<PytanieOPodmiotResponse>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "CEPIK – Pytanie o podmiot",
+            Description =
+            "<b>Reguły walidacji (minimalne kryteria wyszukiwania)</b><br/>" +
+            "Zapytanie jest akceptowane, gdy spełniony jest warunek:" +
+            "<ul>" +
+            "<li><code>identyfikatorSystemowyPodmiotu</code> – wymagane.</li>" +
+            "</ul>" +
+            "<ul><li>Wszystkie pola są trimowane.</li></ul>" +
+            "<b>Środowisko testowe:</b>" +
+            "<ul>" +
+            "W środowisku testowym znajdują się dane podmiotu dla:" +
+            "<li>identyfikatorSystemowyPodmiotu = 46801643589320</li>" +
+            "</ul>"
+        )]
+        public async Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiot(
+            [FromBody] PytanieOPodmiotRequest body,
+            CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+
+            try
+            {
+                var result = await _service.PytanieOPodmiotAsync(body, requestId, ct);
+
+                if (result.Status != ProxyStatus.Success)
+                {
+                    _logger.LogWarning(
+                        "CEPUdostepnianie.PytanieOPodmiot: status={ProxyStatus}, http={Http}, reqId={ReqId}",
+                        result.Status, result.SourceStatusCode, result.RequestId);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOPodmiot. reqId={ReqId}", requestId);
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Controller",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = 500,
+                    ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
+                };
+            }
+        }
+
+
+
     }
 }

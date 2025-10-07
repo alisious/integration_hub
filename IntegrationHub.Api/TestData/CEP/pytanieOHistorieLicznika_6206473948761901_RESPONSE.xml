@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+   <Body>
+      <pytanieOHistorieLicznikaRezultat xmlns="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+         <daneRezultatu xmlns="">
+            <identyfikatorTransakcji>bd7da4cf-a34e-4ed6-86e7-d7f72687ada4</identyfikatorTransakcji>
+            <iloscZwroconychRekordow>1</iloscZwroconychRekordow>
+            <znacznikCzasowy>2025-10-04T13:40:18</znacznikCzasowy>
+            <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+            <znakSprawy>TEST-KACPER</znakSprawy>
+            <wnioskodawca>ŻW</wnioskodawca>
+         </daneRezultatu>
+         <parametryZapytania xmlns="">
+            <pytanieOHistorieLicznika>
+               <parametryPytania xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+                  <wnioskodawca>
+                     <!--You may enter the following 2 items in any order-->
+                     <znakSprawy>TEST-KACPER</znakSprawy>
+                     <wnioskodawca>ŻW</wnioskodawca>
+                  </wnioskodawca>
+               </parametryPytania>
+               <identyfikatorSystemowyPojazdu xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">6206473948761901</identyfikatorSystemowyPojazdu>
+            </pytanieOHistorieLicznika>
+         </parametryZapytania>
+         <aktualnyIdentyfikatorPojazdu xmlns="">
+            <identyfikatorSystemowyPojazdu>6206473948761901</identyfikatorSystemowyPojazdu>
+            <tokenAktualnosci>48131E063C93F455F444550312EC5F97</tokenAktualnosci>
+         </aktualnyIdentyfikatorPojazdu>
+         <licznikDrogi xmlns="">
+            <historycznyStanLicznika>
+               <identyfikatorSystemowyStanuLicznika>4618043913848506</identyfikatorSystemowyStanuLicznika>
+               <wartoscStanuLicznika>271756</wartoscStanuLicznika>
+               <jednostkaStanuLicznika>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T23:59:59</dataDo>
+                  <kod>DICT096_KM</kod>
+                  <wartoscOpisowaSkrocona>kilometry</wartoscOpisowaSkrocona>
+                  <dataAktualizacji>2019-12-05T21:13:53</dataAktualizacji>
+                  <status>A</status>
+               </jednostkaStanuLicznika>
+               <dataSpisaniaLicznika>2024-12-16T13:22:36</dataSpisaniaLicznika>
+               <podmiotWprowadzajacy>
+                  <dataOd>2020-03-16T15:23:40</dataOd>
+                  <dataDo>9999-12-31T00:00:00</dataDo>
+                  <statusRekordu>A</statusRekordu>
+                  <kod>DICT061_10107959</kod>
+                  <nazwa>F.H.U. "GILEWSKI" - Andrzej Gilewski</nazwa>
+                  <numerEwidencyjny>DSW/021/P</numerEwidencyjny>
+                  <identyfikatorREGON>89018691700000</identyfikatorREGON>
+                  <REGON>890186917</REGON>
+                  <typ>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T00:00:00</dataDo>
+                     <kod>DICT077_SKP</kod>
+                     <wartoscOpisowaSkrocona>Stacja Kontroli Pojazdów</wartoscOpisowaSkrocona>
+                     <dataAktualizacji>2017-10-06T14:14:59</dataAktualizacji>
+                     <status>A</status>
+                  </typ>
+               </podmiotWprowadzajacy>
+               <dataOdnotowania>2024-12-16T13:22:36</dataOdnotowania>
+               <sygnalZmianyStanuLicznika>
+                  <nieprawidlowoscWZmianieStanuLicznika>false</nieprawidlowoscWZmianieStanuLicznika>
+                  <zmianaStanuLicznika>0</zmianaStanuLicznika>
+                  <jednostkaStanuLicznika>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T23:59:59</dataDo>
+                     <kod>DICT096_KM</kod>
+                     <wartoscOpisowaSkrocona>kilometry</wartoscOpisowaSkrocona>
+                     <dataAktualizacji>2019-12-05T21:13:53</dataAktualizacji>
+                     <status>A</status>
+                  </jednostkaStanuLicznika>
+               </sygnalZmianyStanuLicznika>
+               <informacjeSKP>
+                  <identyfikatorSystemowyInformacjiSKP>7629633155875176</identyfikatorSystemowyInformacjiSKP>
+                  <identyfikatorCzynnosci>4286126932658454</identyfikatorCzynnosci>
+                  <stacjaKontroliPojazdow>
+                     <dataOd>2020-03-16T15:23:40</dataOd>
+                     <dataDo>9999-12-31T00:00:00</dataDo>
+                     <statusRekordu>A</statusRekordu>
+                     <kod>DICT061_10107959</kod>
+                     <nazwa>F.H.U. "GILEWSKI" - Andrzej Gilewski</nazwa>
+                     <numerEwidencyjny>DSW/021/P</numerEwidencyjny>
+                     <identyfikatorREGON>89018691700000</identyfikatorREGON>
+                     <REGON>890186917</REGON>
+                     <typ>
+                        <dataOd>1900-01-01T00:00:00</dataOd>
+                        <dataDo>9999-12-31T00:00:00</dataDo>
+                        <kod>DICT077_SKP</kod>
+                        <wartoscOpisowaSkrocona>Stacja Kontroli Pojazdów</wartoscOpisowaSkrocona>
+                        <dataAktualizacji>2017-10-06T14:14:59</dataAktualizacji>
+                        <status>A</status>
+                     </typ>
+                  </stacjaKontroliPojazdow>
+                  <rodzajCzynnosciSKP>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T23:59:59</dataDo>
+                     <kod>DICT098_OKR</kod>
+                     <wartoscOpisowaSkrocona>Okresowe</wartoscOpisowaSkrocona>
+                     <dataAktualizacji>2017-09-17T13:32:39</dataAktualizacji>
+                     <status>A</status>
+                  </rodzajCzynnosciSKP>
+                  <numerZaswiadczenia>01082/DSW/021/P/2024</numerZaswiadczenia>
+                  <wynikCzynnosci>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T23:59:59</dataDo>
+                     <kod>DICT095_P</kod>
+                     <wartoscOpisowaSkrocona>Pozytywny</wartoscOpisowaSkrocona>
+                     <wartoscOpisowa>Wynik pozytywny czynności SKP: wykonanego Badania technicznego oraz odnotowanie licznika pojazdu po wymianie.</wartoscOpisowa>
+                     <dataAktualizacji>2020-05-28T20:11:36</dataAktualizacji>
+                     <status>A</status>
+                  </wynikCzynnosci>
+                  <dataGodzWykonaniaCzynnosciSKP>2024-12-16T13:22:36</dataGodzWykonaniaCzynnosciSKP>
+               </informacjeSKP>
+               <daneCzynnosci>
+                  <identyfikatorCzynnosci>4286126932658454</identyfikatorCzynnosci>
+                  <rodzajCzynnosci>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T23:59:59</dataDo>
+                     <statusRekordu>A</statusRekordu>
+                     <kodCzynnosci>SKP.Z.POJ.OBT-P</kodCzynnosci>
+                     <modul>SKP</modul>
+                     <opis>Okresowe badanie techniczne pojazdu - wynik pozytywny</opis>
+                  </rodzajCzynnosci>
+               </daneCzynnosci>
+            </historycznyStanLicznika>
+         </licznikDrogi>
+      </pytanieOHistorieLicznikaRezultat>
+   </Body>
+</Envelope>

@@ -35,6 +35,14 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             PytanieOListeCzynnosciPojazduRequest body,
             string? requestId = null,
             CancellationToken ct = default);
+        Task<ProxyResponse<PytanieOHistorieLicznikaResponse>> PytanieOHistorieLicznikaAsync(
+            PytanieOHistorieLicznikaRequest body,
+            string? requestId = null,
+            CancellationToken ct = default);
+        Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiotAsync(
+            PytanieOPodmiotRequest body,
+            string? requestId = null,
+            CancellationToken ct = default);
 
     }
 
@@ -353,7 +361,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
         }
 
-        // IMPLEMENTACJA w CEPUdostepnianieService
+       
         public async Task<ProxyResponse<PytanieOListeCzynnosciPojazduResponse>> PytanieOListeCzynnosciPojazduAsync(
             PytanieOListeCzynnosciPojazduRequest body,
             string? requestId = null,
@@ -452,5 +460,201 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
         }
 
+        
+        public async Task<ProxyResponse<PytanieOHistorieLicznikaResponse>> PytanieOHistorieLicznikaAsync(
+            PytanieOHistorieLicznikaRequest body,
+            string? requestId = null,
+            CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja
+            var validator = new PytanieOHistorieLicznikaRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Koperta SOAP
+            var envelope = PytanieOHistorieLicznikaEnvelope.Create(body, requestId);
+
+            // 3) Endpoint
+            var endpointUrl = _cfg.ShareServiceUrl;
+            if (string.IsNullOrWhiteSpace(endpointUrl))
+            {
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = "Brak ShareServiceUrl w konfiguracji CEP."
+                };
+            }
+
+            // 4) SOAPAction
+            const string soapAction = CEPUdostepnianieSoapActions.PytanieOHistorieLicznika;
+
+            try
+            {
+                // 5) Wywołanie SOAP
+                var (status, xml) = await _invoker.InvokeAsync(_cfg, endpointUrl, soapAction, envelope, requestId, ct);
+
+                if ((int)status < 200 || (int)status >= 300)
+                {
+                    return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)status,
+                        ErrorMessage = $"HTTP {(int)status}"
+                    };
+                }
+
+                // 6) Mapowanie XML → DTO
+                var dto = PytanieOHistorieLicznikaResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (SoapIntegrationException sie)
+            {
+                _logger.LogError(sie, "SOAP error ({Action}) RequestId={RequestId}", soapAction, requestId);
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int?)(sie.HttpStatus ?? HttpStatusCode.BadGateway),
+                    ErrorMessage = sie.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd PytanieOHistorieLicznikaAsync, RequestId={RequestId}", requestId);
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiotAsync(
+            PytanieOPodmiotRequest body,
+            string? requestId = null,
+            CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja
+            var validator = new PytanieOPodmiotRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = baseResp.RequestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Koperta SOAP
+            var envelope = PytanieOPodmiotEnvelope.Create(body, requestId);
+
+            // 3) Endpoint
+            var endpointUrl = _cfg.ShareServiceUrl;
+            if (string.IsNullOrWhiteSpace(endpointUrl))
+            {
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = "Brak ShareServiceUrl w konfiguracji CEP."
+                };
+            }
+
+            // 4) SOAPAction
+            const string soapAction = CEPUdostepnianieSoapActions.PytanieOPodmiot;
+
+            try
+            {
+                // 5) Wywołanie
+                var (status, xml) = await _invoker.InvokeAsync(_cfg, endpointUrl, soapAction, envelope, requestId, ct);
+
+                if ((int)status < 200 || (int)status >= 300)
+                {
+                    return new ProxyResponse<PytanieOPodmiotResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)status,
+                        ErrorMessage = $"HTTP {(int)status}"
+                    };
+                }
+
+                // 6) Mapowanie XML → DTO
+                var dto = PytanieOPodmiotResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (SoapIntegrationException sie)
+            {
+                _logger.LogError(sie, "SOAP error ({Action}) RequestId={RequestId}", soapAction, requestId);
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int?)(sie.HttpStatus ?? HttpStatusCode.BadGateway),
+                    ErrorMessage = sie.Message
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd PytanieOPodmiotAsync, RequestId={RequestId}", requestId);
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
     }
 }

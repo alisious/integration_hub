@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+   <Body>
+      <pytanieOPodmiotRezultat xmlns="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+         <daneRezultatu xmlns="">
+            <identyfikatorTransakcji>ec38e2b7-719f-49b9-8940-819a6f0fbf20</identyfikatorTransakcji>
+            <iloscZwroconychRekordow>1</iloscZwroconychRekordow>
+            <znacznikCzasowy>2025-10-04T13:27:38</znacznikCzasowy>
+            <identyfikatorUzytkownikaSystemuZewnetrznego>ŻW</identyfikatorUzytkownikaSystemuZewnetrznego>
+            <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+            <znakSprawy>TEST-KACPER</znakSprawy>
+            <wnioskodawca>ŻW</wnioskodawca>
+         </daneRezultatu>
+         <parametryZapytania xmlns="">
+            <pytanieOPodmiot>
+               <parametryPytania xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <!--You may enter the following 5 items in any order-->
+                  <!--Optional:-->
+                  <identyfikatorUzytkownikaSystemuZewnetrznego>ŻW</identyfikatorUzytkownikaSystemuZewnetrznego>
+                  <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+                  <wnioskodawca>
+                     <!--You may enter the following 2 items in any order-->
+                     <znakSprawy>TEST-KACPER</znakSprawy>
+                     <wnioskodawca>ŻW</wnioskodawca>
+                  </wnioskodawca>
+               </parametryPytania>
+               <parametryPodmiotu xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <!--You may enter the following 3 items in any order-->
+                  <!--Optional:-->
+                  <parametryPodmiotu>
+                     <!--Optional:-->
+                     <identyfikatorSystemowyPodmiotu>46801643589320</identyfikatorSystemowyPodmiotu>
+                  </parametryPodmiotu>
+                  <!--Optional:-->
+                  <!--Optional:-->
+               </parametryPodmiotu>
+            </pytanieOPodmiot>
+         </parametryZapytania>
+         <podmiot xmlns="">
+            <identyfikatorSystemowyPodmiotu>46801643589320</identyfikatorSystemowyPodmiotu>
+            <wariantPodmiotu>11</wariantPodmiotu>
+            <!--46801643589320:11-->
+            <osoba>
+               <PESEL>65120302151</PESEL>
+               <imiePierwsze>IRENEUSZ</imiePierwsze>
+               <nazwisko>SAWA</nazwisko>
+               <dataUrodzenia>1965-12-03</dataUrodzenia>
+               <miejsceUrodzeniaKod>0602957</miejsceUrodzeniaKod>
+               <miejsceUrodzenia>ŚWIDNICA</miejsceUrodzenia>
+               <adres>
+                  <kraj>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T23:59:00</dataDo>
+                     <statusRekordu>A</statusRekordu>
+                     <kodNumeryczny>616</kodNumeryczny>
+                     <kodIsoAlfa2>PL</kodIsoAlfa2>
+                     <kodIsoAlfa3>POL</kodIsoAlfa3>
+                     <kodMks>PL</kodMks>
+                     <czyNalezyDoUE>true</czyNalezyDoUE>
+                     <nazwa>Polska</nazwa>
+                     <obywatelstwo>BRAK DANYCH</obywatelstwo>
+                     <dataAktualizacji>2017-10-29T00:56:54</dataAktualizacji>
+                  </kraj>
+                  <kodTeryt>0219011</kodTeryt>
+                  <kodTerytWojewodztwa>02</kodTerytWojewodztwa>
+                  <nazwaWojewodztwaStanu>DOLNOŚLĄSKIE</nazwaWojewodztwaStanu>
+                  <kodTerytPowiatu>19</kodTerytPowiatu>
+                  <nazwaPowiatuDzielnicy>ŚWIDNICKI</nazwaPowiatuDzielnicy>
+                  <kodTerytGminy>01</kodTerytGminy>
+                  <nazwaGminy>ŚWIDNICA</nazwaGminy>
+                  <kodRodzajuGminy>1</kodRodzajuGminy>
+                  <kodPocztowy>58100</kodPocztowy>
+                  <kodTerytMiejscowosci>0984657</kodTerytMiejscowosci>
+                  <nazwaMiejscowosci>ŚWIDNICA</nazwaMiejscowosci>
+                  <kodTerytMiejscowosciPodst>0984657</kodTerytMiejscowosciPodst>
+                  <nazwaMiejscowosciPodst>ŚWIDNICA</nazwaMiejscowosciPodst>
+                  <kodTerytUlicy>24879</kodTerytUlicy>
+                  <ulicaCecha>
+                     <dataOd>2017-11-18T00:00:00</dataOd>
+                     <dataDo>9999-12-31T00:00:00</dataDo>
+                     <kod>DICT368_UL</kod>
+                     <wartoscOpisowaSkrocona>ul.</wartoscOpisowaSkrocona>
+                     <wartoscOpisowa>ulica</wartoscOpisowa>
+                     <dataAktualizacji>2017-11-17T23:00:02</dataAktualizacji>
+                     <status>A</status>
+                  </ulicaCecha>
+                  <nazwaUlicy>WSCHODNIA</nazwaUlicy>
+                  <numerDomu>2</numerDomu>
+               </adres>
+            </osoba>
+         </podmiot>
+      </pytanieOPodmiotRezultat>
+   </Body>
+</Envelope>

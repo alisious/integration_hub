@@ -300,6 +300,136 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
         }
 
+        
+        public async Task<ProxyResponse<PytanieOHistorieLicznikaResponse>> PytanieOHistorieLicznikaAsync(
+            PytanieOHistorieLicznikaRequest body, string? requestId = null, CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            // 1) Walidacja
+            var validator = new PytanieOHistorieLicznikaRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            // 2) Plik testowy
+            var xmlPath = Path.Combine(_testDataDir, "pytanieOHistorieLicznika_6206473948761901_RESPONSE.xml");
+            try
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                    {
+                        RequestId = requestId,
+                        Source = "CEP.Udostepnianie.Test",
+                        Status = ProxyStatus.TechnicalError,
+                        SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                    };
+                }
+
+                var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
+                var dto = PytanieOHistorieLicznikaResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.RequestTimeout,
+                    ErrorMessage = "Operacja została anulowana."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd testowego odczytu CEPUdostepnianie (Historia licznika). RID={RequestId}", requestId);
+                return new ProxyResponse<PytanieOHistorieLicznikaResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.TechnicalError,
+                    SourceStatusCode = (int)HttpStatusCode.InternalServerError,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiotAsync(
+            PytanieOPodmiotRequest body, string? requestId = null, CancellationToken ct = default)
+        {
+            requestId ??= Guid.NewGuid().ToString("N");
+
+            var validator = new PytanieOPodmiotRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
+            if (!vr.IsValid)
+            {
+                var baseResp = vr.ToProxyResponse(requestId);
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = baseResp.Status,
+                    SourceStatusCode = baseResp.SourceStatusCode,
+                    ErrorMessage = baseResp.ErrorMessage
+                };
+            }
+
+            var xmlPath = Path.Combine(_testDataDir, "pytanieOPodmiot_46801643589320_RESPONSE.xml");
+            try
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    return Error<PytanieOPodmiotResponse>(requestId, HttpStatusCode.InternalServerError,
+                        ProxyStatus.TechnicalError, $"Brak pliku z danymi testowymi: {xmlPath}");
+                }
+
+                var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
+                var dto = PytanieOPodmiotResponseXmlMapper.Parse(xml);
+
+                return new ProxyResponse<PytanieOPodmiotResponse>
+                {
+                    RequestId = requestId,
+                    Source = "CEP.Udostepnianie.Test",
+                    Status = ProxyStatus.Success,
+                    SourceStatusCode = (int)HttpStatusCode.OK,
+                    Data = dto
+                };
+            }
+            catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
+            {
+                _logger.LogWarning(oce, "Test CEP canceled by caller. RID={RequestId}", requestId);
+                return Error<PytanieOPodmiotResponse>(requestId, HttpStatusCode.RequestTimeout,
+                    ProxyStatus.TechnicalError, "Operacja została anulowana.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd testowego odczytu CEPUdostepnianie (Podmiot). RID={RequestId}", requestId);
+                return Error<PytanieOPodmiotResponse>(requestId, HttpStatusCode.InternalServerError,
+                    ProxyStatus.TechnicalError, ex.Message);
+            }
+        }
+
 
         // === pomocnicze ===
         private static ProxyResponse<T> Error<T>(string requestId, HttpStatusCode code, ProxyStatus status, string message)
