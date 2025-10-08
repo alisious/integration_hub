@@ -73,7 +73,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     // Zapisz log wywołania do SQL (z Fault)
                     await _audit.Enqueue(new SourceCallLogItem(
                         requestId,
-                        "CEP.Udostepnianie",
+                        "CEP",
                         endpointUrl,
                         soapAction,
                         (int)resp.StatusCode,
@@ -91,7 +91,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 // Zapisz log sukcesu
                 await _audit.Enqueue(new SourceCallLogItem(
                     requestId,
-                    "CEP.Udostepnianie",
+                    "CEP",
                     endpointUrl,
                     soapAction,
                     (int)resp.StatusCode,
