@@ -19,7 +19,7 @@ namespace IntegrationHub.Api.Controllers
     
     [ApiController]
     [Route("SRP")]
-    [Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
     //[ApiExplorerSettings(GroupName = "SRP")]
     public class SRPController : ControllerBase
     {
@@ -40,7 +40,17 @@ namespace IntegrationHub.Api.Controllers
         }
 
 
-        [SwaggerOperation(Summary = "Udostępianie aktualnego zdjęcia na podstawie PESEL i Id osoby z rejestru PESEL.")]
+        [SwaggerOperation(
+            Summary = "SRP – Udostępnij aktualne zdjęcie",
+            Description =
+        "<b>Reguły</b><br/>" +
+        "Wymagane są oba pola: <code>Pesel</code> <b>i</b> <code>IdOsoby</code>." +
+        "<ul>" +
+        "<li><code>Pesel</code> – numer PESEL osoby.</li>" +
+        "<li><code>IdOsoby</code> – identyfikator osoby w rejestrze PESEL.</li>" +
+        "</ul>" +
+        "<u>Jeśli któregokolwiek z pól brakuje, zapytanie zakończy się błędem 400 (BusinessError).</u>"
+        )]
         [HttpPost("get-current-photo")]
         public async Task<ProxyResponse<GetCurrentPhotoResponse>> GetCurrentPhoto([FromBody] GetCurrentPhotoRequest body)
         {
@@ -153,9 +163,20 @@ namespace IntegrationHub.Api.Controllers
 
 
         /// <summary>Udostępnij aktualny dowód osobisty po PESEL.</summary>
-        [SwaggerOperation(Summary = "Udostępianie danych aktualnego dowodu osobistego na podstawie PESEL.")]
+        [SwaggerOperation(
+            Summary = "SRP – Udostępnij dane aktualnego dowodu po PESEL",
+            Description =
+         "<b>Parametry</b><br/>" +
+         "<ul>" +
+         "<li><code>Pesel</code> – numer PESEL osoby, dla której mają zostać udostępnione dane aktualnego dowodu.</li>" +
+         "</ul>" +
+         "<b>Środowisko testowe:</b>" +
+         "<ul>" +
+            "W środowisku testowym znają się dane dowodu osobistego osoby, której pesel = 11111111111" +
+         "</ul>"
+        )]
         [HttpPost("get-current-id")]
-        [ProducesResponseType(typeof(ProxyResponse<GetCurrentIdByPeselResponse>), 200)]
+        [ProducesResponseType(typeof(ProxyResponse<GetCurrentIdByPeselResponse>), StatusCodes.Status200OK)]
         public async Task<ProxyResponse<GetCurrentIdByPeselResponse>> GetCurrentId([FromBody] GetCurrentIdByPeselRequest body)
         {
             var requestId = Guid.NewGuid().ToString();
@@ -180,7 +201,7 @@ namespace IntegrationHub.Api.Controllers
         }
 
 
-        
+
         /// <summary>Wyszukaj osoby w rejestrze PESEL.</summary>
         /// <remarks>
         /// Wymagania wejścia:
@@ -194,11 +215,31 @@ namespace IntegrationHub.Api.Controllers
         /// 3) Dodatkowe kryteria opcjonalne: <c>ImieMatki</c>, <c>ImieOjca</c>.
         /// </remarks>
         [SwaggerOperation(
-        Summary = "Wyszukiwanie osób w PESEL.",
+        Summary = "SRP – Wyszukiwanie osób w rejestrze PESEL",
         Description =
-        "Zwraca listę danych osób (ze zdjęciami) na podstawie zadanych kryteriów. " +
-        "Kryteria: PESEL **albo** (Nazwisko + Imię). " +
-        "Data urodzenia: dokładna data **lub** zakres (bez łączenia obu).")]
+        "<b>Minimalne kryteria</b><br/>" +
+        "Podaj <u>albo</u>: <code>Pesel</code>, <u>albo</u> zestaw: <code>Nazwisko</code> i <code>ImiePierwsze</code>." +
+        "<ul>" +
+        "<li><code>Pesel</code> – wyszukiwanie po numerze PESEL.</li>" +
+        "<li><code>Nazwisko</code> + <code>ImiePierwsze</code> – wyszukiwanie po danych osobowych (opcjonalnie <code>ImieDrugie</code>).</li>" +
+        "</ul>" +
+        "<b>Data urodzenia</b><br/>" +
+        "Podaj <u>albo</u> dokładną datę <code>DataUrodzenia</code> (yyyyMMdd lub yyyy-MM-dd), <u>albo</u> zakres: " +
+        "<code>DataUrodzeniaOd</code>–<code>DataUrodzeniaDo</code>. Nie łącz obu wariantów – jeśli podasz dokładną datę, zakres będzie zignorowany." +
+        "<br/><b>Dodatkowe pola:</b> <code>ImieMatki</code>, <code>ImieOjca</code> (opcjonalne)."+
+            "</ul>" +
+            "<b>Środowisko testowe:</b>" +
+            "<ul>" +
+            "W środowisku testowym znają się dane osoby, której pesel = 11111111111 albo dane 13 osób o parametrach: " +
+            "<li>nazwisko = NOWAK</li>" +
+            "<li>imiePierwsze = TOMASZ</li>" +
+            "<li>imieOjca = KAZIMIERZ</li>" +
+            "api zwraca Fault: Znaleziono więcej niż 50 osób. dla danych: " +
+            "<li>nazwisko = NOWAK</li>" +
+            "<li>imiePierwsze = TOMASZ</li>" +
+            "inne parametry zapytania zwracają: Nie znaleziono osoby." +
+            "</ul>"
+        )]
         [Produces("application/json")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(ProxyResponse<SearchPersonResponse>), StatusCodes.Status200OK)]
@@ -231,7 +272,18 @@ namespace IntegrationHub.Api.Controllers
         }
 
 
-        [SwaggerOperation(Summary = "Udostępianie aktualnych danych osoby z rejestru PESEL na podstawie PESEL.")]
+        [SwaggerOperation(
+            Summary = "SRP – Udostępnij dane osoby po PESEL",
+            Description =
+        "<b>Parametry</b><br/>" +
+        "<ul>" +
+        "<li><code>Pesel</code> – numer PESEL osoby, dla której mają zostać udostępnione aktualne dane.</li>" +
+        "</ul>" +
+         "<b>Środowisko testowe:</b>" +
+         "<ul>" +
+            "W środowisku testowym znają się dane osoby, której pesel = 11111111111" +
+         "</ul>"
+        )]
         [HttpPost("get-person-by-pesel")]
         public async Task<ProxyResponse<GetPersonByPeselResponse>> GetPersonByPesel(GetPersonByPeselRequest body)
         {
