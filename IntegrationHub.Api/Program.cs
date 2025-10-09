@@ -1,12 +1,17 @@
 using IntegrationHub.Api.Middleware;
 using IntegrationHub.Common.Interfaces;
 using IntegrationHub.Common.Providers;
+using IntegrationHub.Infrastructure.Cepik;
+using IntegrationHub.Infrastructure.Sql;
 using IntegrationHub.PIESP.Data;
 using IntegrationHub.PIESP.Services;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
+using IntegrationHub.Sources.CEP.Udostepnianie.Services;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore; // Add this using directive for 'UseSqlServer'
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
@@ -14,16 +19,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
-using IntegrationHub.Infrastructure.Sql;
-using IntegrationHub.Infrastructure.Cepik;
-using IntegrationHub.Sources.CEP.Udostepnianie.Services;
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
 Log.Logger = new LoggerConfiguration()
@@ -352,6 +353,12 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<
 
 // ====== BUILD ======
 var app = builder.Build();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    // opcjonalnie dodaj znane proxy/sieci:
+    // KnownProxies = { IPAddress.Parse("10.0.0.1") }
+});
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {

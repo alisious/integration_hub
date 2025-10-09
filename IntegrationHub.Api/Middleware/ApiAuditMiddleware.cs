@@ -1,6 +1,8 @@
-﻿using System.Text;
+﻿using IntegrationHub.Infrastructure.Audit;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Text.Json;
-using IntegrationHub.Infrastructure.Audit;
 
 public sealed class ApiAuditMiddleware
 {
@@ -42,7 +44,7 @@ public sealed class ApiAuditMiddleware
                 ctx.Request.Method,
                 ctx.Request.Path.Value ?? "/",
                 ctx.User?.Identity?.Name,
-                ctx.Connection.RemoteIpAddress?.ToString(),
+                GetClientIpv4(ctx),
                 ctx.Response.StatusCode,
                 proxyStatus,
                 source,
@@ -93,6 +95,34 @@ public sealed class ApiAuditMiddleware
             return doc.RootElement.TryGetProperty("errorMessage", out var e) ? e.GetString() : null;
         }
         catch { return null; }
+    }
+
+    static string? GetClientIpv4(HttpContext ctx)
+    {
+        // 1) za proxy: bierz pierwszy IP z X-Forwarded-For
+        var xff = ctx.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        if (!string.IsNullOrWhiteSpace(xff))
+        {
+            var first = xff.Split(',')[0].Trim();
+            if (IPAddress.TryParse(first, out var xffIp))
+            {
+                if (xffIp.AddressFamily == AddressFamily.InterNetworkV6 && xffIp.IsIPv4MappedToIPv6)
+                    xffIp = xffIp.MapToIPv4();
+
+                if (xffIp.AddressFamily == AddressFamily.InterNetwork) // IPv4
+                    return xffIp.ToString();
+            }
+        }
+
+        // 2) bez proxy: użyj RemoteIpAddress z mapowaniem gdy to IPv4-mapped
+        var ip = ctx.Connection.RemoteIpAddress;
+        if (ip is null) return null;
+
+        if (ip.AddressFamily == AddressFamily.InterNetworkV6 && ip.IsIPv4MappedToIPv6)
+            ip = ip.MapToIPv4();
+
+        // jeśli to prawdziwy IPv6 (nie IPv4-mapped), nie ma gwarantowanego IPv4
+        return ip.AddressFamily == AddressFamily.InterNetwork ? ip.ToString() : ip.ToString();
     }
 }
 

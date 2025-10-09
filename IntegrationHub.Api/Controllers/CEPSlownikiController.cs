@@ -109,7 +109,7 @@ public sealed class CEPSlownikiController : ControllerBase
             return new ProxyResponse<List<WartoscSlownikowaDto>>
             {
                 RequestId = requestId,
-                Source = "IntegrationHubDB",
+                Source = "CEP",
                 Status = ProxyStatus.Success,
                 SourceStatusCode = ((int)HttpStatusCode.OK).ToString(),
                 Data = data

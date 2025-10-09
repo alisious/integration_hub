@@ -112,7 +112,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 return new ProxyResponse<PytanieOPojazdResponse>
                 {
                     RequestId = requestId,
-                    Source = "CEP.Udostepnianie.Controller",
+                    Source = "CEP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
@@ -207,7 +207,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
                 {
                     RequestId = requestId,
-                    Source = "CEP.Udostepnianie.Controller",
+                    Source = "CEP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
@@ -336,7 +336,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
                 {
                     RequestId = requestId,
-                    Source = "CEP.Udostepnianie.Controller",
+                    Source = "CEP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
@@ -397,7 +397,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 return new ProxyResponse<PytanieOHistorieLicznikaResponse>
                 {
                     RequestId = requestId,
-                    Source = "CEP.Udostepnianie.Controller",
+                    Source = "CEP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
@@ -463,7 +463,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 return new ProxyResponse<PytanieOPodmiotResponse>
                 {
                     RequestId = requestId,
-                    Source = "CEP.Udostepnianie.Controller",
+                    Source = "CEP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
                     ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
