@@ -19,6 +19,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Helpers
             var hasRejestr = !string.IsNullOrWhiteSpace(body.NumerRejestracyjny);
             var hasVin = !string.IsNullOrWhiteSpace(body.NumerPodwoziaNadwoziaRamy);
             var hasDok = body.ParametryDokumentuPojazdu is { TypDokumentu: { Length: > 0 }, DokumentSeriaNumer: { Length: > 0 } };
+            var hasIdSystemowyPodmiotu = !string.IsNullOrWhiteSpace(body.IdentyfikatorSystemowyPodmiotu);
+            var hasNumerRejestracyjnyZagraniczny = !string.IsNullOrWhiteSpace(body.NumerRejestracyjnyZagraniczny);
 
             if (hasIdSystemowy)
             {
@@ -39,6 +41,20 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Helpers
                     sb.Append("</typDokumentu>");
                     sb.Append($"<dokumentSeriaNumer>{EnvelopeXml.X(body.ParametryDokumentuPojazdu.DokumentSeriaNumer!)}</dokumentSeriaNumer>");
                     sb.Append("</parametryDokumentuPojazdu>");
+                }
+
+                if (hasNumerRejestracyjnyZagraniczny)
+                {
+                    sb.Append("<parametryPojazduSprowadzonego>");
+                    EnvelopeXml.AppendIfValue(sb, "numerRejestracyjnyZagraniczny", body.NumerRejestracyjnyZagraniczny);
+                    sb.Append("</parametryPojazduSprowadzonego>");
+                }
+
+                if (hasIdSystemowyPodmiotu)
+                {
+                    sb.Append("<parametryPodmiotu>");
+                    EnvelopeXml.AppendIfValue(sb, "identyfikatorSystemowyPodmiotu", body.IdentyfikatorSystemowyPodmiotu);
+                    sb.Append("</parametryPodmiotu>"); 
                 }
 
                 if (hasVin)

@@ -2,11 +2,11 @@
 using System.Net;
 using IntegrationHub.Common.Contracts; // ProxyResponse, ProxyStatus
 
-namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
+namespace IntegrationHub.Common.RequestValidation
 {
     public static class ValidationResultExtensions
     {
-        private const string SourceName = "CEP.Udostepnianie";
+        private const string SourceName = "CEP";
 
         public static ProxyResponse<object> ToProxyResponse(this ValidationResult vr, string requestId)
         {
@@ -21,7 +21,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
             };
         }
 
-        /// Zwraca ProxyResponse<object> jeśli walidacja NIE jest poprawna; w przeciwnym razie null.
+     
+        //Zwraca ProxyResponse<object> jeśli walidacja NIE jest poprawna; w przeciwnym razie null.
         public static ProxyResponse<object>? ToProxyResponseOrNull(this ValidationResult vr, string requestId)
             => vr.IsValid ? null : vr.ToProxyResponse(requestId);
 

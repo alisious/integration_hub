@@ -1,4 +1,5 @@
 ﻿// IntegrationHub.Sources.CEP.Udostepnianie.Mappers/PytanieOPojazdResponseXmlMapper.cs
+using System.Linq;
 using System.Xml.Linq;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
@@ -17,7 +18,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
 
             var resp = new PytanieOPojazdResponse();
 
-            // daneRezultatu -> Meta
+            // === meta ===
             var daneRez = rezultat?.ElementAnyNs("daneRezultatu");
             if (daneRez is not null)
             {
@@ -32,10 +33,18 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                 };
             }
 
-            // pojazd
-            var poj = rezultat?.ElementAnyNs("pojazd");
-            if (poj is null) return resp;
+            // === pojazdy (0..N) ===
+            var pojElems = rezultat?.ElementsAnyNs("pojazd")?.ToList() ?? new();
+            foreach (var poj in pojElems)
+            {
+                resp.Pojazdy.Add(MapPojazd(poj));
+            }
 
+            return resp;
+        }
+
+        private static PojazdDto MapPojazd(XElement poj)
+        {
             var p = new PojazdDto();
 
             // aktualnyIdentyfikatorPojazdu
@@ -176,7 +185,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                 });
             }
 
-            // oc
+            // dane polisy OC
             var oc = poj.ElementAnyNs("danePolisyOC");
             if (oc is not null)
             {
@@ -193,8 +202,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             var anr = poj.ElementAnyNs("oznaczeniePojazduAktualnyNrRejestracyjny");
             p.AktualnyNumerRejestracyjny = anr?.ValueOf("numerOznaczenia");
 
-            resp.Pojazd = p;
-            return resp;
+            return p;
         }
     }
 }

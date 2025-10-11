@@ -54,37 +54,43 @@ namespace IntegrationHub.Sources.CEP.Controllers
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPojazdResponse>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPojazdResponse>), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "CEPIK – Pytanie o pojazd",
-            Description =
-            "<b>Reguły walidacji (minimalne kryteria wyszukiwania)</b><br/>" +
-            "Zapytanie jest akceptowane, gdy spełniony jest <u>co najmniej jeden</u> z warunków:" +
-            "<ul>" +
-            "<li><code>identyfikatorSystemowyPojazdu</code>, albo</li>" +
-            "<li><code>numerRejestracyjny</code>, albo</li>" +
-            "<li><code>numerPodwoziaNadwoziaRamy</code> (VIN), albo</li>" +
-            "<li>para: <code>parametryDokumentuPojazdu.typDokumentu</code> i <code>parametryDokumentuPojazdu.dokumentSeriaNumer</code>." +
-            "<br/><b>Uwaga:</b> jeżeli nie podasz <code>typDokumentu</code>, to domyślnie zostanie ustawiony <code>DICT155_DR</code> (Dowód rejestracyjny).</li>" +
-            "</ul>" +
-            "<b>Dodatkowe pola:</b>" +
-            "<ul>" +
-            "<li><code>dataPrezentacji</code> (opcjonalnie) – prezentuj dane na wskazany moment czasu.</li>" +
-            "<li><code>wyszukiwaniePoDanychHistorycznych</code> (bool, domyślnie <code>false</code>).</li>" +
-            "</ul>" +
-            "<ul>" +
-             "<li>Wszystkie pola są trimowane; kody słownikowe normalizowane do UPPER CASE.</li>" +
-            "</ul>" +
-            "<b>Środowisko testowe:</b>" +
-            "<ul>" +
-            "W środowisku testowym znają się dane pojazdu, dla którego:" +
-            "<li>identyfikatorSystemowyPojazdu = 5302051569907661</li>" +
-            "albo" +
-            "<li>numerRejestracyjny = LU638JU</li>" +
-            "albo" +
-            "<li>dokumentSeriaNumer = BAS4381563</li>" +
-            "albo" +
-            "<li>numerPodwoziaNadwoziaRamy = VF1JX0HSC81543224</li>" +
-            "</ul>"
-        )]
+    Summary = "CEPIK – Pytanie o pojazd",
+    Description =
+    "<b>Minimalne kryteria zapytania</b><br/>" +
+    "<ul>" +
+      "<li><code>typDokumentu</code> <i>i</i> <code>dokumentSeriaNumer</code> <b>lub</b></li>" +
+      "<li><code>numerRejestracyjny</code> <b>lub</b></li>" +
+      "<li><code>numerRejestracyjnyZagraniczny</code> <b>lub</b></li>" +
+      "<li><code>identyfikatorSystemowyPodmiotu</code> <b>lub</b></li>" +
+      "<li><code>identyfikatorSystemowyPojazdu</code> <b>lub</b></li>" +
+      "<li><code>identyfikatorCzynnosci</code> <i>i</i> <code>identyfikatorSystemowyPojazdu</code> <b>lub</b></li>" +
+      "<li><code>numerPodwoziaNadwoziaRamy</code> (VIN) — <u>nie łączyć z innymi parametrami</u>.</li>" +
+    "</ul>" +
+    "<b>Zakres historii</b><br/>" +
+    "W zależności od wartości <code>wyszukiwaniePoDanychHistorycznych</code>, identyfikacja jest prowadzona po całej historii (gdy <code>true</code>) lub tylko po stanie na moment wywołania (gdy <code>false</code>).<br/><br/>" +
+    "<b>Semantyka wyniku</b><br/>" +
+    "Wynikiem zapytania jest <i>pojazd</i> w stanie na:<br/>" +
+    "<ul>" +
+      "<li>przekazaną <code>dataPrezentacji</code>, lub</li>" +
+      "<li>przekazany <code>identyfikatorCzynnosci</code>, lub</li>" +
+      "<li>aktualny stan, jeśli nie podano <code>dataPrezentacji</code> ani <code>identyfikatorCzynnosci</code>.</li>" +
+    "</ul>" +
+    "<b>Uwaga: lista wyników</b><br/>" +
+    "Metoda może zwrócić wiele pojazdów w polu <code>pojazdy</code>. Liczba zwróconych rekordów znajduje się w <code>meta.iloscZwroconychRekordow</code>. Obowiązuje globalny limit: maks. <b>1000</b> obiektów.<br/><br/>" +
+    "<b>Dodatkowe reguły</b><br/>" +
+    "<ul>" +
+      "<li>Jeśli nie podasz <code>typDokumentu</code>, domyślnie przyjmowany jest <code>DICT155_DR</code> (Dowód rejestracyjny).</li>" +
+      "<li>Wszystkie pola są trimowane; kody słownikowe normalizowane do UPPER CASE.</li>" +
+    "</ul>" +
+    "<b>Środowisko testowe:</b>" +
+    "<ul>" +
+      "Dostępne przykładowe dane:" +
+      "<li><code>identyfikatorSystemowyPojazdu = 5302051569907661</code></li>" +
+      "<li><code>numerRejestracyjny = LU638JU</code></li>" +
+      "<li><code>dokumentSeriaNumer = BAS4381563</code></li>" +
+      "<li><code>numerPodwoziaNadwoziaRamy = VF1JX0HSC81543224</code></li>" +
+    "</ul>"
+)]
         public async Task<ProxyResponse<PytanieOPojazdResponse>> PytanieOPojazd(
             [FromBody] PytanieOPojazdRequest body,
             CancellationToken ct)
@@ -150,37 +156,42 @@ namespace IntegrationHub.Sources.CEP.Controllers
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPojazdRozszerzoneResponse>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPojazdRozszerzoneResponse>), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "CEPIK – Pytanie o pojazd (rozszerzone)",
-            Description =
-            "<b>Reguły walidacji (minimalne kryteria wyszukiwania)</b><br/>" +
-            "Zapytanie jest akceptowane, gdy spełniony jest <u>co najmniej jeden</u> z warunków:" +
-            "<ul>" +
-            "<li><code>identyfikatorSystemowyPojazdu</code>, albo</li>" +
-            "<li><code>numerRejestracyjny</code>, albo</li>" +
-            "<li><code>numerPodwoziaNadwoziaRamy</code> (VIN), albo</li>" +
-            "<li>para: <code>parametryDokumentuPojazdu.typDokumentu</code> i <code>parametryDokumentuPojazdu.dokumentSeriaNumer</code>." +
-            "<br/><b>Uwaga:</b> jeżeli nie podasz <code>typDokumentu</code>, to domyślnie zostanie ustawiony <code>DICT155_DR</code> (Dowód rejestracyjny).</li>" +
-            "</ul>" +
-            "<b>Dodatkowe pola:</b>" +
-            "<ul>" +
-            "<li><code>dataPrezentacji</code> (opcjonalnie) – prezentuj dane na wskazany moment czasu.</li>" +
-            "<li><code>wyszukiwaniePoDanychHistorycznych</code> (bool, domyślnie <code>false</code>).</li>" +
-            "</ul>" +
-            "<ul>" +
-             "<li>Wszystkie pola są trimowane; kody słownikowe normalizowane do UPPER CASE.</li>" +
-            "</ul>" +
-            "<b>Środowisko testowe:</b>" +
-            "<ul>" +
-            "W środowisku testowym znają się dane pojazdu, dla którego:" +
-            "<li>identyfikatorSystemowyPojazdu = 5302051569907661</li>" +
-            "albo" +
-            "<li>numerRejestracyjny = LU638JU</li>" +
-            "albo" +
-            "<li>dokumentSeriaNumer = BAS4381563</li>" +
-            "albo" +
-            "<li>numerPodwoziaNadwoziaRamy = VF1JX0HSC81543224</li>" +
-            "</ul>"
-        )]
+    Summary = "CEPIK – Pytanie o pojazd (rozszerzone)",
+    Description =
+    "<b>Minimalne kryteria zapytania</b><br/>" +
+    "<ul>" +
+      "<li><code>typDokumentu</code> <i>i</i> <code>dokumentSeriaNumer</code> <b>lub</b></li>" +
+      "<li><code>numerRejestracyjny</code> <b>lub</b></li>" +
+      "<li><code>numerRejestracyjnyZagraniczny</code> <b>lub</b></li>" +
+      "<li><code>identyfikatorSystemowyPodmiotu</code> <b>lub</b></li>" +
+      "<li><code>identyfikatorSystemowyPojazdu</code> <b>lub</b></li>" +
+      "<li><code>identyfikatorCzynnosci</code> <i>i</i> <code>identyfikatorSystemowyPojazdu</code> <b>lub</b></li>" +
+      "<li><code>numerPodwoziaNadwoziaRamy</code> (VIN) — <u>nie łączyć z innymi parametrami</u>.</li>" +
+    "</ul>" +
+    "<b>Zakres historii</b><br/>" +
+    "Parametr <code>wyszukiwaniePoDanychHistorycznych</code> określa, czy identyfikacja odbywa się po całej historii (<code>true</code>), czy tylko po stanie bieżącym (<code>false</code>).<br/><br/>" +
+    "<b>Semantyka wyniku</b><br/>" +
+    "Wynikiem zapytania jest <i>pojazd</i> w stanie na:<br/>" +
+    "<ul>" +
+      "<li>przekazaną <code>dataPrezentacji</code>, lub</li>" +
+      "<li>przekazany <code>identyfikatorCzynnosci</code>, lub</li>" +
+      "<li>aktualny stan, jeśli nie podano <code>dataPrezentacji</code> ani <code>identyfikatorCzynnosci</code>.</li>" +
+    "</ul>" +
+    "W wyniku zapytania metoda zwraca maksymalnie 1 obiekt (globalny limit).<br/>" +
+    "<b>Dodatkowe reguły</b><br/>" +
+    "<ul>" +
+      "<li>Jeśli nie podasz <code>typDokumentu</code>, domyślnie przyjmowany jest <code>DICT155_DR</code> (Dowód rejestracyjny).</li>" +
+      "<li>Wszystkie pola są trimowane; kody słownikowe normalizowane do UPPER CASE.</li>" +
+    "</ul>" +
+    "<b>Środowisko testowe:</b>" +
+    "<ul>" +
+      "Dostępne przykładowe dane:" +
+      "<li><code>identyfikatorSystemowyPojazdu = 5302051569907661</code></li>" +
+      "<li><code>numerRejestracyjny = LU638JU</code></li>" +
+      "<li><code>dokumentSeriaNumer = BAS4381563</code></li>" +
+      "<li><code>numerPodwoziaNadwoziaRamy = VF1JX0HSC81543224</code></li>" +
+    "</ul>"
+)]
         public async Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzone(
             [FromBody] PytanieOPojazdRequest body,
             CancellationToken ct)
@@ -405,39 +416,62 @@ namespace IntegrationHub.Sources.CEP.Controllers
             }
         }
 
+        
         /// <summary>
         /// CEPIK – Pytanie o podmiot.
-        /// Zwraca <see cref="ProxyResponse{T}"/> z danymi podmiotu (wariant osoba).
+        /// Zwraca <see cref="ProxyResponse{T}"/> z danymi podmiotu (osoba lub firma).
         /// </summary>
         /// <remarks>
-        /// <b>Reguły walidacji (minimalne kryteria wyszukiwania)</b><br/>
-        /// Zapytanie jest akceptowane, gdy spełniony jest warunek:
-        /// <list type="bullet">
-        /// <item><description><c>identyfikatorSystemowyPodmiotu</c> – wymagane.</description></item>
-        /// </list>
+        /// <b>Minimalne kryteria zapytania</b><br/>
+        /// <u>W przypadku identyfikacji firmy:</u><br/>
+        /// - <c>identyfikatorSystemowyPodmiotu</c> lub<br/>
+        /// - <c>REGON</c> lub<br/>
+        /// - <c>nazwaFirmyDrukowana</c> lub<br/>
+        /// - <c>identyfikatorSystemowyREGON</c> lub<br/>
+        /// - <c>zagranicznyNumerIdentyfikacyjny</c> lub<br/>
+        /// - <c>nazwaWojewodztwaStanu</c>, <c>nazwaMiejscowosci</c>, <c>kodPocztowy</c> i <c>numerDomu</c> lub<br/>
+        /// - <c>nazwaWojewodztwaStanu</c>, <c>nazwaMiejscowosci</c>, <c>nazwaUlicy</c> i <c>numerDomu</c><br/><br/>
+        /// <u>W przypadku identyfikacji osoby:</u><br/>
+        /// - <c>identyfikatorSystemowyPodmiotu</c> lub<br/>
+        /// - <c>imiePierwsze</c>, <c>miejsceUrodzenia</c> i <c>nazwisko</c> lub<br/>
+        /// - <c>imiePierwsze</c>, <c>miejsceUrodzeniaKod</c> i <c>nazwisko</c> lub<br/>
+        /// - <c>PESEL</c> lub<br/>
+        /// - <c>nazwaDokumentu</c> i <c>seriaNumerDokumentu</c>.<br/>
         /// Wszystkie pola są trimowane.
+        /// <br/><br/><b>Środowisko testowe:</b> są dostępne dane dla:
+        /// <c>identyfikatorSystemowyPodmiotu = 46801643589320</c> (osoba) oraz
+        /// <c>identyfikatorSystemowyPodmiotu = 7883995899331519</c> (firma).
         /// </remarks>
+        [SwaggerOperation(
+            Summary = "CEPIK – Pytanie o podmiot",
+            Description =
+                "<b>Minimalne kryteria zapytania</b><br/>" +
+                "<u>W przypadku identyfikacji firmy:</u><br/>" +
+                "- <code>identyfikatorSystemowyPodmiotu</code> lub<br/>" +
+                "- <code>REGON</code> lub<br/>" +
+                "- <code>nazwaFirmyDrukowana</code> lub<br/>" +
+                "- <code>identyfikatorSystemowyREGON</code> lub<br/>" +
+                "- <code>zagranicznyNumerIdentyfikacyjny</code> lub<br/>" +
+                "- <code>nazwaWojewodztwaStanu</code>, <code>nazwaMiejscowosci</code>, <code>kodPocztowy</code> i <code>numerDomu</code> lub<br/>" +
+                "- <code>nazwaWojewodztwaStanu</code>, <code>nazwaMiejscowosci</code>, <code>nazwaUlicy</code> i <code>numerDomu</code><br/><br/>" +
+                "<u>W przypadku identyfikacji osoby:</u><br/>" +
+                "- <code>identyfikatorSystemowyPodmiotu</code> lub<br/>" +
+                "- <code>imiePierwsze</code>, <code>miejsceUrodzenia</code> i <code>nazwisko</code> lub<br/>" +
+                "- <code>imiePierwsze</code>, <code>miejsceUrodzeniaKod</code> i <code>nazwisko</code> lub<br/>" +
+                "- <code>PESEL</code> lub<br/>" +
+                "- <code>nazwaDokumentu</code> i <code>seriaNumerDokumentu</code>.<br/>" +
+                "<ul><li>Wszystkie pola są trimowane.</li></ul>" +
+                "<b>Środowisko testowe:</b> " +
+                "dostępne rekordy dla: " +
+                "<code>identyfikatorSystemowyPodmiotu = 46801643589320</code> (osoba) oraz " +
+                "<code>identyfikatorSystemowyPodmiotu = 7883995899331519</code> (firma)."
+        )]
         [HttpPost("pytanie-o-podmiot")]
         [Consumes("application/json")]
         [Produces(typeof(ProxyResponse<PytanieOPodmiotResponse>))]
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPodmiotResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPodmiotResponse>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProxyResponse<PytanieOPodmiotResponse>), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(
-            Summary = "CEPIK – Pytanie o podmiot",
-            Description =
-            "<b>Reguły walidacji (minimalne kryteria wyszukiwania)</b><br/>" +
-            "Zapytanie jest akceptowane, gdy spełniony jest warunek:" +
-            "<ul>" +
-            "<li><code>identyfikatorSystemowyPodmiotu</code> – wymagane.</li>" +
-            "</ul>" +
-            "<ul><li>Wszystkie pola są trimowane.</li></ul>" +
-            "<b>Środowisko testowe:</b>" +
-            "<ul>" +
-            "W środowisku testowym znajdują się dane podmiotu dla:" +
-            "<li>identyfikatorSystemowyPodmiotu = 46801643589320</li>" +
-            "</ul>"
-        )]
         public async Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiot(
             [FromBody] PytanieOPodmiotRequest body,
             CancellationToken ct)

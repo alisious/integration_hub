@@ -7,25 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SprawdzenieOsobyServiceReference
+namespace IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService
 {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://ksip.policja.gov.pl/SprawdzenieOsobyWRDService", ConfigurationName="SprawdzenieOsobyServiceReference.PersonService")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://ksip.policja.gov.pl/SprawdzenieOsobyWRDService", ConfigurationName="IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDServiceReference.PersonService")]
     public interface PersonService
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="um:opSprawdzenieOsoby", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDResponse> SprawdzenieOsobyWRDAsync(SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDRequest request);
+        System.Threading.Tasks.Task<IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDResponse> SprawdzenieOsobyWRDAsync(IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDRequest request);
     }
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequest : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequest
     {
         
         private SprawdzenieOsobyRequestRequestHeader requestHeaderField;
@@ -43,7 +43,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.requestHeaderField = value;
-                this.RaisePropertyChanged("RequestHeader");
             }
         }
         
@@ -58,18 +57,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.requestBodyField = value;
-                this.RaisePropertyChanged("RequestBody");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -78,7 +65,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequestRequestHeader : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequestRequestHeader
     {
         
         private string requestIDField;
@@ -98,7 +85,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.requestIDField = value;
-                this.RaisePropertyChanged("RequestID");
             }
         }
         
@@ -113,7 +99,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.timestampField = value;
-                this.RaisePropertyChanged("Timestamp");
             }
         }
         
@@ -128,18 +113,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.auditRecordField = value;
-                this.RaisePropertyChanged("AuditRecord");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -148,7 +121,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequestRequestHeaderAuditRecord : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequestRequestHeaderAuditRecord
     {
         
         private SystemType systemNameField;
@@ -172,7 +145,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.systemNameField = value;
-                this.RaisePropertyChanged("SystemName");
             }
         }
         
@@ -187,7 +159,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.applicationNameField = value;
-                this.RaisePropertyChanged("ApplicationName");
             }
         }
         
@@ -202,7 +173,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.moduleNameField = value;
-                this.RaisePropertyChanged("ModuleName");
             }
         }
         
@@ -217,7 +187,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.terminalNameField = value;
-                this.RaisePropertyChanged("TerminalName");
             }
         }
         
@@ -232,18 +201,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.userProfileField = value;
-                this.RaisePropertyChanged("UserProfile");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -272,7 +229,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequestRequestHeaderAuditRecordUserProfile : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequestRequestHeaderAuditRecordUserProfile
     {
         
         private string userIDField;
@@ -290,7 +247,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.userIDField = value;
-                this.RaisePropertyChanged("UserID");
             }
         }
         
@@ -305,18 +261,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.unitIDField = value;
-                this.RaisePropertyChanged("UnitID");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -325,7 +269,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class PersonOffencesRecordResponseType : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class PersonOffencesRecordResponseType
     {
         
         private System.DateTime incidentDateField;
@@ -353,7 +297,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.incidentDateField = value;
-                this.RaisePropertyChanged("IncidentDate");
             }
         }
         
@@ -368,7 +311,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.incidentDateFieldSpecified = value;
-                this.RaisePropertyChanged("IncidentDateSpecified");
             }
         }
         
@@ -383,7 +325,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.finePaymentDateField = value;
-                this.RaisePropertyChanged("FinePaymentDate");
             }
         }
         
@@ -398,7 +339,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.finePaymentDateFieldSpecified = value;
-                this.RaisePropertyChanged("FinePaymentDateSpecified");
             }
         }
         
@@ -413,7 +353,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.validationOfDecisonDateField = value;
-                this.RaisePropertyChanged("ValidationOfDecisonDate");
             }
         }
         
@@ -428,7 +367,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.validationOfDecisonDateFieldSpecified = value;
-                this.RaisePropertyChanged("ValidationOfDecisonDateSpecified");
             }
         }
         
@@ -443,18 +381,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.personCriminalRecordClassificationField = value;
-                this.RaisePropertyChanged("PersonCriminalRecordClassification");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -463,7 +389,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class PersonCriminalRecordClassificationType : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class PersonCriminalRecordClassificationType
     {
         
         private string legalClassificationCodeField;
@@ -483,7 +409,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.legalClassificationCodeField = value;
-                this.RaisePropertyChanged("LegalClassificationCode");
             }
         }
         
@@ -498,7 +423,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.classificationCodeField = value;
-                this.RaisePropertyChanged("ClassificationCode");
             }
         }
         
@@ -513,18 +437,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.descriptionField = value;
-                this.RaisePropertyChanged("Description");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -533,7 +445,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequestRequestBody : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequestRequestBody
     {
         
         private object itemField;
@@ -550,18 +462,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.itemField = value;
-                this.RaisePropertyChanged("Item");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -570,7 +470,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequestRequestBodyPerson : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequestRequestBodyPerson
     {
         
         private SprawdzenieOsobyRequestRequestBodyPersonPersonName personNameField;
@@ -588,7 +488,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.personNameField = value;
-                this.RaisePropertyChanged("PersonName");
             }
         }
         
@@ -603,18 +502,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.birthDateField = value;
-                this.RaisePropertyChanged("BirthDate");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -623,7 +510,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyRequestRequestBodyPersonPersonName : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyRequestRequestBodyPersonPersonName
     {
         
         private string firstNameField;
@@ -641,7 +528,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.firstNameField = value;
-                this.RaisePropertyChanged("FirstName");
             }
         }
         
@@ -656,18 +542,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.lastNameField = value;
-                this.RaisePropertyChanged("LastName");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -676,7 +550,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyResponse : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyResponse
     {
         
         private SprawdzenieOsobyResponsePerson personField;
@@ -696,7 +570,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.personField = value;
-                this.RaisePropertyChanged("Person");
             }
         }
         
@@ -711,7 +584,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.offenseRecordField = value;
-                this.RaisePropertyChanged("OffenseRecord");
             }
         }
         
@@ -726,18 +598,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.stateField = value;
-                this.RaisePropertyChanged("State");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -746,7 +606,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyResponsePerson : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyResponsePerson
     {
         
         private SprawdzenieOsobyResponsePersonPersonName personNameField;
@@ -768,7 +628,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.personNameField = value;
-                this.RaisePropertyChanged("PersonName");
             }
         }
         
@@ -783,7 +642,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.pESELNumberField = value;
-                this.RaisePropertyChanged("PESELNumber");
             }
         }
         
@@ -798,7 +656,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.birthDateField = value;
-                this.RaisePropertyChanged("BirthDate");
             }
         }
         
@@ -813,18 +670,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.birthDateFieldSpecified = value;
-                this.RaisePropertyChanged("BirthDateSpecified");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -833,7 +678,7 @@ namespace SprawdzenieOsobyServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby")]
-    public partial class SprawdzenieOsobyResponsePersonPersonName : object, System.ComponentModel.INotifyPropertyChanged
+    public partial class SprawdzenieOsobyResponsePersonPersonName
     {
         
         private string firstNameField;
@@ -851,7 +696,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.firstNameField = value;
-                this.RaisePropertyChanged("FirstName");
             }
         }
         
@@ -866,18 +710,6 @@ namespace SprawdzenieOsobyServiceReference
             set
             {
                 this.lastNameField = value;
-                this.RaisePropertyChanged("LastName");
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null))
-            {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
     }
@@ -890,13 +722,13 @@ namespace SprawdzenieOsobyServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby", Order=0)]
-        public SprawdzenieOsobyServiceReference.SprawdzenieOsobyRequest SprawdzenieOsobyRequest;
+        public IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyRequest SprawdzenieOsobyRequest;
         
         public SprawdzenieOsobyWRDRequest()
         {
         }
         
-        public SprawdzenieOsobyWRDRequest(SprawdzenieOsobyServiceReference.SprawdzenieOsobyRequest SprawdzenieOsobyRequest)
+        public SprawdzenieOsobyWRDRequest(IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyRequest SprawdzenieOsobyRequest)
         {
             this.SprawdzenieOsobyRequest = SprawdzenieOsobyRequest;
         }
@@ -910,26 +742,26 @@ namespace SprawdzenieOsobyServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby", Order=0)]
-        public SprawdzenieOsobyServiceReference.SprawdzenieOsobyResponse SprawdzenieOsobyResponse;
+        public IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyResponse SprawdzenieOsobyResponse;
         
         public SprawdzenieOsobyWRDResponse()
         {
         }
         
-        public SprawdzenieOsobyWRDResponse(SprawdzenieOsobyServiceReference.SprawdzenieOsobyResponse SprawdzenieOsobyResponse)
+        public SprawdzenieOsobyWRDResponse(IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyResponse SprawdzenieOsobyResponse)
         {
             this.SprawdzenieOsobyResponse = SprawdzenieOsobyResponse;
         }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    public interface PersonServiceChannel : SprawdzenieOsobyServiceReference.PersonService, System.ServiceModel.IClientChannel
+    public interface PersonServiceChannel : IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.PersonService, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    public partial class PersonServiceClient : System.ServiceModel.ClientBase<SprawdzenieOsobyServiceReference.PersonService>, SprawdzenieOsobyServiceReference.PersonService
+    public partial class PersonServiceClient : System.ServiceModel.ClientBase<IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.PersonService>, IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.PersonService
     {
         
         /// <summary>
@@ -973,16 +805,16 @@ namespace SprawdzenieOsobyServiceReference
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDResponse> SprawdzenieOsobyServiceReference.PersonService.SprawdzenieOsobyWRDAsync(SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDRequest request)
+        System.Threading.Tasks.Task<IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDResponse> IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.PersonService.SprawdzenieOsobyWRDAsync(IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDRequest request)
         {
             return base.Channel.SprawdzenieOsobyWRDAsync(request);
         }
         
-        public System.Threading.Tasks.Task<SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDResponse> SprawdzenieOsobyWRDAsync(SprawdzenieOsobyServiceReference.SprawdzenieOsobyRequest SprawdzenieOsobyRequest)
+        public System.Threading.Tasks.Task<IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDResponse> SprawdzenieOsobyWRDAsync(IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyRequest SprawdzenieOsobyRequest)
         {
-            SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDRequest inValue = new SprawdzenieOsobyServiceReference.SprawdzenieOsobyWRDRequest();
+            IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDRequest inValue = new IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.SprawdzenieOsobyWRDRequest();
             inValue.SprawdzenieOsobyRequest = SprawdzenieOsobyRequest;
-            return ((SprawdzenieOsobyServiceReference.PersonService)(this)).SprawdzenieOsobyWRDAsync(inValue);
+            return ((IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService.PersonService)(this)).SprawdzenieOsobyWRDAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

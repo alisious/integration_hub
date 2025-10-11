@@ -47,5 +47,11 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Helpers
             sb.Append($"<wyszukiwaniePoDanychHistorycznych>{(wyszukiwaniePoDanychHistorycznych ? "true" : "false")}</wyszukiwaniePoDanychHistorycznych>");
             sb.Append("</parametryCzasowe>");
         }
+
+        public static void AppendIfValue(StringBuilder sb, string tag, string? value)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                sb.Append('<').Append(tag).Append('>').Append(EnvelopeXml.X(value)).Append("</").Append(tag).Append('>');
+        }
     }
 }

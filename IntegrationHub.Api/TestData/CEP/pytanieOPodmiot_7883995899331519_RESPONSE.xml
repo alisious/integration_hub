@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+   <Body>
+      <pytanieOPodmiotRezultat xmlns="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+         <daneRezultatu xmlns="">
+            <identyfikatorTransakcji>27319800-36c4-4201-b866-69c92fae9e64</identyfikatorTransakcji>
+            <iloscZwroconychRekordow>1</iloscZwroconychRekordow>
+            <znacznikCzasowy>2025-10-09T12:54:03</znacznikCzasowy>
+            <identyfikatorUzytkownikaSystemuZewnetrznego>ŻW</identyfikatorUzytkownikaSystemuZewnetrznego>
+            <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+            <znakSprawy>TEST-KACPER</znakSprawy>
+            <wnioskodawca>ŻW</wnioskodawca>
+         </daneRezultatu>
+         <parametryZapytania xmlns="">
+            <pytanieOPodmiot>
+               <parametryPytania xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <!--You may enter the following 5 items in any order-->
+                  <!--Optional:-->
+                  <identyfikatorUzytkownikaSystemuZewnetrznego>ŻW</identyfikatorUzytkownikaSystemuZewnetrznego>
+                  <identyfikatorSystemuZewnetrznego>ŻW</identyfikatorSystemuZewnetrznego>
+                  <wnioskodawca>
+                     <!--You may enter the following 2 items in any order-->
+                     <znakSprawy>TEST-KACPER</znakSprawy>
+                     <wnioskodawca>ŻW</wnioskodawca>
+                  </wnioskodawca>
+               </parametryPytania>
+               <parametryPodmiotu xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:elem="http://elementy.cep.udo.api.cepik.coi.gov.pl">
+                  <!--You may enter the following 3 items in any order-->
+                  <!--Optional:-->
+                  <parametryPodmiotu>
+                     <!--Optional:-->
+                     <identyfikatorSystemowyPodmiotu>7883995899331519</identyfikatorSystemowyPodmiotu>
+                  </parametryPodmiotu>
+                  <!--Optional:-->
+                  <!--Optional:-->
+               </parametryPodmiotu>
+            </pytanieOPodmiot>
+         </parametryZapytania>
+         <podmiot xmlns="">
+            <identyfikatorSystemowyPodmiotu>7883995899331519</identyfikatorSystemowyPodmiotu>
+            <wariantPodmiotu>20</wariantPodmiotu>
+            <!--7883995899331519:20-->
+            <firma>
+               <REGON>47219176700855</REGON>
+               <nazwaFirmy>PKO LEASING SPÓŁKA AKCYJNA ODDZIAŁ W ŁAZACH</nazwaFirmy>
+               <nazwaFirmyDrukowana>PKO LEASING S.A. ODDZIAŁ W ŁAZACH</nazwaFirmyDrukowana>
+               <formaWlasnosci>
+                  <dataOd>1900-01-01T00:00:00</dataOd>
+                  <dataDo>9999-12-31T23:59:59</dataDo>
+                  <kod>DICT252_PRYWATNA</kod>
+                  <wartoscOpisowaSkrocona>Prywatna</wartoscOpisowaSkrocona>
+                  <wartoscOpisowa>Prywatna</wartoscOpisowa>
+                  <dataAktualizacji>2017-09-17T13:32:39</dataAktualizacji>
+                  <status>A</status>
+               </formaWlasnosci>
+               <identyfikatorSystemowyREGON>647219176700855</identyfikatorSystemowyREGON>
+               <adres>
+                  <kraj>
+                     <dataOd>1900-01-01T00:00:00</dataOd>
+                     <dataDo>9999-12-31T23:59:00</dataDo>
+                     <statusRekordu>A</statusRekordu>
+                     <kodNumeryczny>616</kodNumeryczny>
+                     <kodIsoAlfa2>PL</kodIsoAlfa2>
+                     <kodIsoAlfa3>POL</kodIsoAlfa3>
+                     <kodMks>PL</kodMks>
+                     <czyNalezyDoUE>true</czyNalezyDoUE>
+                     <nazwa>Polska</nazwa>
+                     <obywatelstwo>BRAK DANYCH</obywatelstwo>
+                     <dataAktualizacji>2017-10-29T00:56:54</dataAktualizacji>
+                  </kraj>
+                  <kodTeryt>1432032</kodTeryt>
+                  <kodTerytWojewodztwa>14</kodTerytWojewodztwa>
+                  <nazwaWojewodztwaStanu>MAZOWIECKIE</nazwaWojewodztwaStanu>
+                  <kodTerytPowiatu>32</kodTerytPowiatu>
+                  <nazwaPowiatuDzielnicy>WARSZAWSKI ZACHODNI</nazwaPowiatuDzielnicy>
+                  <kodTerytGminy>03</kodTerytGminy>
+                  <nazwaGminy>KAMPINOS</nazwaGminy>
+                  <kodRodzajuGminy>2</kodRodzajuGminy>
+                  <kodPocztowy>05085</kodPocztowy>
+                  <kodTerytMiejscowosci>0003263</kodTerytMiejscowosci>
+                  <nazwaMiejscowosci>ŁAZY</nazwaMiejscowosci>
+                  <kodTerytMiejscowosciPodst>0003263</kodTerytMiejscowosciPodst>
+                  <nazwaMiejscowosciPodst>ŁAZY</nazwaMiejscowosciPodst>
+                  <numerDomu>40A</numerDomu>
+                  <numerLokalu>1</numerLokalu>
+               </adres>
+            </firma>
+         </podmiot>
+      </pytanieOPodmiotRezultat>
+   </Body>
+</Envelope>

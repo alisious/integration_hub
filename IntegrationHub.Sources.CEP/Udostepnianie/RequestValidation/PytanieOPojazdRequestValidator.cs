@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using IntegrationHub.Common.RequestValidation;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
 namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation

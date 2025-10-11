@@ -1,4 +1,5 @@
 using IntegrationHub.Api.Middleware;
+using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Interfaces;
 using IntegrationHub.Common.Providers;
 using IntegrationHub.Infrastructure.Cepik;
@@ -8,6 +9,8 @@ using IntegrationHub.PIESP.Services;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;
+using IntegrationHub.Sources.KSIP.Config;
+using IntegrationHub.Sources.KSIP.Services;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Services;
 using Microsoft.AspNetCore.Http;
@@ -39,26 +42,30 @@ builder.Host.UseSerilog((ctx, services, cfg) =>
 cfg.ReadFrom.Configuration(ctx.Configuration)
        .ReadFrom.Services(services));
 
-//Konfiguracja CORS – na potrzeby testów z localhosta
+//Konfiguracja CORS – PROD + localhost (dev)
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>() ?? Array.Empty<string>();
 
 builder.Services.AddCors(opt =>
 {
-    opt.AddPolicy("Frontend", p =>
-    p.SetIsOriginAllowed(origin =>
-    {
-        // zezwól na ka¿dy localhost / 127.0.0.1 (HTTP/HTTPS)
-        if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
-            return uri.IsLoopback;
-        return false;
-    })
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    //.AllowCredentials()
-    .SetPreflightMaxAge(TimeSpan.FromHours(1)));
+    opt.AddPolicy("PIESP", p =>
+        p
+        // zezwól na originy z appsettings (PROD)
+        .WithOrigins(allowedOrigins)
+        // i dodatkowo zezwól na localhost (dev)
+        .SetIsOriginAllowed(origin =>
+        {
+            if (Uri.TryCreate(origin, UriKind.Absolute, out var uri) && uri.IsLoopback) return true;
+            return allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase);
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        // .AllowCredentials() // w³¹cz TYLKO jeœli faktycznie u¿ywacie cookies/credentials
+        .SetPreflightMaxAge(TimeSpan.FromHours(1))
+    );
 });
+
 
 
 // Add services to the container.
@@ -212,6 +219,31 @@ else
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieService>();
     Log.Information("CEP dzia³a w trybie produkcyjnym.");
 }
+
+/**************************************************************/
+// ====== KSIP CLIENT ======
+// Rejestracja konfiguracji KSIP
+builder.Services.Configure<KSIPConfig>(builder.Configuration.GetSection("ExternalServices:KSIP"));
+var ksipConfig = builder.Configuration.GetSection("ExternalServices:KSIP").Get<KSIPConfig>();
+switch (ksipConfig.SourceMode)
+{
+    case SourceMode.Test:
+        Log.Warning("KSIP dzia³a w trybie testowym.");
+        builder.Services.AddTransient<IKSIPService, KSIPService>();
+        break;
+    case SourceMode.Production:
+        Log.Information("KSIP dzia³a w trybie produkcyjnym.");
+        builder.Services.AddTransient<IKSIPService, KSIPService>();
+        break;
+    case SourceMode.Development:
+        Log.Information("KSIP dzia³a w trybie deweloperskim bez po³¹czenia ze Ÿród³em.");
+        break;
+    default:
+        Log.Warning("KSIP dzia³a bez okreœlonego trybu (brak konfiguracji).");
+        break;
+}
+
+
 
 
 // ====== CONTROLLERS ======
@@ -429,7 +461,7 @@ app.UseMiddleware<ApiAuditMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("Frontend");
+app.UseCors("PIESP");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

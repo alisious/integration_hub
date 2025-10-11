@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using IntegrationHub.Common.Contracts;                     // ProxyResponse<T>, ProxyStatus
+using IntegrationHub.Common.Contracts;
+using IntegrationHub.Common.RequestValidation; // ValidationResult
 using IntegrationHub.Sources.CEP.Services;                 // ICEPUdostepnianieService
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;  // PytanieOPojazdRequest, PytanieOPojazdResponse
 using IntegrationHub.Sources.CEP.Udostepnianie.Mappers;    // PytanieOPojazdResponseXmlMapper
@@ -374,6 +375,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             }
         }
 
+        // IntegrationHub.Sources.CEP.Services/CEPUdostepnianieServiceTest.cs  (fragment metody PytanieOPodmiotAsync)
         public async Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiotAsync(
             PytanieOPodmiotRequest body, string? requestId = null, CancellationToken ct = default)
         {
@@ -394,14 +396,21 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 };
             }
 
-            var xmlPath = Path.Combine(_testDataDir, "pytanieOPodmiot_46801643589320_RESPONSE.xml");
+            // Wymóg: nazwa pliku wg identyfikatora podmiotu
+            if (string.IsNullOrEmpty(body.IdentyfikatorSystemowyPodmiotu))
+            {
+                return Error<PytanieOPodmiotResponse>(requestId, HttpStatusCode.BadRequest,
+                    ProxyStatus.BusinessError, "W trybie testowym wymagany jest identyfikatorSystemowyPodmiotu do doboru pliku testowego.");
+            }
+
+            var fileName = $"pytanieOPodmiot_{body.IdentyfikatorSystemowyPodmiotu}_RESPONSE.xml";
+            var xmlPath = Path.Combine(_testDataDir, fileName);
+
             try
             {
                 if (!File.Exists(xmlPath))
-                {
                     return Error<PytanieOPodmiotResponse>(requestId, HttpStatusCode.InternalServerError,
                         ProxyStatus.TechnicalError, $"Brak pliku z danymi testowymi: {xmlPath}");
-                }
 
                 var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
                 var dto = PytanieOPodmiotResponseXmlMapper.Parse(xml);
@@ -428,6 +437,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     ProxyStatus.TechnicalError, ex.Message);
             }
         }
+
 
 
         // === pomocnicze ===

@@ -10,9 +10,17 @@
         public string EndpointUrl { get; set; } = default!;
         public string ClientCertificateThumbprint { get; set; } = default!;
         public int TimeoutSeconds { get; set; } = 30;
-        public bool TestMode { get; set; } = false;
+        public SourceMode SourceMode { get; set; } = SourceMode.Production;
+        public bool TestMode { get { return SourceMode == SourceMode.Test; } }
         public bool TrustServerCerificate { get; set; } = true;
         
 
+    }
+
+    public enum SourceMode 
+    {
+        Production,
+        Test,
+        Development
     }
 }

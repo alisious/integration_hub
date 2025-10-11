@@ -6,17 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Contracts\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Mapping\" />
-    <Folder Include="Services\" />
+    <Compile Remove="Extensions\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <None Remove="Extensions\**" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IntegrationHub.Common\IntegrationHub.Common.csproj" />
+    <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.ServiceModel.Http" />
-    <PackageReference Include="System.ServiceModel.NetTcp"  />
-    <PackageReference Include="System.ServiceModel.Primitives"  />
+    <PackageReference Include="System.ServiceModel.NetTcp" />
+    <PackageReference Include="System.ServiceModel.Primitives" />
   </ItemGroup>
 </Project>

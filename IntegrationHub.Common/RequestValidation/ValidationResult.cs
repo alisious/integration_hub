@@ -1,5 +1,5 @@
-﻿// IntegrationHub.Sources.CEP.Udostepnianie.Validation/ValidationResult.cs
-namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation
+﻿
+namespace IntegrationHub.Common.RequestValidation
 {
     public sealed class ValidationResult
     {

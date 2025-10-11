@@ -9,6 +9,7 @@ using IntegrationHub.Sources.CEP.Udostepnianie.Services;   // ICepSoapInvoker
 using IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation; // PytanieOPojazdRequestValidator (+ ValidationResultExtensions)
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using IntegrationHub.Common.RequestValidation; // IRequestValidator<T>
 
 using System.Net;
 
@@ -51,7 +52,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
 
     public sealed class CEPUdostepnianieService : ICEPUdostepnianieService
     {
-        private const string SourceName = "CEP.Udostepnianie";
+        private const string SourceName = "CEP";
         private readonly CEPConfig _cfg;
         private readonly ICepSoapInvoker _invoker;
         private readonly ILogger<CEPUdostepnianieService> _logger;

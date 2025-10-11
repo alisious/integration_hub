@@ -1,4 +1,5 @@
 ﻿// IntegrationHub.Sources.CEP.Udostepnianie.Validation/PytanieOHistorieLicznikaRequestValidator.cs
+using IntegrationHub.Common.RequestValidation;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
 namespace IntegrationHub.Sources.CEP.Udostepnianie.RequestValidation

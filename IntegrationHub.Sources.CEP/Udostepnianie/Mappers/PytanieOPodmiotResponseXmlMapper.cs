@@ -17,7 +17,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
 
             var resp = new PytanieOPodmiotResponse();
 
-            // daneRezultatu -> Meta
+            // --- Meta ---
             var daneRez = rezultat?.ElementAnyNs("daneRezultatu");
             if (daneRez is not null)
             {
@@ -35,17 +35,17 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             var podmiot = rezultat?.ElementAnyNs("podmiot");
             if (podmiot is null) return resp;
 
-            var p = new PodmiotOsobaDto
+            var root = new PodmiotAnyDto
             {
                 IdentyfikatorSystemowyPodmiotu = podmiot.ValueOf("identyfikatorSystemowyPodmiotu"),
                 WariantPodmiotu = podmiot.ValueOf("wariantPodmiotu")
             };
 
+            // --- OSOBA ---
             var os = podmiot.ElementAnyNs("osoba");
             if (os is not null)
             {
-                var adres = os.ElementAnyNs("adres");
-                p.Osoba = new OsobaDto
+                root.Osoba = new OsobaDto
                 {
                     PESEL = os.ValueOf("PESEL"),
                     ImiePierwsze = os.ValueOf("imiePierwsze"),
@@ -53,56 +53,83 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
                     DataUrodzenia = os.ValueOf("dataUrodzenia"),
                     MiejsceUrodzeniaKod = os.ValueOf("miejsceUrodzeniaKod"),
                     MiejsceUrodzenia = os.ValueOf("miejsceUrodzenia"),
-                    Adres = adres is null ? null : new AdresDto
-                    {
-                        Kraj = adres.ElementAnyNs("kraj") is { } kraj
-                            ? new KrajDto
-                            {
-                                DataOd = kraj.ValueOf("dataOd"),
-                                DataDo = kraj.ValueOf("dataDo"),
-                                StatusRekordu = kraj.ValueOf("statusRekordu"),
-                                KodNumeryczny = kraj.ValueOf("kodNumeryczny"),
-                                KodIsoAlfa2 = kraj.ValueOf("kodIsoAlfa2"),
-                                KodIsoAlfa3 = kraj.ValueOf("kodIsoAlfa3"),
-                                KodMks = kraj.ValueOf("kodMks"),
-                                CzyNalezyDoUE = kraj.ValueOf("czyNalezyDoUE").ToBool(),
-                                Nazwa = kraj.ValueOf("nazwa"),
-                                Obywatelstwo = kraj.ValueOf("obywatelstwo"),
-                                DataAktualizacji = kraj.ValueOf("dataAktualizacji")
-                            }
-                            : null,
-                        KodTeryt = adres.ValueOf("kodTeryt"),
-                        KodTerytWojewodztwa = adres.ValueOf("kodTerytWojewodztwa"),
-                        NazwaWojewodztwaStanu = adres.ValueOf("nazwaWojewodztwaStanu"),
-                        KodTerytPowiatu = adres.ValueOf("kodTerytPowiatu"),
-                        NazwaPowiatuDzielnicy = adres.ValueOf("nazwaPowiatuDzielnicy"),
-                        KodTerytGminy = adres.ValueOf("kodTerytGminy"),
-                        NazwaGminy = adres.ValueOf("nazwaGminy"),
-                        KodRodzajuGminy = adres.ValueOf("kodRodzajuGminy"),
-                        KodPocztowy = adres.ValueOf("kodPocztowy"),
-                        KodTerytMiejscowosci = adres.ValueOf("kodTerytMiejscowosci"),
-                        NazwaMiejscowosci = adres.ValueOf("nazwaMiejscowosci"),
-                        NazwaMiejscowosciPodst = adres.ValueOf("nazwaMiejscowosciPodst"),
-                        KodTerytUlicy = adres.ValueOf("kodTerytUlicy"),
-                        UlicaCecha = adres.ElementAnyNs("ulicaCecha") is { } u
-                            ? new SlownikZakresowyDto
-                            {
-                                DataOd = u.ValueOf("dataOd"),
-                                DataDo = u.ValueOf("dataDo"),
-                                Kod = u.ValueOf("kod"),
-                                WartoscOpisowaSkrocona = u.ValueOf("wartoscOpisowaSkrocona"),
-                                WartoscOpisowa = u.ValueOf("wartoscOpisowa"),
-                                Status = u.ValueOf("status")
-                            }
-                            : null,
-                        NazwaUlicy = adres.ValueOf("nazwaUlicy"),
-                        NumerDomu = adres.ValueOf("numerDomu"),
-                    }
+                    Adres = MapAdres(os.ElementAnyNs("adres"))
                 };
             }
 
-            resp.Podmiot = p;
+            // --- FIRMA ---
+            var fm = podmiot.ElementAnyNs("firma");
+            if (fm is not null)
+            {
+                root.Firma = new FirmaDto
+                {
+                    REGON = fm.ValueOf("REGON"),
+                    NazwaFirmy = fm.ValueOf("nazwaFirmy"),
+                    NazwaFirmyDrukowana = fm.ValueOf("nazwaFirmyDrukowana"),
+                    IdentyfikatorSystemowyREGON = fm.ValueOf("identyfikatorSystemowyREGON"),
+                    FormaWlasnosci = MapSlownikZakresowy(fm.ElementAnyNs("formaWlasnosci")),
+                    Adres = MapAdres(fm.ElementAnyNs("adres"))
+                };
+            }
+
+            resp.Podmiot = root;
             return resp;
+        }
+
+        // ===== helpers =====
+        private static AdresDto? MapAdres(XElement? adres)
+        {
+            if (adres is null) return null;
+
+            return new AdresDto
+            {
+                Kraj = adres.ElementAnyNs("kraj") is { } kraj
+                    ? new KrajDto
+                    {
+                        DataOd = kraj.ValueOf("dataOd"),
+                        DataDo = kraj.ValueOf("dataDo"),
+                        StatusRekordu = kraj.ValueOf("statusRekordu"),
+                        KodNumeryczny = kraj.ValueOf("kodNumeryczny"),
+                        KodIsoAlfa2 = kraj.ValueOf("kodIsoAlfa2"),
+                        KodIsoAlfa3 = kraj.ValueOf("kodIsoAlfa3"),
+                        KodMks = kraj.ValueOf("kodMks"),
+                        CzyNalezyDoUE = kraj.ValueOf("czyNalezyDoUE").ToBool(),
+                        Nazwa = kraj.ValueOf("nazwa"),
+                        Obywatelstwo = kraj.ValueOf("obywatelstwo"),
+                        DataAktualizacji = kraj.ValueOf("dataAktualizacji")
+                    }
+                    : null,
+                KodTeryt = adres.ValueOf("kodTeryt"),
+                KodTerytWojewodztwa = adres.ValueOf("kodTerytWojewodztwa"),
+                NazwaWojewodztwaStanu = adres.ValueOf("nazwaWojewodztwaStanu"),
+                KodTerytPowiatu = adres.ValueOf("kodTerytPowiatu"),
+                NazwaPowiatuDzielnicy = adres.ValueOf("nazwaPowiatuDzielnicy"),
+                KodTerytGminy = adres.ValueOf("kodTerytGminy"),
+                NazwaGminy = adres.ValueOf("nazwaGminy"),
+                KodRodzajuGminy = adres.ValueOf("kodRodzajuGminy"),
+                KodPocztowy = adres.ValueOf("kodPocztowy"),
+                KodTerytMiejscowosci = adres.ValueOf("kodTerytMiejscowosci"),
+                NazwaMiejscowosci = adres.ValueOf("nazwaMiejscowosci"),
+                NazwaMiejscowosciPodst = adres.ValueOf("nazwaMiejscowosciPodst"),
+                KodTerytUlicy = adres.ValueOf("kodTerytUlicy"),
+                UlicaCecha = MapSlownikZakresowy(adres.ElementAnyNs("ulicaCecha")),
+                NazwaUlicy = adres.ValueOf("nazwaUlicy"),
+                NumerDomu = adres.ValueOf("numerDomu"),
+            };
+        }
+
+        private static SlownikZakresowyDto? MapSlownikZakresowy(XElement? x)
+        {
+            if (x is null) return null;
+            return new SlownikZakresowyDto
+            {
+                DataOd = x.ValueOf("dataOd"),
+                DataDo = x.ValueOf("dataDo"),
+                Status = x.ValueOf("status"),
+                Kod = x.ValueOf("kod"),
+                WartoscOpisowaSkrocona = x.ValueOf("wartoscOpisowaSkrocona"),
+                WartoscOpisowa = x.ValueOf("wartoscOpisowa")
+            };
         }
     }
 }
