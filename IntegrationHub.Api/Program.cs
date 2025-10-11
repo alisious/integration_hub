@@ -28,6 +28,9 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
 Log.Logger = new LoggerConfiguration()
@@ -71,7 +74,7 @@ builder.Services.AddCors(opt =>
 // Add services to the container.
 // ====== DB CONTEXT ======
 builder.Services.AddDbContext<PiespDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IntegrationHubDB")));
 
 //Rejestracja ClientCertificateProvider
 builder.Services.AddSingleton<IClientCertificateProvider, ClientCertificateProvider>();
@@ -249,20 +252,45 @@ switch (ksipConfig.SourceMode)
 // ====== CONTROLLERS ======
 builder.Services.AddControllers();
 
-// ====== AUTHENTICATION ======
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+// ====== AUTHENTICATION (JWT + revocation via jti) ======
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+        o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+
+        o.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async ctx =>
+            {
+                var auth = ctx.HttpContext.RequestServices.GetRequiredService<AuthService>();
+
+                // 1) logout pojedynczego tokenu (JTI blacklist)
+                var jti = ctx.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+                if (string.IsNullOrEmpty(jti) || await auth.IsTokenRevokedAsync(jti))
+                { ctx.Fail("Token revoked or missing jti."); return; }
+
+                // 2) wersjonowanie tokenu (force-logout / zmiana ról)
+                var uidStr = ctx.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var verStr = ctx.Principal?.FindFirst("ver")?.Value;
+                if (!Guid.TryParse(uidStr, out var uid) || !int.TryParse(verStr, out var ver))
+                { ctx.Fail("Missing user id or token version."); return; }
+
+                if (await auth.IsTokenVersionStaleAsync(uid, ver))
+                { ctx.Fail("Token version is stale."); return; }
+            }
         };
     });
+
+
 
 // ====== SWAGGER ======
 builder.Services.AddEndpointsApiExplorer();

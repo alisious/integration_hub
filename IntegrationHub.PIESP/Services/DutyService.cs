@@ -1,14 +1,13 @@
 ﻿using IntegrationHub.PIESP.Models;
 using IntegrationHub.PIESP.Data;
 using IntegrationHub.PIESP.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationHub.PIESP.Services
 {
+    /// <summary>
+    /// Operacje na służbach (planowanie, start/stop, listy).
+    /// </summary>
     public class DutyService
     {
         private readonly PiespDbContext _context;
@@ -18,96 +17,80 @@ namespace IntegrationHub.PIESP.Services
             _context = context;
         }
 
-        public IEnumerable<Duty> GetDutiesForUserOnDate(string badge, DateTime date)
+        /// <summary>
+        /// Zwraca służby użytkownika w danym dniu (domyślnie dzisiaj).
+        /// </summary>
+        public IEnumerable<Duty> GetDutiesForUserByDay(Guid userId, DateTime? day = null)
         {
-            return _context.Set<Duty>()
-                .Where(d => d.BadgeNumber == badge && d.PlannedStartDate.Date == date.Date)
+            var date = (day ?? DateTime.Today).Date;
+            var next = date.AddDays(1);
+
+            return _context.Duties
                 .AsNoTracking()
+                .Where(d => d.UserId == userId && d.Start >= date && d.Start < next)
+                .OrderBy(d => d.Start)
                 .ToList();
         }
 
-        public IEnumerable<Duty> GetAllDutiesForUser(string badge,bool notFinished = true)
+        /// <summary>
+        /// Zwraca służby zaplanowane (Status = Planned) w danym dniu.
+        /// </summary>
+        public IEnumerable<Duty> GetDutiesPlannedForUser(Guid userId, DateTime? day = null)
         {
+            var date = (day ?? DateTime.Today).Date;
+            var next = date.AddDays(1);
+
+            return _context.Duties
+                .AsNoTracking()
+                .Where(d => d.UserId == userId && d.Status == DutyStatus.Planned && d.Start >= date && d.Start < next)
+                .OrderBy(d => d.Start)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Zwraca wszystkie służby użytkownika. Jeśli notFinished=true – bez zakończonych.
+        /// </summary>
+        public IEnumerable<Duty> GetAllDutiesForUser(Guid userId, bool notFinished = true)
+        {
+            var q = _context.Duties.AsNoTracking().Where(d => d.UserId == userId);
             if (notFinished)
-            {
-                return _context.Set<Duty>()
-                .Where(d => d.BadgeNumber == badge && d.Status != DutyStatus.Finished)
-                .AsNoTracking()
-                .ToList();
-            }
-            else
-            {
-                return _context.Set<Duty>()
-                .Where(d => d.BadgeNumber == badge)
-                .AsNoTracking()
-                .ToList();
-            }
-            
+                q = q.Where(d => d.Status != DutyStatus.Finished);
+            return q.OrderByDescending(d => d.Start).ToList();
         }
 
-        public IEnumerable<Duty> GetDutiesPlannedForUser(string badge, DateTime? date)
+        /// <summary>
+        /// Rozpoczyna służbę (zmiana statusu i ActualStart).
+        /// </summary>
+        public bool StartDuty(int dutyId, Guid userId, DateTime startedAt)
         {
-            if (date.HasValue)
-            {
-                return _context.Set<Duty>()
-                .Where(d => d.BadgeNumber == badge && d.Status == DutyStatus.Planned && d.PlannedStartDate.Date == date.Value.Date)
-                .AsNoTracking()
-                .ToList();
-            }
-            else
-            {
-                return _context.Set<Duty>()
-                .Where(d => d.BadgeNumber == badge && d.Status == DutyStatus.Planned)
-                .AsNoTracking()
-                .ToList();
-            }
-
-        }
-
-
-        public Duty? GetDutyForUser(int dutyId, string badge)
-        {
-            return _context.Set<Duty>()
-                .AsNoTracking()
-                .FirstOrDefault(d => d.BadgeNumber == badge && d.Id == dutyId);
-        }
-
-        public Duty? GetCurrentDutyForUser(string badge)
-        {
-            return _context.Set<Duty>()
-                .AsNoTracking()
-                .FirstOrDefault(d => d.BadgeNumber == badge && d.Status == DutyStatus.InProgress);
-        }
-
-
-
-
-        public bool StartDuty(int id, DateTime dt)
-        {
-            var duty = _context.Set<Duty>().FirstOrDefault(d => d.Id == id && d.Status == DutyStatus.Planned);
-            if (duty == null)
+            var duty = _context.Duties.FirstOrDefault(d => d.Id == dutyId && d.UserId == userId);
+            if (duty == null || duty.Status == DutyStatus.InProgress || duty.Status == DutyStatus.Finished)
                 return false;
+            var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId);
 
-            bool hasInProgress = _context.Set<Duty>()
-                .Any(d => d.BadgeNumber == duty.BadgeNumber && d.Status == DutyStatus.InProgress);
-
-            if (hasInProgress)
-                throw new UserAlreadyOnDutyException(duty.BadgeNumber);
+            // Czy jest inna trwająca służba tego użytkownika?
+            var conflict = _context.Duties.Any(d => d.UserId == userId && d.Status == DutyStatus.InProgress);
+            if (conflict)
+                throw new UserAlreadyOnDutyException(user!.BadgeNumber);
 
             duty.Status = DutyStatus.InProgress;
-            duty.ActualStart = dt;
+            duty.ActualStart = startedAt;
+
             _context.SaveChanges();
             return true;
         }
 
-        public bool FinishDuty(int id, DateTime dt)
+        /// <summary>
+        /// Kończy służbę (zmiana statusu i ActualEnd).
+        /// </summary>
+        public bool FinishDuty(int dutyId, Guid userId, DateTime finishedAt)
         {
-            var duty = _context.Set<Duty>().FirstOrDefault(d => d.Id == id && d.Status == DutyStatus.InProgress);
+            var duty = _context.Duties.FirstOrDefault(d => d.Id == dutyId && d.UserId == userId && d.Status == DutyStatus.InProgress);
             if (duty == null)
                 return false;
 
             duty.Status = DutyStatus.Finished;
-            duty.ActualEnd = dt;
+            duty.ActualEnd = finishedAt;
 
             _context.SaveChanges();
             return true;

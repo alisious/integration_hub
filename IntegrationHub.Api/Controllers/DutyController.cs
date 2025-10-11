@@ -2,23 +2,19 @@
 using IntegrationHub.PIESP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntegrationHub.PIESP.Controllers
 {
-    // DutyController.cs
     /// <summary>
-    /// Kontroler odpowiedzialny za operacje związane ze służbami użytkownika.
+    /// Operacje na służbach (przegląd własnych służb, start/finish).
     /// </summary>
-    [Authorize(Roles = "User")]
     [ApiController]
     [Route("piesp/[controller]")]
-    //[ApiExplorerSettings(GroupName = "PIESP")]
+    [Authorize]
+    [SwaggerTag("Służby użytkownika (PIESP)")]
+    [Produces("application/json")]
     public class DutyController : ControllerBase
     {
         private readonly DutyService _duties;
@@ -28,99 +24,81 @@ namespace IntegrationHub.PIESP.Controllers
             _duties = duties;
         }
 
+        private bool TryGetUserId(out Guid userId)
+        {
+            userId = Guid.Empty;
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(idStr, out userId);
+        }
 
-        /// <summary>
-        /// Pobiera listę zaplanowanych służb użytkownika. Opcjonalnie - na podany dzień.
-        /// </summary>
-        /// <param name="date">Data (domyślnie = null).</param>
-        /// <returns>Lista służb.</returns>
+        /// <summary>Zwraca zaplanowane służby (Status = Planned) dla bieżącego użytkownika w danym dniu.</summary>
+        /// <param name="date">Dzień (UTC). Gdy null – dziś.</param>
         [HttpGet("my-planned-duties")]
+        [SwaggerOperation(
+            Summary = "Moje służby – zaplanowane",
+            Description = "Pobiera z bazy służby użytkownika o statusie Planned w wybranym dniu (lub dziś)."
+        )]
+        [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult GetDutiesPlannedForMe([FromQuery] DateTime? date = null)
         {
-            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var duties = _duties.GetDutiesPlannedForUser(badge, date);
+            if (!TryGetUserId(out var userId)) return Forbid();
+            var duties = _duties.GetDutiesPlannedForUser(userId, date);
             return Ok(duties);
         }
 
-
-        /// <summary>
-        /// Pobiera listę służb użytkownika na podany dzień.
-        /// </summary>
-        /// <param name="date">Data (domyślnie dzisiejsza).</param>
-        /// <returns>Lista służb.</returns>
+        /// <summary>Zwraca służby bieżącego użytkownika w danym dniu.</summary>
+        /// <param name="date">Dzień (UTC). Gdy null – dziś.</param>
         [HttpGet("my-duties")]
+        [SwaggerOperation(
+            Summary = "Moje służby – wszystkie w dniu",
+            Description = "Pobiera z bazy wszystkie służby użytkownika w wybranym dniu (lub dziś)."
+        )]
+        [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult GetMyDuties([FromQuery] DateTime? date = null)
         {
-            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var duties = _duties.GetDutiesForUserOnDate(badge, date ?? DateTime.Today);
+            if (!TryGetUserId(out var userId)) return Forbid();
+            var duties = _duties.GetDutiesForUserByDay(userId, date);
             return Ok(duties);
         }
 
-        /// <summary>
-        /// Pobiera bieżącą służbę użytkownika.
-        /// </summary>
-        /// <returns>Szczegóły bieżącej służby lub 404 jeśli brak.</returns>
-        [HttpGet("my-current-duty")]
-        public IActionResult GetMyCurrentDuty()
-        {
-            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var duty = _duties.GetCurrentDutyForUser(badge);
-            return duty != null ? Ok(duty) : NotFound($"Użytkownik z odznaką {badge} nie pełni teraz służby.");
-        }
+        public record StartEndDutyRequest(DateTime DateTimeUtc);
 
-
-
-        /// <summary>
-        /// Rozpoczyna służbę o podanym ID.
-        /// </summary>
-        /// <param name="dutyId">ID służby.</param>
-        /// <param name="req">Data i czas rozpoczęcia.</param>
-        /// <returns>200 OK przy sukcesie, 403 jeśli nieautoryzowany, 409 jeśli użytkownik ma inną służbę.</returns>
+        /// <summary>Rozpoczyna służbę (ustawia Status=InProgress i ActualStart).</summary>
+        /// <param name="dutyId">Id służby.</param>
+        /// <param name="req">Czas rozpoczęcia w UTC.</param>
         [HttpPost("{dutyId}/start")]
+        [SwaggerOperation(
+            Summary = "Start służby",
+            Description = "Startuje wskazaną służbę użytkownika. Waliduje brak innej trwającej służby."
+        )]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         public IActionResult StartDuty(int dutyId, [FromBody] StartEndDutyRequest req)
         {
-            // Check if user is authorized to start this duty
-            // User are allowed to start only their own duties
-
-            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userDuty = _duties.GetDutyForUser(dutyId,badge);
-            if (userDuty is null)
-                return Forbid("You are not authorized to start this duty.");
-
-            try
-            {
-                var result = _duties.StartDuty(dutyId, req.DateTime);
-                return result ? Ok() : BadRequest("Cannot start duty.");
-            }
-            catch (UserAlreadyOnDutyException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
+            if (!TryGetUserId(out var userId)) return Forbid();
+            var ok = _duties.StartDuty(dutyId, userId, req.DateTimeUtc);
+            return ok ? Ok() : Conflict("Nie można rozpocząć tej służby.");
         }
 
-        /// <summary>
-        /// Kończy służbę o podanym ID.
-        /// </summary>
-        /// <param name="dutyId">ID służby.</param>
-        /// <param name="req">Data i czas zakończenia.</param>
-        /// <returns>200 OK lub 403/400.</returns>
+        /// <summary>Kończy służbę (ustawia Status=Finished i ActualEnd).</summary>
+        /// <param name="dutyId">Id służby.</param>
+        /// <param name="req">Czas zakończenia w UTC.</param>
         [HttpPost("{dutyId}/finish")]
+        [SwaggerOperation(
+            Summary = "Zakończenie służby",
+            Description = "Kończy wskazaną służbę użytkownika. Wymaga, by służba była InProgress."
+        )]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         public IActionResult FinishDuty(int dutyId, [FromBody] StartEndDutyRequest req)
         {
-            var badge = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userDuties = _duties.GetDutiesForUserOnDate(badge, req.DateTime);
-            if (!userDuties.Any(d => d.Id == dutyId))
-                return Forbid("You are not authorized to finish this duty.");
-
-            var result = _duties.FinishDuty(dutyId, req.DateTime);
-            return result ? Ok() : BadRequest("Cannot finish duty.");
+            if (!TryGetUserId(out var userId)) return Forbid();
+            var ok = _duties.FinishDuty(dutyId, userId, req.DateTimeUtc);
+            return ok ? Ok() : Conflict("Nie można zakończyć tej służby.");
         }
-
-        /// <summary>
-        /// Model żądania rozpoczęcia lub zakończenia służby.
-        /// </summary>
-        /// <param name="DateTime">Data i godzina operacji.</param>
-        public record StartEndDutyRequest(DateTime DateTime);
     }
-
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace IntegrationHub.PIESP.Models
 {
@@ -16,32 +12,58 @@ namespace IntegrationHub.PIESP.Models
     /// </summary>
     public class Duty
     {
-        /// <summary>Identyfikator służby.</summary>
+        /// <summary>
+        /// Identyfikator służby (klucz główny).
+        /// </summary>
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        /// <summary>Numer odznaki użytkownika przypisanego do służby.</summary>
-        public string BadgeNumber { get; set; }
+        /// <summary>
+        /// Identyfikator użytkownika (GUID) przypisanego do służby (FK do Users.Id).
+        /// </summary>
+        [JsonPropertyName("userId")]
+        public Guid UserId { get; set; }
 
-        /// <summary>Rodzaj służby (np. "Patrol zapobiegawczy").</summary>
-        public string Type { get; set; }
+        /// <summary>
+        /// Rodzaj służby (np. „Patrol zapobiegawczy”).
+        /// </summary>
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = default!;
 
-        /// <summary>Data rozpoczęcia służby (planowana).</summary>
-        public DateTime PlannedStartDate { get; set; }
+        /// <summary>
+        /// Planowana data rozpoczęcia służby.
+        /// </summary>
+        [JsonPropertyName("start")]
+        public DateTime Start { get; set; }
 
-        /// <summary>Godzina rozpoczęcia służby (planowana).</summary>
-        public TimeSpan PlannedStartTime { get; set; }
+        /// <summary>
+        /// Planowana data zakończenia służby (opcjonalnie).
+        /// </summary>
+        [JsonPropertyName("end")]
+        public DateTime? End { get; set; }
 
-        /// <summary>Jednostka organizacyjna (np. OŻW Bydgoszcz).</summary>
-        public string Unit { get; set; }
+        /// <summary>
+        /// Jednostka organizacyjna (np. „OŻW Bydgoszcz”).
+        /// </summary>
+        [JsonPropertyName("unit")]
+        public string? Unit { get; set; }
 
-        /// <summary>Aktualny status służby.</summary>
+        /// <summary>
+        /// Aktualny status służby.
+        /// </summary>
+        [JsonPropertyName("status")]
         public DutyStatus Status { get; set; }
 
-        /// <summary>Faktyczny czas rozpoczęcia służby.</summary>
+        /// <summary>
+        /// Faktyczny czas rozpoczęcia służby (opcjonalnie).
+        /// </summary>
+        [JsonPropertyName("actualStart")]
         public DateTime? ActualStart { get; set; }
 
-        /// <summary>Faktyczny czas zakończenia służby.</summary>
+        /// <summary>
+        /// Faktyczny czas zakończenia służby (opcjonalnie).
+        /// </summary>
+        [JsonPropertyName("actualEnd")]
         public DateTime? ActualEnd { get; set; }
     }
-
 }
