@@ -2,6 +2,7 @@
 using IntegrationHub.Common.Contracts;                       // ProxyResponse<T>, ProxyStatus
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;    // PytanieOPojazdRequest, PytanieOPojazdResponse
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;                   // ICEPUdostepnianieService
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;                  // (opcjonalnie) ładniejszy opis w Swagger
 
@@ -11,6 +12,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
     [ApiController]
     [Route("CEP/udostepnianie")]
     [Produces("application/json")]
+    [Authorize(Roles = "User")]
     public sealed class CEPUdostepnianieController : ControllerBase
     {
         private readonly ICEPUdostepnianieService _service;

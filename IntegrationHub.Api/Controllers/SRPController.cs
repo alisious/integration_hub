@@ -19,7 +19,7 @@ namespace IntegrationHub.Api.Controllers
     
     [ApiController]
     [Route("SRP")]
-    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "User")]
     //[ApiExplorerSettings(GroupName = "SRP")]
     public class SRPController : ControllerBase
     {
