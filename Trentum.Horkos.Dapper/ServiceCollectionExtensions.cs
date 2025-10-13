@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IDbConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
         services.AddScoped<IHorkosDictionaryService, HorkosDictionaryService>();
+        services.AddScoped<IObligationsService, ObligationsService>();
         return services;
     }
 }

@@ -52,7 +52,8 @@ public static class CsvPeopleParser
         string PESEL,
         string Stanowisko,
         string NazwaJednostkiWojskowej,
-        DateTime? DataZwolnienia
+        string DataZwolnienia
+        //DateTime? DataZwolnienia
     );
 
     private static readonly CultureInfo Pl = CultureInfo.GetCultureInfo("pl-PL");
@@ -176,9 +177,9 @@ public static class CsvPeopleParser
             string pesel = GetPesel(Get(row, cPesel));
             string stanowisko = Get(row, cStan);
             string njw = Get(row, cNJW);
-            string dataRaw = Get(row, cDataZw);
-
-            DateTime? dataZwolnienia = TryParseDate(dataRaw, out var dz) ? dz : null;
+            string dataZwolnienia = Get(row, cDataZw);
+            //string dataRaw = Get(row, cDataZw);
+            //DateTime? dataZwolnienia = TryParseDate(dataRaw, out var dz) ? dz : null;
 
             if (string.IsNullOrWhiteSpace(nazwisko) && string.IsNullOrWhiteSpace(pesel))
                 continue;

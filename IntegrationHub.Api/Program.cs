@@ -81,9 +81,10 @@ builder.Services.AddSingleton<IClientCertificateProvider, ClientCertificateProvi
 
 var integrationHubDbConnectionString = builder.Configuration.GetConnectionString("IntegrationHubDB")
              ?? throw new InvalidOperationException("Missing ConnectionStrings:IntegrationHubDB.");
+var horkosDbConnectionString = builder.Configuration.GetConnectionString("HorkosDB")
+             ?? throw new InvalidOperationException("Missing ConnectionStrings:HorkosDB.");
 
-builder.Services.AddHorkosDapper(integrationHubDbConnectionString);
-
+builder.Services.AddHorkosDapper(horkosDbConnectionString);
 builder.Services.AddIntegrationHubSqlInfrastructure(integrationHubDbConnectionString);
 
 

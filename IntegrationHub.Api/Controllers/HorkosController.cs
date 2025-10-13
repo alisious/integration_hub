@@ -14,17 +14,20 @@ namespace IntegrationHub.Api.Controllers;
 [ApiExplorerSettings(GroupName = "v1")]
 public class HorkosController : ControllerBase
 {
-    private readonly IHorkosDictionaryService _dict;
+    private readonly IHorkosDictionaryService _dictService;
     private readonly ILogger<HorkosController> _log;
+    private readonly IObligationsService _obligationsService;
     private readonly string _exportDir;
 
     public HorkosController(
-        IHorkosDictionaryService dict,
+        IHorkosDictionaryService dictService,
         ILogger<HorkosController> log,
+        IObligationsService obligationsService,
         IWebHostEnvironment env)
     {
-        _dict = dict;
+        _dictService = dictService;
         _log = log;
+        _obligationsService = obligationsService;
 
         // Katalog docelowy: <ContentRoot>/App_Data/Horkos/Exports/
         _exportDir = Path.Combine(env.ContentRootPath, "App_Data", "Horkos", "Exports");
@@ -57,11 +60,11 @@ public class HorkosController : ControllerBase
         // (opcjonalnie) słowniki referencyjne
         IReadOnlyList<string>? ranks = null;
         if (request.ValidateRank == true)
-            ranks = await _dict.GetRankReferenceListAsync(ct); // stopnie
+            ranks = await _dictService.GetRankReferenceListAsync(ct); // stopnie
 
         IReadOnlyList<string>? units = null;
         if (request.ValidateUnit == true)
-            units = await _dict.GetUnitNameReferenceListAsync(ct); // nazwy jednostek :contentReference[oaicite:2]{index=2}
+            units = await _dictService.GetUnitNameReferenceListAsync(ct); // nazwy jednostek :contentReference[oaicite:2]{index=2}
 
         await using var inMs = new MemoryStream();
         await request.File.CopyToAsync(inMs, ct);
@@ -126,11 +129,11 @@ public class HorkosController : ControllerBase
         // (opcjonalnie) słowniki referencyjne
         IReadOnlyList<string>? ranks = null;
         if (request.ValidateRank == true)
-            ranks = await _dict.GetRankReferenceListAsync(ct); // stopnie
+            ranks = await _dictService.GetRankReferenceListAsync(ct); // stopnie
 
         IReadOnlyList<string>? units = null;
         if (request.ValidateUnit == true)
-            units = await _dict.GetUnitNameReferenceListAsync(ct); // nazwy jednostek :contentReference[oaicite:3]{index=3}
+            units = await _dictService.GetUnitNameReferenceListAsync(ct); // nazwy jednostek :contentReference[oaicite:3]{index=3}
 
         await using var inMs = new MemoryStream();
         await request.File.CopyToAsync(inMs, ct);
@@ -168,6 +171,67 @@ public class HorkosController : ControllerBase
         return File(bytes, "application/octet-stream", $"{baseName}_{stamp}_WYNIK.csv");
     }
 
+    [HttpPost("import-annual-list")]
+    [Consumes("multipart/form-data")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [RequestSizeLimit(200_000_000)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 200_000_000)]
+    [SwaggerOperation(
+    Summary = "Import rocznej listy (CSV) do dbo.ZobowiazaniaRoczne",
+    Description = "Czyści dane dla wskazanej listy (HorkosListId), następnie ładuje CSV bulkiem. Kolumny zgodne z parserem Annual.",
+    OperationId = "Tools_ImportAnnualList_Csv",
+    Tags = new[] { "Horkos CSV" }
+)]
+    public async Task<IActionResult> ImportAnnualList([FromForm] ImportAnnualCsvRequest request, CancellationToken ct)
+    {
+        if (request.File is null || request.File.Length == 0)
+            return BadRequest("Brak pliku lub plik pusty.");
+
+        await using var ms = new MemoryStream();
+        await request.File.CopyToAsync(ms, ct);
+        ms.Position = 0;
+
+        var inserted = await _obligationsService.ImportAnnualList(ms, request.HorkosListId, request.Rok, ct);
+
+        _log.LogInformation("Annual import done. HorkosListId={Id}, Rok={Rok}, Inserted={Rows}",
+            request.HorkosListId, request.Rok, inserted);
+
+        return Ok(new { inserted });
+    }
+
+    [HttpPost("import-discharged-list")]
+    [Consumes("multipart/form-data")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [RequestSizeLimit(200_000_000)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 200_000_000)]
+    [SwaggerOperation(
+    Summary = "Import listy zwolnionych (CSV) do dbo.ZobowiazaniaPoZwolnieniu",
+    Description = "Czyści dane dla wskazanej listy (HorkosListId), następnie ładuje CSV bulkiem. Kolumny zgodne z parserem Discharged.",
+    OperationId = "Tools_ImportDischargedList_Csv",
+    Tags = new[] { "Horkos CSV" }
+)]
+    public async Task<IActionResult> ImportDischargedList([FromForm] ImportDischargedCsvRequest request, CancellationToken ct)
+    {
+        if (request.File is null || request.File.Length == 0)
+            return BadRequest("Brak pliku lub plik pusty.");
+
+        await using var ms = new MemoryStream();
+        await request.File.CopyToAsync(ms, ct);
+        ms.Position = 0;
+
+        var inserted = await _obligationsService.ImportDischargedList(ms, request.HorkosListId, request.Rok, request.Miesiac, ct);
+
+        _log.LogInformation("Discharged import done. HorkosListId={Id}, Rok={Rok}, Miesiac={M}, Inserted={Rows}",
+            request.HorkosListId, request.Rok, request.Miesiac, inserted);
+
+        return Ok(new { inserted });
+    }
+
+
     /// <summary>Wejściowe parametry walidacji CSV.</summary>
     public sealed class ValidateCsvRequest
     {
@@ -179,6 +243,22 @@ public class HorkosController : ControllerBase
         /// <summary>Gdy true – weryfikuje kolumnę „Nazwa jednostki wojskowej” względem słownika.</summary>
         public bool? ValidateUnit { get; set; }
     }
+
+    public sealed class ImportAnnualCsvRequest
+    {
+        [Required] public IFormFile File { get; set; } = default!;
+        [Required] public int HorkosListId { get; set; }
+        [Required] public int Rok { get; set; }
+    }
+
+    public sealed class ImportDischargedCsvRequest
+    {
+        [Required] public IFormFile File { get; set; } = default!;
+        [Required] public int HorkosListId { get; set; }
+        [Required] public int Rok { get; set; }
+        [Required][RegularExpression(@"^\d{1,2}$")] public string Miesiac { get; set; } = default!;
+    }
+
 
     // ===== helpers =====
 
