@@ -35,6 +35,7 @@ namespace IntegrationHub.PIESP.Data
                 e.HasIndex(x => x.BadgeNumber).IsUnique();
                 e.Property(x => x.UnitName).HasMaxLength(200);
                 e.Property(x => x.IsActive).HasDefaultValue(true);
+                e.Property(x => x.KsipUserId).HasMaxLength(64);
                 e.Property(x => x.PinHash).HasMaxLength(200);
                 e.Property(x => x.TokenVersion)
                     .IsRequired()

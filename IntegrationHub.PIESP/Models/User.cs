@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace IntegrationHub.PIESP.Models
@@ -28,6 +29,12 @@ namespace IntegrationHub.PIESP.Models
         [JsonPropertyName("isActive")]
         public bool IsActive { get; set; } = true;
 
+        /// <summary>
+        /// Id użytkownika w systemie KSIP (opcjonalny). Może być NULL dopóki nie nastąpi powiązanie.
+        /// </summary>
+        [JsonPropertyName("ksipUserId")]
+        public string? KsipUserId { get; set; }
+
         /// <summary>Hash PIN (nie jest serializowany do JSON).</summary>
         [JsonIgnore]
         public string? PinHash { get; set; }
@@ -36,7 +43,7 @@ namespace IntegrationHub.PIESP.Models
         /// Wersja tokenu (security stamp). Inkrementowana przy force-logout / zmianie ról.
         /// Służy tylko do walidacji serwerowej.
         /// </summary>
-        [JsonIgnore] // ← jeśli chcesz widzieć w /me, usuń ten atrybut i dodaj [JsonPropertyName("tokenVersion")]
+        [JsonIgnore]
         public int TokenVersion { get; set; } = 0;
 
         /// <summary>Lista ról przypisanych do użytkownika.</summary>

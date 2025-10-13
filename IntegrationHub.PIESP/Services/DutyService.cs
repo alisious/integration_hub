@@ -66,6 +66,7 @@ namespace IntegrationHub.PIESP.Services
             var duty = _context.Duties.FirstOrDefault(d => d.Id == dutyId && d.UserId == userId);
             if (duty == null || duty.Status == DutyStatus.InProgress || duty.Status == DutyStatus.Finished)
                 return false;
+
             var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == userId);
 
             // Czy jest inna trwająca służba tego użytkownika?
@@ -94,6 +95,21 @@ namespace IntegrationHub.PIESP.Services
 
             _context.SaveChanges();
             return true;
+        }
+
+        /// <summary>
+        /// Zwraca aktualnie trwającą służbę użytkownika (Status = InProgress).
+        /// Założenie biznesowe: jeden użytkownik może mieć co najwyżej jedną służbę w toku.
+        /// Jeśli w bazie są >1 rekordy InProgress – zostanie rzucony InvalidOperationException (SingleOrDefault).
+        /// </summary>
+        /// <param name="userId">Id użytkownika.</param>
+        /// <returns>Bieżąca służba lub null, gdy brak.</returns>
+        public Duty? GetCurrentDutyForUser(Guid userId)
+        {
+            return _context.Duties
+                .AsNoTracking()
+                .Where(d => d.UserId == userId && d.Status == DutyStatus.InProgress)
+                .SingleOrDefault();
         }
     }
 }

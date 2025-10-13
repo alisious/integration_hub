@@ -1,4 +1,5 @@
 ﻿using IntegrationHub.PIESP.Exceptions;
+using IntegrationHub.PIESP.Models;
 using IntegrationHub.PIESP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,36 @@ namespace IntegrationHub.PIESP.Controllers
             if (!TryGetUserId(out var userId)) return Forbid();
             var duties = _duties.GetDutiesForUserByDay(userId, date);
             return Ok(duties);
+        }
+
+        /// <summary>
+        /// Zwraca aktualnie trwającą służbę bieżącego użytkownika (Status = InProgress).
+        /// Założenie: użytkownik może mieć tylko jedną służbę w toku.
+        /// </summary>
+        [HttpGet("my-current-duty")]
+        [SwaggerOperation(
+            Summary = "Moja służba w toku",
+            Description = "Zwraca pojedynczy rekord służby o statusie InProgress dla aktualnie zalogowanego użytkownika. " +
+                          "Jeśli brak – HTTP 404. Jeśli wykryto wiele rekordów InProgress (błąd danych) – HTTP 409."
+        )]
+        [ProducesResponseType(typeof(Duty), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        public IActionResult GetMyCurrentDuty()
+        {
+            if (!TryGetUserId(out var userId)) return Forbid();
+
+            try
+            {
+                var duty = _duties.GetCurrentDutyForUser(userId);
+                return duty is null ? NotFound() : Ok(duty);
+            }
+            catch (InvalidOperationException)
+            {
+                // SingleOrDefault wykrył >1 rekord – naruszenie założenia biznesowego
+                return Conflict("W systemie istnieje więcej niż jedna służba w toku dla tego użytkownika.");
+            }
         }
 
         public record StartEndDutyRequest(DateTime DateTimeUtc);
