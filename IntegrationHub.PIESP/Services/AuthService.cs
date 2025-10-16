@@ -75,16 +75,18 @@ namespace IntegrationHub.PIESP.Services
             return user;
         }
 
-        /// <summary>Logowanie: znajduje użytkownika po odznace, sprawdza PIN i aktywność. Zwraca <c>User</c> (kontroler generuje tokeny).</summary>
+        /// <summary>Logowanie: znajduje użytkownika po odznace, sprawdza PIN. Zwraca <c>User</c> (kontroler generuje tokeny).</summary>
         public async Task<User?> LoginAsync(string badge, string pin)
         {
             try
             {
                 var user = await _context.Users
                     .Include(u => u.Roles)
-                    .FirstOrDefaultAsync(u => u.BadgeNumber == badge && u.IsActive);
-
+                    .FirstOrDefaultAsync(u => u.BadgeNumber == badge);
+                                
                 if (user == null) return null;
+
+
                 if (!PinHasher.Verify(pin, user.PinHash)) return null;
 
                 return user;

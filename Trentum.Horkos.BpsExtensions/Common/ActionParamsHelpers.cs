@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using WebCon.WorkFlow.SDK.ActionPlugins.Model;
 
-namespace Trentum.Horkos.BpsExtensions
+namespace Trentum.Horkos.BpsExtensions.Common
 {
     public static class ActionParamsHelpers
     {

@@ -3,8 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
-using Trentum.Common.Csv;
+using System.Transactions; // 👈
+using Trentum.Common.Excel;
+using Trentum.Horkos.BpsExtensions.Common;
 using WebCon.WorkFlow.SDK.ActionPlugins;
 using WebCon.WorkFlow.SDK.ActionPlugins.Model;
 using WebCon.WorkFlow.SDK.Tools.Data;
@@ -12,7 +13,7 @@ using WebCon.WorkFlow.SDK.Tools.Data.Model;
 
 namespace Trentum.Horkos.BpsExtensions
 {
-    public class ValidateCsvDischargedListAction : CustomAction<ValidateCsvDischargedListActionConfig>
+    public class ValidateDischargedListAction : CustomAction<ValidateDischargedListActionConfig>
     {
         public override async Task RunAsync(RunCustomActionParams args)
         {
@@ -24,7 +25,6 @@ namespace Trentum.Horkos.BpsExtensions
 
             int? _referenceListConnectionId = Configuration.ValidationConditionsGroupBox.ReferenceListConnectionId;
             int? _rankDataSourceId = Configuration.ValidationDataSourcesGroupBox.RankDataSourceID;
-            string _rankDataSourceAttribute = Configuration.ValidationDataSourcesGroupBox.RankDataSourceAttribute ?? "WFD_AttText1";
             int? _unitDataSourceId = Configuration.ValidationDataSourcesGroupBox.UnitDataSourceID;
 
             var _log = new StringBuilder();
@@ -41,8 +41,9 @@ namespace Trentum.Horkos.BpsExtensions
                 if (atts.Count > 1) throw new Exception("Dozwolony jest tylko 1 załącznik.");
 
                 var attachment = atts[0];
-                if (!attachment.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
-                    throw new Exception("Załącznik nie jest plikiem CSV (.csv)");
+                if (!attachment.FileName.EndsWith(".xls", StringComparison.OrdinalIgnoreCase) &&
+                    !attachment.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                    throw new Exception("Załącznik nie jest arkuszem Excel (.xlsx)");
 
                 _log.AppendLine($"Załącznik: {attachment.FileName}");
 
@@ -110,7 +111,7 @@ namespace Trentum.Horkos.BpsExtensions
                         if (_validateRank)
                         {
                             var dt = await dsHelper.GetDataTableFromDataSourceAsync(new GetDataTableFromDataSourceParams(_rankDataSourceId.Value));
-                            rankRefList = DataTableHelpers.GetStrings(dt, _rankDataSourceAttribute, distinct: false, ignoreNullOrWhiteSpace: true);
+                            rankRefList = DataTableHelpers.GetStrings(dt, "WFD_AttText1", distinct: false, ignoreNullOrWhiteSpace: true);
                             _log.AppendLine("Pobrano referencyjną listę stopni.");
                         }
                     }
@@ -120,29 +121,26 @@ namespace Trentum.Horkos.BpsExtensions
                 using (var outMs = new MemoryStream())
                 {
 
-                    inMs.Position = 0;
-
-                    var resultBytes = CsvListValidator.ValidateDischargedCsv(
-                        inputCsv: inMs,
-                        summary: out var summary,
+                    var summary = ExcelSheetValidator.ValidateAndAnnotate(
+                        input: inMs,
+                        output: outMs,
+                        sheetName: null,
+                        requiredHeaders: new[]{"Stopień", "Imiona", "Nazwisko", "PESEL","Stanowisko", "Nazwa jednostki wojskowej","Data zwolnienia"},
                         headerRow: 1,
-                        validatePesel: true,
+                        validatePesel: _validatePesel,
                         validatePeselDuplicates: _validatePeselDuplicates,
+                        validateUnitName: _validateUnitName,
                         validateRank: _validateRank,
-                        validRanks: rankRefList,
                         validateDischargeDate: _validateDischargeDate,
-                        validateUnit: _validateUnitName,
-                        validUnits: unitRefList
+                        unitNameReferenceList: unitRefList,
+                        rankReferenceList: rankRefList
                     );
-                    resultBytes = EnsureUtf8Bom(resultBytes);
-                    outMs.Write(resultBytes, 0, resultBytes.Length);
+
                     outMs.Position = 0;
 
                     // Usuń oryginał i dodaj wynik — ZAWSZE await
                     await args.Context.CurrentDocument.Attachments.RemoveAsync(attachment);
-
-                    var stamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
-                    var wynikFileName = $"lista_zwolnionych_{stamp}_WYNIK.csv";
+                    var wynikFileName = "Wynik_walidacji" + attachment.FileExtension;
                     await args.Context.CurrentDocument.Attachments.AddNewAsync(wynikFileName, outMs.ToArray());
                     _log.AppendLine($"Dodano wynik: {wynikFileName}");
 
@@ -153,7 +151,7 @@ namespace Trentum.Horkos.BpsExtensions
                         await args.Context.CurrentDocument.IntegerFields.GetByID(Configuration.ValidationResultsGroupBox.ValidRowsCountFormFieldID.Value).SetValueAsync(summary.ValidRows);
                     if (Configuration.ValidationResultsGroupBox.PeselDuplicatesCountFormFieldID.HasValue)
                     {
-                        var peselDupCount = summary.PeselDuplicatesCount.Sum(d => d.Value);
+                        var peselDupCount = summary.PeselDuplicatesCount.Sum(d=>d.Value);
                         await args.Context.CurrentDocument.IntegerFields.GetByID(Configuration.ValidationResultsGroupBox.PeselDuplicatesCountFormFieldID.Value).SetValueAsync(peselDupCount);
                     }
                     if (Configuration.ValidationResultsGroupBox.ErrorRowsCountFormFieldID.HasValue)
@@ -163,7 +161,7 @@ namespace Trentum.Horkos.BpsExtensions
 
                 }
 
-
+                
 
             }
             catch (Exception ex)
@@ -179,18 +177,6 @@ namespace Trentum.Horkos.BpsExtensions
                 args.Context.PluginLogger.AppendDebug(_log.ToString());
                 args.LogMessage = _log.ToString();
             }
-        }
-
-        private static byte[] EnsureUtf8Bom(byte[] bytes)
-        {
-            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
-                return bytes; // already has BOM
-
-            var bom = new byte[] { 0xEF, 0xBB, 0xBF };
-            var fixedBytes = new byte[bom.Length + bytes.Length];
-            Buffer.BlockCopy(bom, 0, fixedBytes, 0, bom.Length);
-            Buffer.BlockCopy(bytes, 0, fixedBytes, bom.Length, bytes.Length);
-            return fixedBytes;
         }
     }
 }

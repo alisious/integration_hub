@@ -348,43 +348,6 @@ builder.Services.AddSwaggerGen(options =>
         Items = new OpenApiSchema { Type = "string", Format = "binary" }
     });
 
-    // options.SwaggerDoc("SRP", new OpenApiInfo
-    // {
-    //     Title = "SRP API",
-    //     Version = "v1",
-    //     Description = @"SRP API"
-    // });
-
-    // Automatycznie przypisuje kontrolery do odpowiednich grup
-
-    //options.DocInclusionPredicate((docName, apiDesc) =>
-    //{
-    //    var groupName = apiDesc.GroupName ?? "default";
-    //    return string.Equals(groupName, docName, StringComparison.OrdinalIgnoreCase);
-    //});
-
-
-    //options.DocInclusionPredicate((groupName, apiDesc) =>
-    //{
-    //    var declaredGroupName = apiDesc.GroupName;
-    //    return string.Equals(groupName, declaredGroupName, StringComparison.OrdinalIgnoreCase);
-    //});
-    //options.TagActionsBy(api => new[] { api.GroupName });
-
-    //// Dodaj obs³ugê komentarzy XML z projektów IntegrationHub
-    //// Domyœlny plik XML z tego projektu
-    //var basePath = AppContext.BaseDirectory;
-    //var srpXml = Path.Combine(basePath, "IntegrationHub.SRP.xml");
-    //var piespXml = Path.Combine(basePath, "IntegrationHub.PIESP.xml");
-    //var commonXml = Path.Combine(basePath, "IntegrationHub.Common.xml");
-
-    //foreach (var xml in new[] { srpXml, piespXml, commonXml })
-    //{
-    //    if (File.Exists(xml))
-    //        options.IncludeXmlComments(xml, includeControllerXmlComments: true);
-    //}
-
-
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -408,9 +371,11 @@ builder.Services.AddSwaggerGen(options =>
     options.ExampleFilters();// ¿eby dzia³a³y [SwaggerResponseExample]
 });
 
-// Wskazanie assembly, w którym s¹ klasy przyk³adów wyników dzia³ania metod SRPController:
+// Wskazanie assembly, w którym s¹ klasy przyk³adów wyników dzia³ania metod konrolerów:
 builder.Services.AddSwaggerExamplesFromAssemblyOf<
     IntegrationHub.Api.Swagger.Examples.SRP.SearchPerson200Example>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<
+    IntegrationHub.Api.Swagger.Examples.PIESP.Login401Example>();
 
 // ====== BUILD ======
 var app = builder.Build();

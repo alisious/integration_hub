@@ -1,9 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using IntegrationHub.Api.Swagger.Examples.PIESP;
 using IntegrationHub.PIESP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace IntegrationHub.PIESP.Controllers
 {
@@ -90,11 +92,15 @@ namespace IntegrationHub.PIESP.Controllers
             Description = "Zwraca krótkotrwały access token i długotrwały refresh token. Access zawiera UserId (NameIdentifier), jti oraz ver (TokenVersion)."
         )]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(Login401Example))]
+        [SwaggerResponseExample(StatusCodes.Status403Forbidden, typeof(Login403Example))]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
             var user = await _authService.LoginAsync(req.BadgeNumber, req.Pin);
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("Nie udało się zalogować. Sprawdź numer odznaki i PIN i spróbuj ponownie.");
+            if (!user.IsActive) return Forbid("Konto jest zablokowane lub nieaktywne. Skontaktuj się z przełożonym.");
 
             var access = _authService.IssueAccessToken(user);
             var (refresh, _, _) = await _authService.IssueRefreshTokenAsync(user.Id);

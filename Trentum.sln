@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trentum.Common.Csv", "Trentum.Common.Csv\Trentum.Common.Csv.csproj", "{13527C62-2AC2-49D4-BAE8-2C2ABB12353D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Sources.ANPRS", "IntegrationHub.Sources.ANPRS\IntegrationHub.Sources.ANPRS.csproj", "{0D88F183-D44E-4EC4-A4F0-C280051B0E03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,10 @@ Global
 		{13527C62-2AC2-49D4-BAE8-2C2ABB12353D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13527C62-2AC2-49D4-BAE8-2C2ABB12353D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13527C62-2AC2-49D4-BAE8-2C2ABB12353D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D88F183-D44E-4EC4-A4F0-C280051B0E03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D88F183-D44E-4EC4-A4F0-C280051B0E03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D88F183-D44E-4EC4-A4F0-C280051B0E03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D88F183-D44E-4EC4-A4F0-C280051B0E03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

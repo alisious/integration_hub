@@ -1,4 +1,5 @@
-﻿using WebCon.WorkFlow.SDK.Common;
+﻿using Trentum.Horkos.BpsExtensions.Common;
+using WebCon.WorkFlow.SDK.Common;
 using WebCon.WorkFlow.SDK.ConfigAttributes;
 
 namespace Trentum.Horkos.BpsExtensions
