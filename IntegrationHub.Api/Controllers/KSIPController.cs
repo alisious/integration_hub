@@ -2,10 +2,9 @@
 using IntegrationHub.Common.Contracts;                           // ProxyResponse<T>, ProxyStatus
 using IntegrationHub.Sources.KSIP.Contracts;                     // SprawdzenieOsobyWRuchuDrogowymRequest/Response
 using IntegrationHub.Sources.KSIP.Services;                      // ISprawdzenieOsobyWRuchuDrogowymService
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;                        // SwaggerOperation
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +14,6 @@ namespace IntegrationHub.Sources.KSIP.Controllers
     [ApiController]
     [Route("KSIP")]
     [Produces("application/json")]
-    [Authorize(Roles = "User")]
     public sealed class KSIPController : ControllerBase
     {
         private readonly IKSIPService _service;
@@ -69,7 +67,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
             try
             {
                 var result = await _service.SprawdzenieOsobyWRuchuDrogowymAsync(body, requestId, ct);
-               
+
                 if (result.Status != ProxyStatus.Success)
                 {
                     _logger.LogWarning(

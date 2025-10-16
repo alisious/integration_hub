@@ -12,7 +12,7 @@
         public int TimeoutSeconds { get; set; } = 30;
         public SourceMode SourceMode { get; set; } = SourceMode.Production;
         public bool TestMode { get { return SourceMode == SourceMode.Test; } }
-        public bool TrustServerCerificate { get; set; } = true;
+        public bool TrustServerCertificate { get; set; } = true;
         
 
     }

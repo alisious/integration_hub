@@ -67,7 +67,7 @@ public sealed class CEPSlownikiService : ICEPSlownikiService
 
         // 3) (DEV/TEST) zaufanie do serwera – per kanał
         client.ChannelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode =
-            _cfg.TrustServerCerificate
+            _cfg.TrustServerCertificate
                 ? X509CertificateValidationMode.None
                 : X509CertificateValidationMode.ChainTrust;
 

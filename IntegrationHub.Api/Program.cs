@@ -6,6 +6,7 @@ using IntegrationHub.Infrastructure.Cepik;
 using IntegrationHub.Infrastructure.Sql;
 using IntegrationHub.PIESP.Data;
 using IntegrationHub.PIESP.Services;
+using IntegrationHub.Sources.ANPRS.Config;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;
@@ -13,6 +14,7 @@ using IntegrationHub.Sources.KSIP.Config;
 using IntegrationHub.Sources.KSIP.Services;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore; // Add this using directive for 'UseSqlServer'
@@ -23,14 +25,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Security;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using IntegrationHub.Sources.ANPRS.Extensions;
+
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
 Log.Logger = new LoggerConfiguration()
@@ -146,7 +149,7 @@ builder.Services.AddHttpClient("SrpServiceClient", c =>
     h.SslOptions = new SslClientAuthenticationOptions
     {
         ClientCertificates = new X509CertificateCollection { clientCert },
-        RemoteCertificateValidationCallback = config.TrustServerCerificate
+        RemoteCertificateValidationCallback = config.TrustServerCertificate
             ? new RemoteCertificateValidationCallback((_, _, _, _) => true)
             : null
     };
@@ -246,6 +249,32 @@ switch (ksipConfig.SourceMode)
         Log.Warning("KSIP dzia³a bez okreœlonego trybu (brak konfiguracji).");
         break;
 }
+
+/**************************************************************/
+// ====== ANPRS CLIENT ======
+builder.Services.AddANPRS(builder.Configuration);
+
+// Log trybu pracy ANPRS (analogicznie jak dla KSIP)
+var anprsConfig = builder.Configuration.GetSection("ExternalServices:ANPRS").Get<ANPRSConfig>();
+switch (anprsConfig?.SourceMode)
+{
+    case SourceMode.Production:
+        Log.Information("ANPRS dzia³a w trybie produkcyjnym.");
+        break;
+
+    case SourceMode.Test:
+        Log.Warning("ANPRS dzia³a w trybie testowym.");
+        break;
+
+    case SourceMode.Development:
+        Log.Information("ANPRS dzia³a w trybie deweloperskim bez po³¹czenia ze Ÿród³em.");
+        break;
+
+    default:
+        Log.Warning("ANPRS dzia³a bez okreœlonego trybu (brak konfiguracji ExternalSources:ANPRS:SourceMode).");
+        break;
+}
+
 
 
 
@@ -376,6 +405,8 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<
     IntegrationHub.Api.Swagger.Examples.SRP.SearchPerson200Example>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<
     IntegrationHub.Api.Swagger.Examples.PIESP.Login401Example>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<
+    IntegrationHub.Api.Swagger.Examples.ANPRS.Code400InvalidParameterExample>();
 
 // ====== BUILD ======
 var app = builder.Build();

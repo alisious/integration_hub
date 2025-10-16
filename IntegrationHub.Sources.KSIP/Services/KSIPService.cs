@@ -116,7 +116,7 @@ namespace IntegrationHub.Sources.KSIP.Services
                 var clientCert = _certProvider.GetClientCertificate(_cfg);
                 client.ClientCredentials.ClientCertificate.Certificate = clientCert;
 
-                if (_cfg.TrustServerCerificate)
+                if (_cfg.TrustServerCertificate)
                 {
                     System.Net.ServicePointManager.ServerCertificateValidationCallback = (_, __, ___, ____) => true;
                 }

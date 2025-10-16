@@ -44,7 +44,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var clientCert = _certProvider.GetClientCertificate(cfg);
             handler.ClientCertificates.Add(clientCert);
 
-            if (cfg.TrustServerCerificate)
+            if (cfg.TrustServerCertificate)
                 handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
             var started = ValueStopwatch.StartNew();

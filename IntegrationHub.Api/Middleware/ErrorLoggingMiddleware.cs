@@ -41,6 +41,19 @@ namespace IntegrationHub.Api.Middleware
                 };
                 await context.Response.WriteAsJsonAsync(problem);
             }
+            catch (CertificateException ex) 
+            {
+                _logger.LogError(ex, "Błąd: {Method} {Path}", context.Request.Method, context.Request.Path);
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response.ContentType = "application/problem+json";
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    type = "about:blank",
+                    title = ex.Message,
+                    status = (int)HttpStatusCode.BadRequest,
+                    traceId = context.TraceIdentifier
+                });
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Błąd: {Method} {Path}", context.Request.Method, context.Request.Path);
