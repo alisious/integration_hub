@@ -1,17 +1,14 @@
-﻿using IntegrationHub.Api.Swagger.Examples.ANPRS;
+﻿
+using IntegrationHub.Api.Swagger.Examples.ANPRS;
 using IntegrationHub.Application.ANPRS;                    // IANPRSDictionaryFacade, IANPRSReportsFacade
 using IntegrationHub.Common.Contracts;                   // ProxyResponse, ProxyResponses, ProxyStatus
 using IntegrationHub.Common.Exceptions;                  // Countries401Example, ...Countries404Example
 using IntegrationHub.Domain.Contracts.ANPRS;
 using IntegrationHub.Sources.ANPRS.Client;                // ANPRSHttpException (rzucany przez ANPRSHttpClient)
-using IntegrationHub.Sources.ANPRS.Contracts;             // DictionaryResponse (used for swagger examples)
-using IntegrationHub.Sources.ANPRS.Contracts.IntegrationHub.Sources.ANPRS.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;                     // SwaggerResponseExample
 using System.Text.Json;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace IntegrationHub.Api.Controllers
 {
@@ -107,7 +104,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                                    var data = await _facade.GetBCPAsync(ct);
+                var data = await _facade.GetBCPAsync(ct);
                 if (data is null)
                     return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
@@ -202,7 +199,7 @@ namespace IntegrationHub.Api.Controllers
                 return BadRequest("Parametr 'country' jest wymagany (np. PLN/EST/LTV/LVA).");
 
             await _facade.SaveSystemsToDbAsync(country, ct);
-            return Ok($"Słownik Systemów został pobrany i zapisany w lokalnym repozytorium dla kraju={country.ToUpperInvariant()}.");   
+            return Ok($"Słownik Systemów został pobrany i zapisany w lokalnym repozytorium dla kraju={country.ToUpperInvariant()}.");
         }
 
         [HttpGet("dictionary/systems/local")]
@@ -254,8 +251,88 @@ namespace IntegrationHub.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Odczyt lokalnej listy BCP z DB (anprs.Bcp).
+        /// </summary>
+        [HttpGet("dictionary/bcp/local")]
+        [Produces(typeof(ProxyResponse<IEnumerable<BcpRowDto>>))]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<BcpRowDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<BcpRowDto>>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<BcpRowDto>>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "BCP – odczyt z lokalnej bazy (anprs.Bcp)",
+            Description = "Zwraca listę BCP (BcpRowDto) z lokalnej bazy."
+        )]
+        public async Task<ProxyResponse<IEnumerable<BcpRowDto>>> GetBcpLocalAsync(CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ANPRS.LOCAL";
 
-       
+            try
+            {
+                var rows = (await _facade.GetBcpLocalAsync(ct))?.ToList();
+
+                if (rows is null || rows.Count == 0)
+                    return ProxyResponses.BusinessError<IEnumerable<BcpRowDto>>(
+                        $"Brak danych BCP w lokalnej bazie.",
+                        source, StatusCodes.Status404NotFound.ToString(), requestId);
+
+                return ProxyResponses.Success<IEnumerable<BcpRowDto>>(rows, source, StatusCodes.Status200OK.ToString(), requestId);
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
+
+        /// <summary>
+        /// Odczyt lokalnej listy krajów z DB (anprs.Countries).
+        /// </summary>
+        [HttpGet("dictionary/countries/local")]
+        [Produces(typeof(ProxyResponse<IEnumerable<string>>))]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<string>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<string>>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<string>>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "Countries – odczyt z lokalnej bazy (anprs.Countries)",
+            Description = "Zwraca listę krajów (string) z lokalnej bazy."
+        )]
+        public async Task<ProxyResponse<IEnumerable<string>>> GetCountriesLocalAsync(CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ANPRS.LOCAL";
+
+            try
+            {
+                var rows = (await _facade.GetCountriesLocalAsync(ct))?.ToList();
+
+                if (rows is null || rows.Count == 0)
+                    return ProxyResponses.BusinessError<IEnumerable<string>>(
+                        $"Brak danych Countries w lokalnej bazie.",
+                        source, StatusCodes.Status404NotFound.ToString(), requestId);
+
+                return ProxyResponses.Success<IEnumerable<string>>(rows, source, StatusCodes.Status200OK.ToString(), requestId);
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<string>>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<string>>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
+
+
+
         #endregion
 
         #region Reports endpoints
