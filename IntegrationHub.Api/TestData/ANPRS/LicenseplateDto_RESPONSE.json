@@ -1,0 +1,105 @@
+{
+  "data": [
+    {
+      "identyfikator": "43907231-ac14-4f18-afed-8834ed7bdf75",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "FRONT",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-01-09T19:35:03+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_02",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "fbf03416-2114-427c-8a50-a5f134c26b7d",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "FRONT",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-01-09T14:53:29+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_04",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "43907231-ac14-4f18-afed-8834ed7bdf75",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "REAR",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-01-09T19:35:03+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_02",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "fbf03416-2114-427c-8a50-a5f134c26b7d",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "REAR",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-01-09T14:53:29+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_04",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "2846fa5c-3325-4201-a605-6ddf85e025c0",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "FRONT",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-02-02T19:00:39+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_04",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "2846fa5c-3325-4201-a605-6ddf85e025c0",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "REAR",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-02-02T19:00:39+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_04",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "e15dbd11-b08a-4e7e-987f-d3ffed8878da",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "FRONT",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-02-07T20:07:10+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_02",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    },
+    {
+      "identyfikator": "e15dbd11-b08a-4e7e-987f-d3ffed8878da",
+      "numer": "WZ426FW",
+      "typPojazdu": "CAR",
+      "lokalizacjaNr": "REAR",
+      "krajPoj": "PL",
+      "dataZdarzenia": "2025-02-07T20:07:10+01:00",
+      "krajBcp": "PLN",
+      "bcp": "SPOE_S7_0002_02",
+      "latitude": 52.62166237,
+      "longitude": 20.3895316
+    }
+  ],
+  "status": 0,
+  "errorMessage": null,
+  "source": "ANPRS",
+  "sourceStatusCode": "200",
+  "requestId": "a4c85cee3eb74436a3b877b566285b63"
+}

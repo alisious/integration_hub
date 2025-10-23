@@ -21,4 +21,5 @@ public interface IANPRSDictionaryRepository
     /// Odczyt listy kodów krajów z lokalnej bazy (domenowy typ: string).
     /// </summary>
     Task<IEnumerable<string>> GetCountryCodesAsync(CancellationToken ct = default);
+    Task<IEnumerable<BcpRowDto>> GetBcpAsync(CancellationToken ct = default);
 }

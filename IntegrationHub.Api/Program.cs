@@ -201,6 +201,7 @@ builder.Services.AddTransient<ISrpSoapInvoker, SrpSoapInvoker>();
 builder.Services.AddTransient<ICepSoapInvoker, CepSoapInvoker>();
 builder.Services.AddSingleton<ISourceCallAuditor, SourceCallAuditor>();
 builder.Services.AddScoped<IANPRSDictionaryFacade, ANPRSDictionaryFacade>();
+builder.Services.AddScoped<IANPRSReportsFacade, ANPRSReportsFacade>();
 
 if (srpConfig!.TestMode)
 {

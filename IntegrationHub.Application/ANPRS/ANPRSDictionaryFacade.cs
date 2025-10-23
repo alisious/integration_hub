@@ -1,4 +1,9 @@
 // IntegrationHub.Application.ANPRS/ANPRSDictionaryFacade.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using IntegrationHub.Application.Mappers.ANPRS;
 using IntegrationHub.Domain.Contracts.ANPRS;
 using IntegrationHub.Domain.Interfaces.ANPRS;
@@ -99,5 +104,17 @@ public sealed class ANPRSDictionaryFacade : IANPRSDictionaryFacade
 
         var cc = country.Trim().ToUpperInvariant();
         return _repo.GetSystemsByCountryAsync(cc, ct);
+    }
+
+    public async Task<IEnumerable<string>> GetCountriesLocalAsync(CancellationToken ct = default)
+    {
+        var codes = await _repo.GetCountryCodesAsync(ct);
+        return codes?.Select(s => (s ?? string.Empty).Trim().ToUpperInvariant()).ToList() ?? Enumerable.Empty<string>();
+    }
+
+    public async Task<IEnumerable<BcpRowDto>> GetBcpLocalAsync(CancellationToken ct = default)
+    {
+        var rows = await _repo.GetBcpAsync(ct);
+        return rows?.ToList() ?? Enumerable.Empty<BcpRowDto>();
     }
 }

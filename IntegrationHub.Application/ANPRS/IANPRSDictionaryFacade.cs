@@ -30,4 +30,14 @@ public interface IANPRSDictionaryFacade
     /// Odczyt lokalny systemów z DB (domenowe DTO).
     /// </summary>
     Task<IEnumerable<SystemRowDto>> GetSystemsLocalAsync(string country, CancellationToken ct = default);
+
+    /// <summary>
+    /// Odczyt lokalny listy krajów z DB (domenowe stringi).
+    /// </summary>
+    Task<IEnumerable<string>> GetCountriesLocalAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Odczyt lokalny listy BCP z DB (domenowe DTO).
+    /// </summary>
+    Task<IEnumerable<BcpRowDto>> GetBcpLocalAsync(CancellationToken ct = default);
 }

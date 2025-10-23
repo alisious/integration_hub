@@ -81,6 +81,18 @@ public sealed class ANPRSDictionaryRepository : IANPRSDictionaryRepository
         return result.Select(s => (s ?? string.Empty).Trim().ToUpperInvariant());
     }
 
+    public async Task<IEnumerable<BcpRowDto>> GetBcpAsync(CancellationToken ct = default)
+    {
+        using var conn = _factory.Create();
+        var sql = @"
+        SELECT BcpId, CountryCode, SystemCode, Name, Type, Latitude, Longitude
+        FROM anprs.Bcp
+        ORDER BY BcpId";
+        return await conn.QueryAsync<BcpRowDto>(new CommandDefinition(sql, cancellationToken: ct));
+        
+    }
+
+
     private static DataTable BuildSystemsTvp(IEnumerable<SystemRowDto> rows)
     {
         var t = new DataTable();
