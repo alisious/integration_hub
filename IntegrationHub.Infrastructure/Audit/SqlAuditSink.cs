@@ -71,8 +71,8 @@ public sealed class SqlAuditSink : IAuditSink
                         if (item is ApiRequestLogItem a)
                         {
                             await con.ExecuteAsync(@"
-INSERT INTO dbo.ApiRequestLog(CreatedUtc, RequestId, HttpMethod, Path, UserName, ClientIp, StatusCode, ProxyStatus, Source, DurationMs, ErrorMessage, RequestBody, ResponseBody, BodyHash)
-VALUES (SYSUTCDATETIME(), @RequestId, @HttpMethod, @Path, @UserName, @ClientIp, @StatusCode, @ProxyStatus, @Source, @DurationMs, @ErrorMessage, @RequestBody, @ResponseBody, @BodyHash);", a, tr);
+INSERT INTO dbo.ApiRequestLog(CreatedUtc, RequestId, HttpMethod, Path, UserName, UserId, UnitName, ClientIp, StatusCode, ProxyStatus, Source, DurationMs, ErrorMessage, RequestBody, ResponseBody, BodyHash)
+VALUES (SYSUTCDATETIME(), @RequestId, @HttpMethod, @Path, @UserName, @UserId, @UnitName, @ClientIp, @StatusCode, @ProxyStatus, @Source, @DurationMs, @ErrorMessage, @RequestBody, @ResponseBody, @BodyHash);", a, tr);
                         }
                         else if (item is SourceCallLogItem s)
                         {

@@ -12,7 +12,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
     [ApiController]
     [Route("CEP/udostepnianie")]
     [Produces("application/json")]
-    [Authorize(Roles = "User")]
+    //[Authorize(Roles = "User")]
     public sealed class CEPUdostepnianieController : ControllerBase
     {
         private readonly ICEPUdostepnianieService _service;

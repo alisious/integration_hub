@@ -1,6 +1,7 @@
 ﻿using IntegrationHub.Infrastructure.Audit;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -52,7 +53,9 @@ public sealed class ApiAuditMiddleware
                 error,
                 AuditBodyHelper.PrepareBody(reqBody, cfg),
                 AuditBodyHelper.PrepareBody(respBody, cfg),
-                null
+                null,
+                UserId: GetUserId(ctx.User),                       
+                UnitName: GetUnitName(ctx.User)
             ));
 
             mem.Position = 0;
@@ -123,6 +126,29 @@ public sealed class ApiAuditMiddleware
 
         // jeśli to prawdziwy IPv6 (nie IPv4-mapped), nie ma gwarantowanego IPv4
         return ip.AddressFamily == AddressFamily.InterNetwork ? ip.ToString() : ip.ToString();
+    }
+
+    static string? GetUserId(ClaimsPrincipal? user)
+    {
+        if (user is null || user.Identity?.IsAuthenticated != true) return null;
+        return user.FindFirst("sub")?.Value
+            ?? user.FindFirst("oid")?.Value
+            ?? user.FindFirst("uid")?.Value
+            ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? user.FindFirst(ClaimTypes.PrimarySid)?.Value
+            ?? user.FindFirst(ClaimTypes.Upn)?.Value;
+    }
+
+    static string? GetUnitName(ClaimsPrincipal? user)
+    {
+        if (user is null || user.Identity?.IsAuthenticated != true) return null;
+        return user.FindFirst("unit")?.Value
+            ?? user.FindFirst("unit_name")?.Value
+            ?? user.FindFirst("UnitName")?.Value
+            ?? user.FindFirst("extension_UnitName")?.Value   // AAD custom attr
+            ?? user.FindFirst("ou")?.Value
+            ?? user.FindFirst("department")?.Value
+            ?? user.FindFirst(ClaimTypes.GroupSid)?.Value;
     }
 }
 

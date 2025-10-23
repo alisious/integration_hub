@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IntegrationHub.Application\IntegrationHub.Application.csproj" />
     <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
     <ProjectReference Include="..\IntegrationHub.PIESP\IntegrationHub.PIESP.csproj" />
     <ProjectReference Include="..\IntegrationHub.Sources.ANPRS\IntegrationHub.Sources.ANPRS.csproj" />

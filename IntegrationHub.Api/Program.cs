@@ -1,12 +1,15 @@
 using IntegrationHub.Api.Middleware;
+using IntegrationHub.Application.ANPRS;
 using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Interfaces;
 using IntegrationHub.Common.Providers;
+using IntegrationHub.Infrastructure.Audit;
 using IntegrationHub.Infrastructure.Cepik;
 using IntegrationHub.Infrastructure.Sql;
 using IntegrationHub.PIESP.Data;
 using IntegrationHub.PIESP.Services;
 using IntegrationHub.Sources.ANPRS.Config;
+using IntegrationHub.Sources.ANPRS.Extensions;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;
@@ -32,7 +35,6 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
-using IntegrationHub.Sources.ANPRS.Extensions;
 
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
@@ -197,7 +199,8 @@ builder.Services.AddScoped<DutyService>();
 builder.Services.AddScoped<SupervisorService>();
 builder.Services.AddTransient<ISrpSoapInvoker, SrpSoapInvoker>();
 builder.Services.AddTransient<ICepSoapInvoker, CepSoapInvoker>();
-
+builder.Services.AddSingleton<ISourceCallAuditor, SourceCallAuditor>();
+builder.Services.AddScoped<IANPRSDictionaryFacade, ANPRSDictionaryFacade>();
 
 if (srpConfig!.TestMode)
 {
@@ -252,31 +255,8 @@ switch (ksipConfig.SourceMode)
 
 /**************************************************************/
 // ====== ANPRS CLIENT ======
-builder.Services.AddANPRS(builder.Configuration);
-
-// Log trybu pracy ANPRS (analogicznie jak dla KSIP)
-var anprsConfig = builder.Configuration.GetSection("ExternalServices:ANPRS").Get<ANPRSConfig>();
-switch (anprsConfig?.SourceMode)
-{
-    case SourceMode.Production:
-        Log.Information("ANPRS dzia³a w trybie produkcyjnym.");
-        break;
-
-    case SourceMode.Test:
-        Log.Warning("ANPRS dzia³a w trybie testowym.");
-        break;
-
-    case SourceMode.Development:
-        Log.Information("ANPRS dzia³a w trybie deweloperskim bez po³¹czenia ze Ÿród³em.");
-        break;
-
-    default:
-        Log.Warning("ANPRS dzia³a bez okreœlonego trybu (brak konfiguracji ExternalSources:ANPRS:SourceMode).");
-        break;
-}
-
-
-
+builder.Services.AddANPRS(builder.Configuration,out var logMessage);
+Log.Information(logMessage);
 
 
 // ====== CONTROLLERS ======
@@ -520,6 +500,7 @@ app.MapControllers();
 
 // ====== RUN APPLICATION ======
 app.Run();
+
 
 
 

@@ -1,5 +1,6 @@
 ﻿// IntegrationHub.Sources.ANPRS/DTO/ANPRSDtos.cs
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace IntegrationHub.Sources.ANPRS.Contracts
 {
@@ -47,6 +48,9 @@ namespace IntegrationHub.Sources.ANPRS.Contracts
 
     /// <summary>/Dictionary/BCP?country=PLN&amp;system=OCR</summary>
     public record BCPResponse : ANPRSGridResponse { }
+    
+    /// <summary>/Dictionary?type=countries</summary>
+    public record CountriesResponse : ANPRSGridResponse { }
 
     // --- Test (/Service/api/Test) ---
 
@@ -57,5 +61,14 @@ namespace IntegrationHub.Sources.ANPRS.Contracts
     public record TestResponse
     {
         // Dodaj właściwości po ustaleniu schematu odpowiedzi testowej (jeśli potrzebne).
+    }
+
+    namespace IntegrationHub.Sources.ANPRS.Contracts
+    {
+        /// <summary>Prosty DTO systemu: Nazwa + Opis (do ekspozycji zamiast grida).</summary>
+        public readonly record struct ANPRSSystemsResponse(
+            [property: JsonPropertyName("nazwa")] string Nazwa,
+            [property: JsonPropertyName("opis")] string Opis
+        );
     }
 }

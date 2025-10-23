@@ -1,0 +1,168 @@
+{
+    "columnsNames": [
+      "Nazwa",
+      "Opis"
+    ],
+    "data": [
+      [
+        "CG",
+        "CG Cyfrowa Granica"
+      ],
+      [
+        "OCRMV",
+        "Mobilne cała Polska"
+      ],
+      [
+        "BIA",
+        "OCR Budzisko Szypliszki Ogrodniki"
+      ],
+      [
+        "OCR",
+        "OCR19 bramownice zachód i południe Polska"
+      ],
+      [
+        "OCRMSG",
+        "SG Mobilne cała Polska"
+      ],
+      [
+        "OCRSSG",
+        "SG Stacjonarne cała Polska"
+      ],
+      [
+        "SPOE_A1",
+        "SPOE KAS bramownice A1"
+      ],
+      [
+        "SPOE_A18",
+        "SPOE KAS bramownice A18"
+      ],
+      [
+        "SPOE_A2",
+        "SPOE KAS bramownice A2"
+      ],
+      [
+        "SPOE_A4",
+        "SPOE KAS bramownice A4"
+      ],
+      [
+        "SPOE_A6",
+        "SPOE KAS bramownice A6"
+      ],
+      [
+        "SPOE_DK24",
+        "SPOE KAS bramownice DK24"
+      ],
+      [
+        "SPOE_DK50",
+        "SPOE KAS bramownice DK50"
+      ],
+      [
+        "SPOE_DK77",
+        "SPOE KAS bramownice DK77"
+      ],
+      [
+        "SPOE_DK79",
+        "SPOE KAS bramownice DK79"
+      ],
+      [
+        "SPOE_DK81",
+        "SPOE KAS bramownice DK81"
+      ],
+      [
+        "SPOE_DK91",
+        "SPOE KAS bramownice DK91"
+      ],
+      [
+        "SPOE_DK92",
+        "SPOE KAS bramownice DK92"
+      ],
+      [
+        "SPOE_DK94",
+        "SPOE KAS bramownice DK94"
+      ],
+      [
+        "SPOE_S1",
+        "SPOE KAS bramownice S1"
+      ],
+      [
+        "SPOE_S10",
+        "SPOE KAS bramownice S10"
+      ],
+      [
+        "SPOE_S11",
+        "SPOE KAS bramownice S11"
+      ],
+      [
+        "SPOE_S12",
+        "SPOE KAS bramownice S12"
+      ],
+      [
+        "SPOE_S17",
+        "SPOE KAS bramownice S17"
+      ],
+      [
+        "SPOE_S19",
+        "SPOE KAS bramownice S19"
+      ],
+      [
+        "SPOE_S2",
+        "SPOE KAS bramownice S2"
+      ],
+      [
+        "SPOE_S22",
+        "SPOE KAS bramownice S22"
+      ],
+      [
+        "SPOE_S3",
+        "SPOE KAS bramownice S3"
+      ],
+      [
+        "SPOE_S5",
+        "SPOE KAS bramownice S5"
+      ],
+      [
+        "SPOE_S51",
+        "SPOE KAS bramownice S51"
+      ],
+      [
+        "SPOE_S52",
+        "SPOE KAS bramownice S52"
+      ],
+      [
+        "SPOE_S6",
+        "SPOE KAS bramownice S6"
+      ],
+      [
+        "SPOE_S61",
+        "SPOE KAS bramownice S61"
+      ],
+      [
+        "SPOE_S7",
+        "SPOE KAS bramownice S7"
+      ],
+      [
+        "SPOE_S8",
+        "SPOE KAS bramownice S8"
+      ],
+      [
+        "SPOE_BCK",
+        "SPOE KAS bramownice zapasowe"
+      ],
+      [
+        "OCRMJK",
+        "SPOE Mobilne Jednostki Kontrolne"
+      ],
+      [
+        "OCRMPK",
+        "SPOE Mobilne Punkty Kontrolne"
+      ],
+      [
+        "OCRPPK",
+        "SPOE Przenośne Punkty Kontrolne"
+      ],
+      [
+        "SKR",
+        "ZSOG CAIFSII SKR PLN Polska"
+      ]
+    ]
+  }
