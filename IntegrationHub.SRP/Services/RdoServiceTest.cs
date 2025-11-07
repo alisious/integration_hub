@@ -111,7 +111,7 @@ namespace IntegrationHub.SRP.Services
                 Source = "SRP",
                 Status = status,
                 SourceStatusCode = ((int)code).ToString(),
-                ErrorMessage = message
+                Message = message
             };
         }
     }

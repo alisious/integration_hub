@@ -9,7 +9,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "Client Header Authentication Credential Required",
+            Message = "Client Header Authentication Credential Required",
             Source = "ANPRS",
             SourceStatusCode = "401",
             RequestId = "example-request-id"
@@ -22,7 +22,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "Valid authentication data is required",
+            Message = "Valid authentication data is required",
             Source = "ANPRS",
             SourceStatusCode = "401",
             RequestId = "example-request-id"
@@ -35,7 +35,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "HTTPS Required",
+            Message = "HTTPS Required",
             Source = "ANPRS",
             SourceStatusCode = "403",
             RequestId = "example-request-id"
@@ -48,7 +48,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "Client Certificate Required",
+            Message = "Client Certificate Required",
             Source = "ANPRS",
             SourceStatusCode = "403",
             RequestId = "example-request-id"
@@ -61,7 +61,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "Client Certificate is not valid",
+            Message = "Client Certificate is not valid",
             Source = "ANPRS",
             SourceStatusCode = "403",
             RequestId = "example-request-id"
@@ -74,7 +74,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "Niepoprawny parametr zapytania (musi być podany)!",
+            Message = "Niepoprawny parametr zapytania (musi być podany)!",
             Source = "ANPRS",
             SourceStatusCode = "400",
             RequestId = "example-request-id"
@@ -87,7 +87,7 @@ namespace IntegrationHub.Api.Swagger.Examples.ANPRS
         public ProxyResponse<object> GetExamples() => new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = "Nie znaleziono elementów spełniających kryteria zapytania.",
+            Message = "Nie znaleziono elementów spełniających kryteria zapytania.",
             Source = "ANPRS",
             SourceStatusCode = "404",
             RequestId = "example-request-id"

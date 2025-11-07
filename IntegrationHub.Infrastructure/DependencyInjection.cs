@@ -1,8 +1,10 @@
-﻿using IntegrationHub.Infrastructure.Cepik;
-using IntegrationHub.Infrastructure.ANPRS;
+﻿using IntegrationHub.Domain.Interfaces.ANPRS;
+using IntegrationHub.Domain.Interfaces.ZW;
 using IntegrationHub.Infrastructure.Abstractions;
+using IntegrationHub.Infrastructure.ANPRS;
+using IntegrationHub.Infrastructure.Cepik;
+using IntegrationHub.Infrastructure.ZW;
 using Microsoft.Extensions.DependencyInjection;
-using IntegrationHub.Domain.Interfaces.ANPRS;
 
 namespace IntegrationHub.Infrastructure.Sql;
 
@@ -23,6 +25,8 @@ public static class DependencyInjection
         services.AddScoped<ICepikDictionaryRepository, CepikDictionaryRepository>();
         // Repozytorium ANPRS – per żądanie.
         services.AddScoped<IANPRSDictionaryRepository, ANPRSDictionaryRepository>();
+        // Repozytorium ZW WPM – per żądanie.
+        services.AddScoped<IZWWPMRepository, ZWWPMRepository>();
 
         return services;
     }

@@ -6,6 +6,6 @@ namespace IntegrationHub.Sources.ANPRS.Services
     public interface IANPRSSourceService
     {
         Task<EventContentResponse?> GetEventAsync(Guid id, int version = 2, CancellationToken ct = default);
-        Task<PhotoResponse?> GetPhotosAsync(Guid id, int version = 2, CancellationToken ct = default);
+        Task<(PhotoResponse? Data, int Version, string? Complete)> GetPhotosAsync(Guid id, CancellationToken ct = default);
     }
 }

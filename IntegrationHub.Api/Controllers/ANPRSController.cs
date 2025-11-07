@@ -5,6 +5,7 @@ using IntegrationHub.Common.Contracts;                   // ProxyResponse, Proxy
 using IntegrationHub.Common.Exceptions;                  // Countries401Example, ...Countries404Example
 using IntegrationHub.Domain.Contracts.ANPRS;
 using IntegrationHub.Sources.ANPRS.Client;                // ANPRSHttpException (rzucany przez ANPRSHttpClient)
+using IntegrationHub.Sources.ANPRS.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;                     // SwaggerResponseExample
@@ -17,13 +18,15 @@ namespace IntegrationHub.Api.Controllers
     [Produces("application/json")]
     public sealed class ANPRSController : ControllerBase
     {
-        private readonly IANPRSDictionaryFacade _facade;
-        private readonly IANPRSReportsFacade _reports;
+        private readonly IANPRSDictionaryFacade _dictionariesFacade;
+        private readonly IANPRSReportsFacade _reportsFacade;
+        private readonly IANPRSSourceFacade _sourceFacade;
 
-        public ANPRSController(IANPRSDictionaryFacade facade, IANPRSReportsFacade reportsFacade)
+        public ANPRSController(IANPRSDictionaryFacade dictionariesFacade, IANPRSReportsFacade reportsFacade, IANPRSSourceFacade sourceFacade)
         {
-            _facade = facade;
-            _reports = reportsFacade;
+            _dictionariesFacade = dictionariesFacade;
+            _reportsFacade = reportsFacade;
+            _sourceFacade = sourceFacade;
         }
 
         #region Dictionary endpoints
@@ -53,7 +56,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                var data = await _facade.GetCountriesAsync(ct);
+                var data = await _dictionariesFacade.GetCountriesAsync(ct);
                 if (data is null)
                     return ProxyResponses.TechnicalError<IEnumerable<string>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
@@ -104,7 +107,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                var data = await _facade.GetBCPAsync(ct);
+                var data = await _dictionariesFacade.GetBCPAsync(ct);
                 if (data is null)
                     return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
@@ -151,7 +154,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                var data = await _facade.GetSystemsAsync(country, ct);
+                var data = await _dictionariesFacade.GetSystemsAsync(country, ct);
                 if (data is null)
                     return ProxyResponses.TechnicalError<IEnumerable<SystemRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
@@ -176,7 +179,7 @@ namespace IntegrationHub.Api.Controllers
         [SwaggerOperation(Summary = "Zapis countries do DB")]
         public async Task<IActionResult> UpdateCountries(CancellationToken ct)
         {
-            await _facade.SaveCountriesToDbAsync(ct);
+            await _dictionariesFacade.SaveCountriesToDbAsync(ct);
             return Ok("Słownik krajów został pobrany i zapisany w lokalnym repozytorium.");
         }
 
@@ -184,7 +187,7 @@ namespace IntegrationHub.Api.Controllers
         [SwaggerOperation(Summary = "Zapis BCP do DB")]
         public async Task<IActionResult> UpdateBcp(CancellationToken ct)
         {
-            await _facade.SaveBcpToDbAsync(ct);
+            await _dictionariesFacade.SaveBcpToDbAsync(ct);
             return Ok("Słownik BCP został pobrany i zapisany w lokalnym repozytorium.");
         }
 
@@ -198,7 +201,7 @@ namespace IntegrationHub.Api.Controllers
             if (string.IsNullOrWhiteSpace(country))
                 return BadRequest("Parametr 'country' jest wymagany (np. PLN/EST/LTV/LVA).");
 
-            await _facade.SaveSystemsToDbAsync(country, ct);
+            await _dictionariesFacade.SaveSystemsToDbAsync(country, ct);
             return Ok($"Słownik Systemów został pobrany i zapisany w lokalnym repozytorium dla kraju={country.ToUpperInvariant()}.");
         }
 
@@ -227,7 +230,7 @@ namespace IntegrationHub.Api.Controllers
                 var cc = country.Trim().ToUpperInvariant();
 
                 // 1) pobierz wszystkie wiersze z facady (DB)
-                var rows = (await _facade.GetSystemsLocalAsync(cc, ct))?.ToList();
+                var rows = (await _dictionariesFacade.GetSystemsLocalAsync(cc, ct))?.ToList();
 
                 // 2) pusta lista -> 404
                 if (rows is null || rows.Count == 0)
@@ -270,7 +273,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                var rows = (await _facade.GetBcpLocalAsync(ct))?.ToList();
+                var rows = (await _dictionariesFacade.GetBcpLocalAsync(ct))?.ToList();
 
                 if (rows is null || rows.Count == 0)
                     return ProxyResponses.BusinessError<IEnumerable<BcpRowDto>>(
@@ -310,7 +313,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                var rows = (await _facade.GetCountriesLocalAsync(ct))?.ToList();
+                var rows = (await _dictionariesFacade.GetCountriesLocalAsync(ct))?.ToList();
 
                 if (rows is null || rows.Count == 0)
                     return ProxyResponses.BusinessError<IEnumerable<string>>(
@@ -385,7 +388,7 @@ namespace IntegrationHub.Api.Controllers
             try
             {
                 // Use facade which returns domain DTOs
-                var list = (await _reports.GetVehiclesInPointAsync(
+                var list = (await _reportsFacade.GetVehiclesInPointAsync(
                     country.Trim(), system.Trim(), bcp.Trim(), dateFrom, dateTo, ct))?.ToList();
 
                 if (list is null)
@@ -461,7 +464,7 @@ namespace IntegrationHub.Api.Controllers
 
             try
             {
-                var list = (await _reports.GetLicensePlateWithGeoAsync(
+                var list = (await _reportsFacade.GetLicensePlateWithGeoAsync(
                     numberPlate.Trim(), dateFrom, dateTo, ct))?.ToList();
 
                 if (list is null)
@@ -487,7 +490,164 @@ namespace IntegrationHub.Api.Controllers
                     $"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
             }
         }
+
+        /// <summary>
+        /// ANPRS – Generuj raport VehiclesInPoint (HTML) ze zdjęciami.
+        /// Pobiera zdarzenia w punkcie, dociąga zdjęcia, generuje raport HTML (A4) i zwraca link/metadane pliku.
+        /// </summary>
+        /// <remarks>
+        /// Oczekiwana treść żądania (application/json):
+        /// {
+        ///   "country": "PLN",
+        ///   "system": "OCR",
+        ///   "bcpId": "OCRB02IN",
+        ///   "dateFrom": "2025-10-24T00:00:00",
+        ///   "dateTo":   "2025-10-24T23:59:59",
+        ///   "userName": "kpr. Jan Kowalski",
+        ///   "unitName": "PŻW Bielsko-Biała"
+        /// }
+        /// </remarks>
+        [HttpPost("reports/vehicles-in-point/file")]
+        [Consumes("application/json")]
+        [Produces(typeof(ProxyResponse<ReportFileLink>))]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "ANPRS – Generuj raport VehiclesInPoint (HTML) ze zdjęciami",
+            Description = "Pobiera zdarzenia w punkcie, dociąga zdjęcia, generuje raport HTML (A4) i zwraca link/metadane pliku."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code401Example))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code401ValidAuthRequiredExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code403HttpsRequiredExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code403ClientCertRequiredExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code403ClientCertInvalidExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code400InvalidParameterExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code404NotFoundExample))]
+        public async Task<ProxyResponse<ReportFileLink>> GenerateVehiclesInPointReportWithPhotos(
+            [FromBody] VehiclesInPointReportRequest req,
+            CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ANPRS";
+
+            // Walidacja wejścia (spójna z wcześniejszą wersją FromQuery)
+            if (req is null ||
+                string.IsNullOrWhiteSpace(req.Country) ||
+                string.IsNullOrWhiteSpace(req.System) ||
+                string.IsNullOrWhiteSpace(req.BcpId))
+            {
+                return ProxyResponses.BusinessError<ReportFileLink>(
+                    "Parametry 'country', 'system' i 'bcp' są wymagane.",
+                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
+            }
+
+            if (req.DateFrom > req.DateTo)
+            {
+                return ProxyResponses.BusinessError<ReportFileLink>(
+                    "Parametr 'dateFrom' nie może być większy niż 'dateTo'.",
+                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
+            }
+
+            try
+            {
+                var link = await _reportsFacade.GenerateVehiclesInPointReportWithPhotosAsync(
+                    req.Country.Trim(),
+                    req.System.Trim(),
+                    req.BcpId.Trim(),
+                    req.DateFrom,
+                    req.DateTo,
+                    string.IsNullOrWhiteSpace(req.UserName) ? null : req.UserName!.Trim(),
+                    string.IsNullOrWhiteSpace(req.UnitName) ? null : req.UnitName!.Trim(),
+                    ct);
+
+                return ProxyResponses.Success(link, source, StatusCodes.Status200OK.ToString(), requestId);
+            }
+            catch (ANPRSHttpException ex)
+            {
+                var (code, message) = ExtractHttpCodeAndMessage(ex);
+                return ProxyResponses.BusinessError<ReportFileLink>(
+                    message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<ReportFileLink>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<ReportFileLink>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
+
+
         #endregion
+
+
+        /// <summary>
+        /// ANPRS – pobierz zdjęcia zdarzenia (po Id zdarzenia).
+        /// </summary>
+        /// <param name="id">Identyfikator zdarzenia (GUID)</param>
+        /// <param name="version">Wersja grida zdjęć (domyślnie 2 – kolumny „Zdjęcia”, „Położenie numeru”)</param>
+        [HttpGet("events/photos/{id:guid}")]
+        [Produces(typeof(ProxyResponse<IEnumerable<VehiclePhotoRowDto>>))]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<VehiclePhotoRowDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<VehiclePhotoRowDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<VehiclePhotoRowDto>>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<VehiclePhotoRowDto>>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "ANPRS – zdjęcia zdarzenia",
+            Description = "Wywołuje źródło ANPRS, mapuje PhotoResponse na kolekcję VehiclePhotoRowDto i zwraca wynik opakowany w ProxyResponse."
+        )]
+        public async Task<ProxyResponse<IEnumerable<VehiclePhotoRowDto>>> GetEventPhotos([FromRoute] Guid id, CancellationToken ct = default)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ANPRS";
+
+            if (id == Guid.Empty)
+            {
+                return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                    "Parametr 'id' (GUID) jest wymagany.",
+                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
+            }
+
+            try
+            {
+                var rows = (await _sourceFacade.GetPhotosAsync(id,ct))?.ToList();
+
+                if (rows is null)
+                    return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                        "Pusta odpowiedź z ANPRS.", source, StatusCodes.Status502BadGateway.ToString(), requestId);
+
+                if (rows.Count == 0)
+                    return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                        $"Brak zdjęć dla zdarzenia id={id}.",
+                        source, StatusCodes.Status404NotFound.ToString(), requestId);
+
+                return ProxyResponses.Success<IEnumerable<VehiclePhotoRowDto>>(
+                    rows, source, StatusCodes.Status200OK.ToString(), requestId);
+            }
+            catch (ANPRSHttpException ex)
+            {
+                var (code, message) = ExtractHttpCodeAndMessage(ex);
+                return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                    message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<VehiclePhotoRowDto>>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<VehiclePhotoRowDto>>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
+
+
 
         /// <summary>
         /// Wydobywa kod HTTP oraz komunikat "message" z treści wyjątku pochodzącego z ANPRSHttpClient.

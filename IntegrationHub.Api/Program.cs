@@ -1,8 +1,12 @@
 using IntegrationHub.Api.Middleware;
 using IntegrationHub.Application.ANPRS;
+using IntegrationHub.Application.RequestValidators.ZW;
+using IntegrationHub.Application.ZW;
 using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Interfaces;
 using IntegrationHub.Common.Providers;
+using IntegrationHub.Common.RequestValidation;
+using IntegrationHub.Domain.Contracts.ZW;
 using IntegrationHub.Infrastructure.Audit;
 using IntegrationHub.Infrastructure.Cepik;
 using IntegrationHub.Infrastructure.Sql;
@@ -197,11 +201,17 @@ builder.Services.AddHostedService<SqlAuditSink.Worker>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();
 builder.Services.AddScoped<SupervisorService>();
+
+builder.Services.AddSingleton<IRequestValidator<WPMRequest>, WPMRequestValidator>();
+
 builder.Services.AddTransient<ISrpSoapInvoker, SrpSoapInvoker>();
 builder.Services.AddTransient<ICepSoapInvoker, CepSoapInvoker>();
 builder.Services.AddSingleton<ISourceCallAuditor, SourceCallAuditor>();
 builder.Services.AddScoped<IANPRSDictionaryFacade, ANPRSDictionaryFacade>();
 builder.Services.AddScoped<IANPRSReportsFacade, ANPRSReportsFacade>();
+builder.Services.AddScoped<IANPRSSourceFacade, ANPRSSourceFacade>();
+builder.Services.AddScoped<IANPRSReportWriter, ANPRSReportWriter>();
+builder.Services.AddScoped<IZWSourceFacade, ZWSourceFacade>();
 
 if (srpConfig!.TestMode)
 {

@@ -12,7 +12,7 @@ namespace IntegrationHub.Application.ANPRS
         Task<IEnumerable<VehicleInPointDto>> GetVehiclesInPointAsync(
             string country,
             string system,
-            string bcp,
+            string bcpId,
             DateTime dateFrom,
             DateTime dateTo,
             CancellationToken ct = default);
@@ -22,5 +22,11 @@ namespace IntegrationHub.Application.ANPRS
             DateTime dateFrom,
             DateTime dateTo,
             CancellationToken ct = default);
+
+        Task<ReportFileLink> GenerateVehiclesInPointReportWithPhotosAsync(
+        string country, string system, string bcpId,
+        DateTime dateFrom, DateTime dateTo,
+        string? userName, string? unitName,
+        CancellationToken ct);
     }
 }

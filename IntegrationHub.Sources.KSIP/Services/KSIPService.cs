@@ -67,7 +67,7 @@ namespace IntegrationHub.Sources.KSIP.Services
                 Source = SourceName,
                 Status = vr.Status,
                 SourceStatusCode = vr.SourceStatusCode,
-                ErrorMessage = vr.ErrorMessage
+                Message = vr.Message
             };
 
         public async Task<ProxyResponse<SprawdzenieOsobyWRuchuDrogowymResponse>> SprawdzenieOsobyWRuchuDrogowymAsync(

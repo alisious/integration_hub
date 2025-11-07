@@ -65,7 +65,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.BusinessError,
                     SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
-                    ErrorMessage = "Brak numeru PESEL i ID osoby do wyszukania zdjęcia."
+                    Message = "Brak numeru PESEL i ID osoby do wyszukania zdjęcia."
                 };
             }
 
@@ -117,7 +117,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.BusinessError,
                     SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
-                    ErrorMessage = fe.Message
+                    Message = fe.Message
                 };
             }
             catch (TimeoutException tex)
@@ -129,7 +129,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
-                    ErrorMessage = "Przekroczono czas oczekiwania na odpowiedz uslugi SRP: udostepnijDaneAktualnychDowodowPoPesel."
+                    Message = "Przekroczono czas oczekiwania na odpowiedz uslugi SRP: udostepnijDaneAktualnychDowodowPoPesel."
                 };
             }
             catch (CommunicationException cex)
@@ -141,7 +141,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.BadGateway).ToString(),
-                    ErrorMessage = $"Blad komunikacji z usluga SRP: udostepnijDaneAktualnychDowodowPoPesel. {cex.Message}"
+                    Message = $"Blad komunikacji z usluga SRP: udostepnijDaneAktualnychDowodowPoPesel. {cex.Message}"
                 };
             }
             catch (Exception ex)
@@ -153,7 +153,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
 
@@ -195,7 +195,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -266,7 +266,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -303,7 +303,7 @@ namespace IntegrationHub.Api.Controllers
                     Source = "SRP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
 

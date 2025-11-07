@@ -53,7 +53,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = baseResp.Status,
                     SourceStatusCode = baseResp.SourceStatusCode,
-                    ErrorMessage = baseResp.ErrorMessage
+                    Message = baseResp.Message
                 };
             }
 
@@ -108,7 +108,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = baseResp.Status,
                     SourceStatusCode = baseResp.SourceStatusCode,
-                    ErrorMessage = baseResp.ErrorMessage
+                    Message = baseResp.Message
                 };
             }
 
@@ -123,7 +123,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                         Source = "CEP.Udostepnianie.Test",
                         Status = ProxyStatus.TechnicalError,
                         SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                        Message = $"Brak pliku z danymi testowymi: {xmlPath}"
                     };
                 }
 
@@ -170,7 +170,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = baseResp.Status,
                     SourceStatusCode = baseResp.SourceStatusCode,
-                    ErrorMessage = baseResp.ErrorMessage
+                    Message = baseResp.Message
                 };
             }
 
@@ -186,7 +186,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                         Source = "CEP.Udostepnianie.Test",
                         Status = ProxyStatus.TechnicalError,
                         SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                        Message = $"Brak pliku z danymi testowymi: {xmlPath}"
                     };
                 }
 
@@ -211,7 +211,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
-                    ErrorMessage = "Operacja została anulowana."
+                    Message = "Operacja została anulowana."
                 };
             }
             catch (Exception ex)
@@ -223,7 +223,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -244,7 +244,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = baseResp.Status,
                     SourceStatusCode = baseResp.SourceStatusCode,
-                    ErrorMessage = baseResp.ErrorMessage
+                    Message = baseResp.Message
                 };
             }
 
@@ -259,7 +259,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                         Source = "CEP.Udostepnianie.Test",
                         Status = ProxyStatus.TechnicalError,
                         SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                        Message = $"Brak pliku z danymi testowymi: {xmlPath}"
                     };
                 }
 
@@ -283,7 +283,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
-                    ErrorMessage = "Operacja została anulowana."
+                    Message = "Operacja została anulowana."
                 };
             }
             catch (Exception ex)
@@ -295,7 +295,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -318,7 +318,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = baseResp.Status,
                     SourceStatusCode = baseResp.SourceStatusCode,
-                    ErrorMessage = baseResp.ErrorMessage
+                    Message = baseResp.Message
                 };
             }
 
@@ -334,7 +334,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                         Source = "CEP.Udostepnianie.Test",
                         Status = ProxyStatus.TechnicalError,
                         SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                        ErrorMessage = $"Brak pliku z danymi testowymi: {xmlPath}"
+                        Message = $"Brak pliku z danymi testowymi: {xmlPath}"
                     };
                 }
 
@@ -358,7 +358,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
-                    ErrorMessage = "Operacja została anulowana."
+                    Message = "Operacja została anulowana."
                 };
             }
             catch (Exception ex)
@@ -370,7 +370,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -392,7 +392,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                     Source = "CEP.Udostepnianie.Test",
                     Status = baseResp.Status,
                     SourceStatusCode = baseResp.SourceStatusCode,
-                    ErrorMessage = baseResp.ErrorMessage
+                    Message = baseResp.Message
                 };
             }
 
@@ -449,7 +449,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 Source = "CEP.Udostepnianie.Test",
                 Status = status,
                 SourceStatusCode = ((int)code).ToString(),
-                ErrorMessage = message
+                Message = message
             };
         }
     }

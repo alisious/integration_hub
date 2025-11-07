@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IntegrationHub.Sources.ANPRS.Contracts;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json.Serialization;
 
@@ -49,5 +51,13 @@ namespace IntegrationHub.Domain.Contracts.ANPRS
 
         [JsonPropertyName("longitude")]
         public double Longitude { get; set; }
+        [JsonPropertyName("zdjecia")]
+        public List<VehiclePhotoRowDto> Photos { get; set; } = new();
+
+        /// <summary>
+        /// "yes" | "no" indicating whether the photos are complete.
+        /// </summary>
+        [JsonPropertyName("zdjeciaKompletne")]
+        public string PhotosComplete { get; set; } = "Brak danych";
     }
 }

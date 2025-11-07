@@ -22,8 +22,14 @@ namespace IntegrationHub.Sources.ANPRS.Services
         {
             throw new NotImplementedException();
         }
+              
 
-        public Task<PhotoResponse?> GetPhotosAsync(Guid id, int version = 2, CancellationToken ct = default)
+        public Task<(PhotoResponse? Data, int Version)> GetPhotosAsync(Guid id, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<(PhotoResponse? Data, int Version, string? Complete)> IANPRSSourceService.GetPhotosAsync(Guid id, CancellationToken ct)
         {
             throw new NotImplementedException();
         }

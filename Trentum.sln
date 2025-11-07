@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Domain", "IntegrationHub.Domain\IntegrationHub.Domain.csproj", "{E87D0DCD-526E-4B3F-A431-5C98EA3BE11F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Sources.ZW", "IntegrationHub.Sources.ZW\IntegrationHub.Sources.ZW.csproj", "{2BDB907C-D85C-AF81-C77A-E1697B3C7B90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{E87D0DCD-526E-4B3F-A431-5C98EA3BE11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E87D0DCD-526E-4B3F-A431-5C98EA3BE11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E87D0DCD-526E-4B3F-A431-5C98EA3BE11F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BDB907C-D85C-AF81-C77A-E1697B3C7B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BDB907C-D85C-AF81-C77A-E1697B3C7B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BDB907C-D85C-AF81-C77A-E1697B3C7B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BDB907C-D85C-AF81-C77A-E1697B3C7B90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

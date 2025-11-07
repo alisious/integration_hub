@@ -17,7 +17,7 @@ namespace IntegrationHub.Common.RequestValidation
                 Source = SourceName,
                 Status = ProxyStatus.BusinessError,
                 SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
-                ErrorMessage = vr.MessageError ?? "Błąd walidacji żądania."
+                Message = vr.MessageError ?? "Błąd walidacji żądania."
             };
         }
 

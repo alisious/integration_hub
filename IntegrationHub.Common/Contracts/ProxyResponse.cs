@@ -20,7 +20,7 @@ public class ProxyResponse<T>
     /// <summary>
     /// Szczegóły błędu – komunikat z systemu zewnętrznego lub własny opis.
     /// </summary>
-    public string? ErrorMessage { get; set; }
+    public string? Message { get; set; }
 
     /// <summary>
     /// Nazwa/identyfikator źródła danych (np. SRP, CEK, KSIP).
@@ -67,7 +67,7 @@ public static class ProxyResponses
         new()
         {
             Status = ProxyStatus.BusinessError,
-            ErrorMessage = message,
+            Message = message,
             Source = source,
             SourceStatusCode = sourceStatusCode,
             RequestId = requestId
@@ -77,7 +77,7 @@ public static class ProxyResponses
         new()
         {
             Status = ProxyStatus.TechnicalError,
-            ErrorMessage = message,
+            Message = message,
             Source = source,
             SourceStatusCode = sourceStatusCode,
             RequestId = requestId

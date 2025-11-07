@@ -87,7 +87,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
                     Source = "KSIP",
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
-                    ErrorMessage = "Wystąpił nieoczekiwany błąd po stronie API."
+                    Message = "Wystąpił nieoczekiwany błąd po stronie API."
                 };
             }
         }

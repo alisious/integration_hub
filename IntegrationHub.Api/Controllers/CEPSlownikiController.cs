@@ -72,7 +72,7 @@ public sealed class CEPSlownikiController : ControllerBase
                 Source = "CEP",
                 Status = ProxyStatus.TechnicalError,          // jak w SRP przy błędach technicznych
                 SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                ErrorMessage = ex.Message
+                Message = ex.Message
             };
         }
     }
@@ -129,7 +129,7 @@ public sealed class CEPSlownikiController : ControllerBase
                 Source = "IntegrationHubDB",
                 Status = ProxyStatus.TechnicalError,
                 SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
-                ErrorMessage = ex.Message
+                Message = ex.Message
             };
         }
     }

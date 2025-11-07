@@ -76,7 +76,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 Source = SourceName,
                 Status = vr.Status,
                 SourceStatusCode = vr.SourceStatusCode,
-                ErrorMessage = vr.ErrorMessage
+                Message = vr.Message
             };
         }
 

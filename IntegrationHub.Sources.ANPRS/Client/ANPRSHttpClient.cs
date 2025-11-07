@@ -8,6 +8,12 @@ using System.Text.Json;
 
 namespace IntegrationHub.Sources.ANPRS.Client
 {
+    public sealed record HttpJsonResult<T>(
+        T? Body,
+        IReadOnlyDictionary<string, IEnumerable<string>> Headers,
+        IReadOnlyDictionary<string, IEnumerable<string>> ContentHeaders
+    );
+
     public sealed class ANPRSHttpClient
     {
         private readonly HttpClient _http;
@@ -19,7 +25,7 @@ namespace IntegrationHub.Sources.ANPRS.Client
             PropertyNameCaseInsensitive = true
         };
 
-        private string? _nextCorrelationId; // jednorazowy nagłówek dla kolejnego requestu
+        private readonly AsyncLocal<string?> _nextCorrelationId = new(); // jednorazowy nagłówek dla kolejnego requestu
 
         public ANPRSHttpClient(HttpClient httpClient, ANPRSConfig cfg, ILogger<ANPRSHttpClient> logger)
         {
@@ -36,7 +42,7 @@ namespace IntegrationHub.Sources.ANPRS.Client
         }
 
         /// <summary>Ustawia X-Correlation-ID dla najbliższego wywołania HTTP.</summary>
-        public void SetCorrelationIdHeader(string id) => _nextCorrelationId = id;
+        public void SetCorrelationIdHeader(string id) => _nextCorrelationId.Value = id;
 
         public async Task<T?> GetAsync<T>(
             string url,
@@ -46,10 +52,10 @@ namespace IntegrationHub.Sources.ANPRS.Client
             using var req = new HttpRequestMessage(HttpMethod.Get, url);
 
             // CorrID – jednorazowo
-            if (!string.IsNullOrWhiteSpace(_nextCorrelationId))
+            if (!string.IsNullOrWhiteSpace(_nextCorrelationId.Value))
             {
-                req.Headers.TryAddWithoutValidation("X-Correlation-ID", _nextCorrelationId);
-                _nextCorrelationId = null;
+                req.Headers.TryAddWithoutValidation("X-Correlation-ID", _nextCorrelationId.Value);
+                _nextCorrelationId.Value = null;
             }
 
             // Dodatkowe nagłówki
@@ -69,6 +75,40 @@ namespace IntegrationHub.Sources.ANPRS.Client
 
             return JsonSerializer.Deserialize<T>(body, JsonOpts);
         }
+
+        public async Task<HttpJsonResult<T>> GetWithHeadersAsync<T>(
+            string url,
+            CancellationToken ct = default,
+            params (string Name, string Value)[] extraHeaders)
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Get, url);
+
+            if (!string.IsNullOrWhiteSpace(_nextCorrelationId.Value))
+            {
+                req.Headers.TryAddWithoutValidation("X-Correlation-ID", _nextCorrelationId.Value);
+                _nextCorrelationId.Value = null;
+            }
+
+            foreach (var (n, v) in extraHeaders)
+                req.Headers.TryAddWithoutValidation(n, v);
+
+            using var res = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
+
+            // Zapisz nagłówki zanim przeczytasz body
+            var headers = res.Headers.ToDictionary(h => h.Key, h => h.Value);
+            var contentHeaders = res.Content.Headers.ToDictionary(h => h.Key, h => h.Value);
+
+            var bodyStr = await res.Content.ReadAsStringAsync(ct);
+            if (!res.IsSuccessStatusCode)
+                throw new ANPRSHttpException((int)res.StatusCode, bodyStr);
+
+            var body = string.IsNullOrWhiteSpace(bodyStr)
+                ? default
+                : JsonSerializer.Deserialize<T>(bodyStr, JsonOpts);
+
+            return new HttpJsonResult<T>(body, headers, contentHeaders);
+        }
+
     }
 
     public sealed class ANPRSHttpException : SourceHttpException

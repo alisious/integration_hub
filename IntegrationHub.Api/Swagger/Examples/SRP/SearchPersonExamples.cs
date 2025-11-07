@@ -46,7 +46,7 @@ public sealed class SearchPerson400Example : IExamplesProvider<ProxyResponse<Sea
         Source = "SRP",
         Status = ProxyStatus.BusinessError,
         SourceStatusCode = (StatusCodes.Status400BadRequest).ToString(),
-        ErrorMessage = "Podaj PESEL albo (nazwisko + imię).",
+        Message = "Podaj PESEL albo (nazwisko + imię).",
         Data = null
     };
 }
