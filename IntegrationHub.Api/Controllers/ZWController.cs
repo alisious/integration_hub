@@ -2,6 +2,8 @@
 using IntegrationHub.Common.Contracts;           // ProxyResponse, ProxyResponses
 using IntegrationHub.Common.RequestValidation;   // IRequestValidator<T>, ValidationResult
 using IntegrationHub.Domain.Contracts.ZW;        // WPMRequest, WPMResponse
+using IntegrationHub.Sources.ZW.Contracts;
+using IntegrationHub.Sources.ZW.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
@@ -15,11 +17,13 @@ namespace IntegrationHub.Api.Controllers
     {
         private readonly IZWSourceFacade _facade;
         private readonly IRequestValidator<WPMRequest> _validator;
+        private readonly IZandWantedPersonService _wantedService;
 
-        public ZWController(IZWSourceFacade facade, IRequestValidator<WPMRequest> validator)
+        public ZWController(IZWSourceFacade facade, IRequestValidator<WPMRequest> validator,IZandWantedPersonService wantedService)
         {
             _facade = facade;
             _validator = validator;
+            _wantedService = wantedService;
         }
 
         [HttpGet("wpm/szukaj")]
@@ -119,6 +123,169 @@ namespace IntegrationHub.Api.Controllers
             catch (Exception ex)
             {
                 return ProxyResponses.TechnicalError<IEnumerable<WPMResponse>>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
+
+        // === NOWE ===
+        [HttpGet("poszukiwani/by-pesel")]
+        [Produces(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>))]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "ZW – lista osób poszukiwanych wg PESEL",
+            Description = "Zwraca listę wpisów z tabeli piesp.OsobyPoszukiwane dla podanego numeru PESEL (adapter ZW)."
+        )]
+        public async Task<ProxyResponse<IEnumerable<ZandWantedPersonDto>>> GetWantedPersonAsync(
+            [FromQuery] string pesel,
+            CancellationToken ct = default)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ZW";
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(pesel))
+                {
+                    return ProxyResponses.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                        message: "PESEL jest wymagany.",
+                        source: source,
+                        sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
+                        requestId: requestId);
+                }
+
+                var result = await _wantedService.GetByPeselAsync(pesel.Trim(), ct);
+
+                return result.Match(
+                    onSuccess: list =>
+                    {
+                        if (list is null || list.Count == 0)
+                        {
+                            return ProxyResponses.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                                message: $"Nie znaleziono osoby/osób poszukiwanych dla PESEL {pesel}.",
+                                source: source,
+                                sourceStatusCode: StatusCodes.Status404NotFound.ToString(),
+                                requestId: requestId);
+                        }
+
+                        return new ProxyResponse<IEnumerable<ZandWantedPersonDto>>
+                        {
+                            Data = list,
+                            Status = 0,
+                            Message = $"Znaleziono {list.Count} rekord(ów).",
+                            Source = source,
+                            SourceStatusCode = StatusCodes.Status200OK.ToString(),
+                            RequestId = requestId
+                        };
+                    },
+                    onError: err =>
+                    {
+                        var code = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
+                        // Traktujemy 4xx jako błąd biznesowy, resztę jako techniczny
+                        if (err.HttpStatus is >= 400 and < 500)
+                        {
+                            return ProxyResponses.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                                message: err.Message,
+                                source: source,
+                                sourceStatusCode: code,
+                                requestId: requestId);
+                        }
+
+                        return ProxyResponses.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                            message: err.Message,
+                            source: source,
+                            sourceStatusCode: code,
+                            requestId: requestId);
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
+
+        [HttpGet("poszukiwani/check")]
+        [Produces(typeof(ProxyResponse<bool>))]
+        [ProducesResponseType(typeof(ProxyResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<bool>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<bool>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+    Summary = "ZW – sprawdzenie, czy PESEL widnieje jako poszukiwany",
+    Description = "Zwraca true, jeśli istnieje co najmniej jeden wpis w piesp.OsobyPoszukiwane dla podanego PESEL; w przeciwnym razie false."
+)]
+        public async Task<ProxyResponse<bool>> CheckIfWantedPerson(
+    [FromQuery] string pesel,
+    CancellationToken ct = default)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ZW";
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(pesel))
+                {
+                    return ProxyResponses.BusinessError<bool>(
+                        message: "PESEL jest wymagany.",
+                        source: source,
+                        sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
+                        requestId: requestId);
+                }
+
+                var result = await _wantedService.GetByPeselAsync(pesel.Trim(), ct);
+
+                return result.Match(
+                    onSuccess: list =>
+                    {
+                        var isWanted = list is not null && list.Count > 0;
+
+                        return new ProxyResponse<bool>
+                        {
+                            Data = isWanted,
+                            Status = 0,
+                            Message = isWanted
+                                ? $"Osoba o PESEL {pesel} figuruje jako poszukiwana."
+                                : $"Nie znaleziono osoby o PESEL {pesel} w rejestrze poszukiwanych.",
+                            Source = source,
+                            SourceStatusCode = StatusCodes.Status200OK.ToString(),
+                            RequestId = requestId
+                        };
+                    },
+                    onError: err =>
+                    {
+                        var code = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
+
+                        if (err.HttpStatus is >= 400 and < 500)
+                        {
+                            return ProxyResponses.BusinessError<bool>(
+                                message: err.Message,
+                                source: source,
+                                sourceStatusCode: code,
+                                requestId: requestId);
+                        }
+
+                        return ProxyResponses.TechnicalError<bool>(
+                            message: err.Message,
+                            source: source,
+                            sourceStatusCode: code,
+                            requestId: requestId);
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<bool>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<bool>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }

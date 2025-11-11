@@ -39,6 +39,8 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
+using IntegrationHub.Sources.ZW.Extensions;
+using IntegrationHub.Sources.CEP.UpKi.Services;
 
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
@@ -232,12 +234,15 @@ if (cepConfig!.TestMode)
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiServiceTest>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieServiceTest>();
+    builder.Services.AddScoped<IUpKiService, UpKiServiceTest>();
     Log.Warning("CEP dzia³a w trybie testowym.");
 }
 else
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiService>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieService>();
+    //TODO: Zamieniæ na UpKiService w trybie produkcyjnym
+    builder.Services.AddScoped<IUpKiService, UpKiServiceTest>();
     Log.Information("CEP dzia³a w trybie produkcyjnym.");
 }
 
@@ -266,8 +271,13 @@ switch (ksipConfig.SourceMode)
 
 /**************************************************************/
 // ====== ANPRS CLIENT ======
-builder.Services.AddANPRS(builder.Configuration,out var logMessage);
-Log.Information(logMessage);
+builder.Services.AddANPRS(builder.Configuration, out var anprsLogMessage);
+Log.Information(anprsLogMessage);
+
+
+builder.Services.AddZWSource(builder.Configuration, out var zwLogMessage);
+Log.Information(zwLogMessage);
+
 
 
 // ====== CONTROLLERS ======

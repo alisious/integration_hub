@@ -15,7 +15,7 @@ public static class ProxyResponseMapper
             onError: e => new ProxyResponse<T>
             {
                 Data = default,
-                Status = 1,
+                Status = ProxyStatus.TechnicalError,
                 Message = e.Message,
                 Source = e.Code,               // opcjonalnie
                 SourceStatusCode = e.HttpStatus?.ToString()
