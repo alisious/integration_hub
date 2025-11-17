@@ -1,4 +1,5 @@
 ﻿using IntegrationHub.Infrastructure.Audit;
+using Microsoft.Extensions.Primitives;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Claims;
@@ -8,13 +9,45 @@ using System.Text.Json;
 public sealed class ApiAuditMiddleware
 {
     private readonly RequestDelegate _next;
-    public ApiAuditMiddleware(RequestDelegate next) => _next = next;
+    private readonly IAuditSink _sink;
+    private readonly IConfiguration _cfg;
+    private readonly IRequestContext _requestContext;
 
-    public async Task Invoke(HttpContext ctx, IAuditSink sink, IConfiguration cfg)
+    public ApiAuditMiddleware(
+        RequestDelegate next,
+        IAuditSink sink,
+        IConfiguration cfg,
+        IRequestContext requestContext)
+    {
+        _next = next ?? throw new ArgumentNullException(nameof(next));
+        _sink = sink ?? throw new ArgumentNullException(nameof(sink));
+        _cfg = cfg ?? throw new ArgumentNullException(nameof(cfg));
+        _requestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
+    }
+
+    public async Task Invoke(HttpContext ctx)
     {
         var sw = ValueStopwatch.StartNew();
-        var requestId = ctx.Request.Headers["X-Request-Id"].FirstOrDefault() ?? Guid.NewGuid().ToString("N");
 
+        // 1) RequestId – jeśli jest w nagłówku, użyj go, inaczej wygeneruj
+        var requestId = EnsureRequestId(ctx);
+       
+        // 2) CorrelationId – jeśli jest, użyj; jeśli nie ma, użyj requestId
+        var correlationId = GetCorrelationId(ctx);
+        
+        // 3) Dane użytkownika z claimów
+        var userId = GetUserId(ctx.User);
+        var userName = ctx.User?.Identity?.Name;
+        var unitName = GetUnitName(ctx.User);
+
+        // 4) Wpisanie do RequestContext – od tej chwili cała reszta w scope może tego używać
+        _requestContext.RequestId = requestId;
+        _requestContext.CorrelationId = correlationId;
+        _requestContext.UserId = userId;
+        _requestContext.UserDisplayName = userName;
+        _requestContext.UserUnitName = unitName;
+
+        // 5) Buforowanie request body (jak dotychczas)
         ctx.Request.EnableBuffering();
         string? reqBody = null;
         if (ctx.Request.ContentLength is > 0 && (ctx.Request.ContentType?.Contains("json") ?? false))
@@ -31,6 +64,7 @@ public sealed class ApiAuditMiddleware
         try
         {
             await _next(ctx);
+
             mem.Position = 0;
             string? respBody = null;
             if (ctx.Response.ContentType?.Contains("json") ?? false)
@@ -40,22 +74,22 @@ public sealed class ApiAuditMiddleware
             var source = TryReadSource(respBody);
             var error = TryReadErrorMessage(respBody);
 
-            await sink.Enqueue(new ApiRequestLogItem(
+            await _sink.Enqueue(new ApiRequestLogItem(
                 requestId,
                 ctx.Request.Method,
                 ctx.Request.Path.Value ?? "/",
-                ctx.User?.Identity?.Name,
+                userName,
                 GetClientIpv4(ctx),
                 ctx.Response.StatusCode,
                 proxyStatus,
                 source,
                 (int)sw.GetElapsedTime().TotalMilliseconds,
                 error,
-                AuditBodyHelper.PrepareBody(reqBody, cfg),
-                AuditBodyHelper.PrepareBody(respBody, cfg),
+                AuditBodyHelper.PrepareBody(reqBody, _cfg),
+                AuditBodyHelper.PrepareBody(respBody, _cfg),
                 null,
-                UserId: GetUserId(ctx.User),                       
-                UnitName: GetUnitName(ctx.User)
+                UserId: userId,
+                UnitName: unitName
             ));
 
             mem.Position = 0;
@@ -79,6 +113,7 @@ public sealed class ApiAuditMiddleware
         catch { }
         return null;
     }
+
     static string? TryReadSource(string? json)
     {
         if (string.IsNullOrEmpty(json)) return null;
@@ -89,6 +124,7 @@ public sealed class ApiAuditMiddleware
         }
         catch { return null; }
     }
+
     static string? TryReadErrorMessage(string? json)
     {
         if (string.IsNullOrEmpty(json)) return null;
@@ -150,6 +186,38 @@ public sealed class ApiAuditMiddleware
             ?? user.FindFirst("department")?.Value
             ?? user.FindFirst(ClaimTypes.GroupSid)?.Value;
     }
+
+    private static string EnsureRequestId(HttpContext context)
+    {
+        const string headerName = "X-Request-Id";
+
+        if (context.Request.Headers.TryGetValue(headerName, out StringValues existing) &&
+            !StringValues.IsNullOrEmpty(existing))
+        {
+            // zapewnij, że response też ma ten nagłówek
+            context.Response.Headers[headerName] = existing;
+            return existing.ToString();
+        }
+
+        var generated = Guid.NewGuid().ToString("N");
+        context.Request.Headers[headerName] = generated;
+        context.Response.Headers[headerName] = generated;
+        return generated;
+    }
+
+    private static string? GetCorrelationId(HttpContext context)
+    {
+        const string headerName = "X-Correlation-Id";
+
+        if (context.Request.Headers.TryGetValue(headerName, out var values) &&
+            !StringValues.IsNullOrEmpty(values))
+        {
+            var value = values.ToString();
+            context.Response.Headers[headerName] = value;
+            return value;
+        }
+
+        return null;
+    }
+
 }
-
-

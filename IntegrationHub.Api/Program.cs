@@ -8,6 +8,7 @@ using IntegrationHub.Common.Providers;
 using IntegrationHub.Common.RequestValidation;
 using IntegrationHub.Domain.Contracts.ZW;
 using IntegrationHub.Infrastructure.Audit;
+using IntegrationHub.Infrastructure.Audit.Http;
 using IntegrationHub.Infrastructure.Cepik;
 using IntegrationHub.Infrastructure.Sql;
 using IntegrationHub.PIESP.Data;
@@ -17,8 +18,10 @@ using IntegrationHub.Sources.ANPRS.Extensions;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;
+using IntegrationHub.Sources.CEP.UpKi.Services;
 using IntegrationHub.Sources.KSIP.Config;
 using IntegrationHub.Sources.KSIP.Services;
+using IntegrationHub.Sources.ZW.Extensions;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,8 +42,6 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
-using IntegrationHub.Sources.ZW.Extensions;
-using IntegrationHub.Sources.CEP.UpKi.Services;
 
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
@@ -100,24 +101,45 @@ builder.Services.AddIntegrationHubSqlInfrastructure(integrationHubDbConnectionSt
 
 
 
+//===========Audyt handlers=====================
+
+builder.Services.AddSingleton<IRequestContext, RequestContext>();
+builder.Services.AddSingleton<SqlAuditSink>();
+builder.Services.AddSingleton<IAuditSink>(sp => sp.GetRequiredService<SqlAuditSink>());
+builder.Services.AddHostedService<SqlAuditSink.Worker>();
+builder.Services.AddSingleton<ISourceCallAuditor, SourceCallAuditor>();
+builder.Services.AddTransient<Func<string, SourceAuditHandler>>(provider => sourceName =>
+{
+    return new SourceAuditHandler(
+        sourceName,
+        provider.GetRequiredService<ISourceCallAuditor>(),
+        provider.GetRequiredService<IConfiguration>(),
+        provider.GetRequiredService<ILogger<SourceAuditHandler>>());
+});
+//builder.Services.AddTransient<SrpHttpLoggingHandler>();
+
+
 /**************************************************************/
 // ====== SRP CLIENT ======
 // Rejestracja konfiguracji SRP
 builder.Services.Configure<SrpConfig>(builder.Configuration.GetSection("ExternalServices:SRP"));
 var srpConfig = builder.Configuration.GetSection("ExternalServices:SRP").Get<SrpConfig>();
 
-builder.Services.AddTransient<SrpHttpLoggingHandler>();
+
 builder.Services.AddHttpClient("SrpServiceClient", c =>
 {
     // Ca³kowity timeout HttpClient wy³¹czamy – kontrolujemy czas przez pipeline (Attempt/Total)
     c.Timeout = Timeout.InfiniteTimeSpan;
-
     // Spróbuj HTTP/2 (wenn dostêpny), z fallbackiem w dó³ – lepsze mno¿enie strumieni
     c.DefaultRequestVersion = HttpVersion.Version20;
     c.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
 })
-// Twój logger wiadomoœci – zostaje
-.AddHttpMessageHandler<SrpHttpLoggingHandler>()
+// 1) Handler audytu Ÿróde³ – wspólny mechanizm dla SRP
+.AddHttpMessageHandler(sp =>
+{
+    var factory = sp.GetRequiredService<Func<string, SourceAuditHandler>>();
+    return factory("SRP");
+})
 
 // Handler gniazd – klucz do wydajnoœci równoleg³ych wywo³añ
 .ConfigurePrimaryHttpMessageHandler(sp =>
@@ -197,9 +219,9 @@ var cepConfig = builder.Configuration.GetSection("ExternalServices:CEP").Get<CEP
 
 
 // ====== DEPENDENCY INJECTION ======
-builder.Services.AddSingleton<SqlAuditSink>();
-builder.Services.AddSingleton<IAuditSink>(sp => sp.GetRequiredService<SqlAuditSink>());
-builder.Services.AddHostedService<SqlAuditSink.Worker>();
+
+
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();
 builder.Services.AddScoped<SupervisorService>();
@@ -208,7 +230,7 @@ builder.Services.AddSingleton<IRequestValidator<WPMRequest>, WPMRequestValidator
 
 builder.Services.AddTransient<ISrpSoapInvoker, SrpSoapInvoker>();
 builder.Services.AddTransient<ICepSoapInvoker, CepSoapInvoker>();
-builder.Services.AddSingleton<ISourceCallAuditor, SourceCallAuditor>();
+
 builder.Services.AddScoped<IANPRSDictionaryFacade, ANPRSDictionaryFacade>();
 builder.Services.AddScoped<IANPRSReportsFacade, ANPRSReportsFacade>();
 builder.Services.AddScoped<IANPRSSourceFacade, ANPRSSourceFacade>();
@@ -481,43 +503,24 @@ app.Lifetime.ApplicationStarted.Register(() =>
 
 
 
-// ====== MIDDLEWARE ======
-app.UseMiddleware<ErrorLoggingMiddleware>();
-app.UseMiddleware<ApiAuditMiddleware>();
+
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integration Hub API V1");
+    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+});
 
 app.UseCors("PIESP");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+// ====== MIDDLEWARE ======
+app.UseMiddleware<ErrorLoggingMiddleware>();
+app.UseMiddleware<ApiAuditMiddleware>();
 app.UseSerilogRequestLogging(); // przed MapControllers
 app.MapControllers();
-
-// ====== OPTIONAL: DATABASE SEEDING ======
-//if (app.Environment.IsDevelopment())
-//{
-    
-//    using (var scope = app.Services.CreateScope())
-//    {
-//        var context = scope.ServiceProvider.GetRequiredService<PiespDbContext>();
-//        //It checks if the Users table is empty, and if so, it adds two users with roles.
-//        if (!context.Users.Any()) // Only seed if no users exist
-//        {
-//            context.Database.EnsureCreated(); // Ensure database is created
-//            DbInitializer.Seed(context);
-//        }
-//    }
-//}
-//else
-//{
-//    using (var scope = app.Services.CreateScope())
-//    {
-//        var context = scope.ServiceProvider.GetRequiredService<PiespDbContext>();
-//        context.Database.Migrate(); // Apply migrations in production
-//    }
-//}
-
 
 // ====== RUN APPLICATION ======
 app.Run();

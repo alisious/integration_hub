@@ -123,6 +123,16 @@ namespace IntegrationHub.PIESP.Services
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
                 new("ver", user.TokenVersion.ToString())
             };
+            //Dodanie nazwy jednostki do claimów, jeśli istnieje
+            if (!string.IsNullOrWhiteSpace(user.UnitName))
+            {
+                claims.Add(new System.Security.Claims.Claim("unit_name", user.UnitName));
+            }
+            //Dodanie numeru odznaki do claimów jeśli istnieje
+            if (!string.IsNullOrWhiteSpace(user.BadgeNumber))
+            {
+                claims.Add(new System.Security.Claims.Claim("badge_number", user.BadgeNumber));
+            }
 
             foreach (var r in user.Roles.Select(x => x.Role.ToString()))
                 claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, r));
@@ -130,7 +140,7 @@ namespace IntegrationHub.PIESP.Services
             var jwt = new JwtSecurityToken(
                 claims: claims,
                 notBefore: now,
-                expires: now.Add(ttl ?? TimeSpan.FromMinutes(15)),
+                expires: now.Add(ttl ?? TimeSpan.FromMinutes(60)),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);

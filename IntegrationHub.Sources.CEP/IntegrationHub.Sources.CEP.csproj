@@ -18,4 +18,10 @@
     <ProjectReference Include="..\IntegrationHub.Common\IntegrationHub.Common.csproj" />
     <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UprawnieniaKierowcow\Contracts\" />
+    <Folder Include="UprawnieniaKierowcow\Helpers\" />
+    <Folder Include="UprawnieniaKierowcow\RequestValidation\" />
+    <Folder Include="UprawnieniaKierowcow\Services\" />
+  </ItemGroup>
 </Project>
