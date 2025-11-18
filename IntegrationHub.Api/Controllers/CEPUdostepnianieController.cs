@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;                  // (opcjonalnie) ładniejszy opis w Swagger
 using IntegrationHub.Common.Primitives;                 // Error
-using IntegrationHub.Sources.CEP.UpKi.Contracts;        // DaneDokumentuRequestDto, DaneDokumentuResponseDto
-using IntegrationHub.Sources.CEP.UpKi.Services;
+//using IntegrationHub.Sources.CEP.UpKi.Contracts;        // DaneDokumentuRequestDto, DaneDokumentuResponseDto
+//using IntegrationHub.Sources.CEP.UpKi.Services;
 
 
 namespace IntegrationHub.Sources.CEP.Controllers
@@ -19,17 +19,14 @@ namespace IntegrationHub.Sources.CEP.Controllers
     public sealed class CEPUdostepnianieController : ControllerBase
     {
         private readonly ICEPUdostepnianieService _service;
-        private readonly IUpKiService _upkiService;
         private readonly ILogger<CEPUdostepnianieController> _logger;
         
 
         public CEPUdostepnianieController(
             ICEPUdostepnianieService service,
-            IUpKiService upkiService,
             ILogger<CEPUdostepnianieController> logger)
         {
             _service = service;
-            _upkiService = upkiService;
             _logger = logger;
         }
 
@@ -514,148 +511,148 @@ namespace IntegrationHub.Sources.CEP.Controllers
             }
         }
 
-        [HttpPost("uprawnienia-kierowcy")]
-        [Consumes("application/json")]
-        [Produces(typeof(ProxyResponse<DaneDokumentuResponseDto>))]
-        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status500InternalServerError)]
-        [SwaggerOperation(
-    Summary = "CEPIK/UpKi – Pytanie o uprawnienia kierowcy",
-    Description = "Zwraca dane dokumentu uprawnień kierowcy (kategorie, ograniczenia, zakazy). " +
-                  "Wejście: jeden z bloków — danePesel albo daneOsoby."
-)]
-        public async Task<ProxyResponse<DaneDokumentuResponseDto>> PytanieOUprawnieniaKierowcy(
-    [FromBody] DaneDokumentuRequestDto body,
-    CancellationToken ct = default)
-        {
-            var requestId = Guid.NewGuid().ToString("N");
-            const string source = "CEP.UpKi";
+//        [HttpPost("uprawnienia-kierowcy")]
+//        [Consumes("application/json")]
+//        [Produces(typeof(ProxyResponse<DaneDokumentuResponseDto>))]
+//        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status200OK)]
+//        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status400BadRequest)]
+//        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status500InternalServerError)]
+//        [SwaggerOperation(
+//    Summary = "CEPIK/UpKi – Pytanie o uprawnienia kierowcy",
+//    Description = "Zwraca dane dokumentu uprawnień kierowcy (kategorie, ograniczenia, zakazy). " +
+//                  "Wejście: jeden z bloków — danePesel albo daneOsoby."
+//)]
+//        public async Task<ProxyResponse<DaneDokumentuResponseDto>> PytanieOUprawnieniaKierowcy(
+//    [FromBody] DaneDokumentuRequestDto body,
+//    CancellationToken ct = default)
+//        {
+//            var requestId = Guid.NewGuid().ToString("N");
+//            const string source = "CEP.UpKi";
 
-            // --- WALIDACJA KRYTERIÓW ---
-            // musi być dokładnie JEDEN blok: danePesel XOR daneOsoby
-            var hasPesel = body?.DanePesel is not null;
-            var hasOsoba = body?.DaneOsoby is not null;
+//            // --- WALIDACJA KRYTERIÓW ---
+//            // musi być dokładnie JEDEN blok: danePesel XOR daneOsoby
+//            var hasPesel = body?.DanePesel is not null;
+//            var hasOsoba = body?.DaneOsoby is not null;
 
-            if (body is null || hasPesel == hasOsoba)
-            {
-                return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-                    "Podaj dokładnie jeden z bloków: danePesel albo daneOsoby.",
-                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
-            }
+//            if (body is null || hasPesel == hasOsoba)
+//            {
+//                return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
+//                    "Podaj dokładnie jeden z bloków: danePesel albo daneOsoby.",
+//                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
+//            }
 
-            if (hasPesel)
-            {
-                var pesel = body!.DanePesel!.NumerPesel?.Trim();
-                if (string.IsNullOrWhiteSpace(pesel))
-                {
-                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-                        "Wymagane: danePesel.numerPesel.",
-                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
-                }
-            }
-            else // hasOsoba
-            {
-                var o = body!.DaneOsoby!;
-                if (string.IsNullOrWhiteSpace(o.ImiePierwsze) || string.IsNullOrWhiteSpace(o.Nazwisko))
-                {
-                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-                        "Wymagane: daneOsoby.imiePierwsze oraz daneOsoby.nazwisko.",
-                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
-                }
+//            if (hasPesel)
+//            {
+//                var pesel = body!.DanePesel!.NumerPesel?.Trim();
+//                if (string.IsNullOrWhiteSpace(pesel))
+//                {
+//                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
+//                        "Wymagane: danePesel.numerPesel.",
+//                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
+//                }
+//            }
+//            else // hasOsoba
+//            {
+//                var o = body!.DaneOsoby!;
+//                if (string.IsNullOrWhiteSpace(o.ImiePierwsze) || string.IsNullOrWhiteSpace(o.Nazwisko))
+//                {
+//                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
+//                        "Wymagane: daneOsoby.imiePierwsze oraz daneOsoby.nazwisko.",
+//                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
+//                }
 
-                // dataUrodzenia – wymagane; format wejściowy JSON to „RRRR-MM-DD” (DateOnly).
-                // Jeśli nie przyszła (default 0001-01-01), zgłaszamy błąd.
-                if (o.DataUrodzenia == default)
-                {
-                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-                        "Wymagane: daneOsoby.dataUrodzenia w formacie 'RRRR-MM-DD'.",
-                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
-                }
-            }
+//                // dataUrodzenia – wymagane; format wejściowy JSON to „RRRR-MM-DD” (DateOnly).
+//                // Jeśli nie przyszła (default 0001-01-01), zgłaszamy błąd.
+//                if (o.DataUrodzenia == default)
+//                {
+//                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
+//                        "Wymagane: daneOsoby.dataUrodzenia w formacie 'RRRR-MM-DD'.",
+//                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
+//                }
+//            }
 
-            // --- UZUPEŁNIENIE dataZapytania = NOW, gdy nie podano ---
-            // Tworzymy znormalizowane DTO, bo właściwości w DTO są init-only.
-            DaneDokumentuRequestDto normalized;
-            if (hasPesel)
-            {
-                var p = body!.DanePesel!;
-                var dz = p.DataZapytania == default
-                    ? DateTime.Now
-                    : p.DataZapytania;
+//            // --- UZUPEŁNIENIE dataZapytania = NOW, gdy nie podano ---
+//            // Tworzymy znormalizowane DTO, bo właściwości w DTO są init-only.
+//            DaneDokumentuRequestDto normalized;
+//            if (hasPesel)
+//            {
+//                var p = body!.DanePesel!;
+//                var dz = p.DataZapytania == default
+//                    ? DateTime.Now
+//                    : p.DataZapytania;
 
-                normalized = new DaneDokumentuRequestDto
-                {
-                    DanePesel = new DanePesel
-                    {
-                        NumerPesel = p.NumerPesel?.Trim() ?? string.Empty,
-                        DataZapytania = dz
-                    },
-                    DaneOsoby = null
-                };
-            }
-            else
-            {
-                var o = body!.DaneOsoby!;
-                var dz = o.DataZapytania == default
-                    ? DateTime.Now
-                    : o.DataZapytania;
+//                normalized = new DaneDokumentuRequestDto
+//                {
+//                    DanePesel = new DanePesel
+//                    {
+//                        NumerPesel = p.NumerPesel?.Trim() ?? string.Empty,
+//                        DataZapytania = dz
+//                    },
+//                    DaneOsoby = null
+//                };
+//            }
+//            else
+//            {
+//                var o = body!.DaneOsoby!;
+//                var dz = o.DataZapytania == default
+//                    ? DateTime.Now
+//                    : o.DataZapytania;
 
-                normalized = new DaneDokumentuRequestDto
-                {
-                    DanePesel = null,
-                    DaneOsoby = new DaneOsoby
-                    {
-                        ImiePierwsze = o.ImiePierwsze!.Trim(),
-                        Nazwisko = o.Nazwisko!.Trim(),
-                        DataUrodzenia = o.DataUrodzenia, // DateOnly – już zweryfikowany
-                        DataZapytania = dz               // domyślnie NOW, jeśli nie podano
-                    }
-                };
-            }
+//                normalized = new DaneDokumentuRequestDto
+//                {
+//                    DanePesel = null,
+//                    DaneOsoby = new DaneOsoby
+//                    {
+//                        ImiePierwsze = o.ImiePierwsze!.Trim(),
+//                        Nazwisko = o.Nazwisko!.Trim(),
+//                        DataUrodzenia = o.DataUrodzenia, // DateOnly – już zweryfikowany
+//                        DataZapytania = dz               // domyślnie NOW, jeśli nie podano
+//                    }
+//                };
+//            }
 
-            try
-            {
-                var result = await _upkiService.GetDriverPermissionsAsync(normalized, ct); // używamy znormalizowanego DTO
+//            try
+//            {
+//                var result = await _upkiService.GetDriverPermissionsAsync(normalized, ct); // używamy znormalizowanego DTO
 
-                return result.Match(
-                    onSuccess: dto => new ProxyResponse<DaneDokumentuResponseDto>
-                    {
-                        Data = dto,
-                        Status = ProxyStatus.Success,
-                        Message = "OK",
-                        Source = source,
-                        SourceStatusCode = StatusCodes.Status200OK.ToString(),
-                        RequestId = requestId
-                    },
-                    onError: err =>
-                    {
-                        var code = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
+//                return result.Match(
+//                    onSuccess: dto => new ProxyResponse<DaneDokumentuResponseDto>
+//                    {
+//                        Data = dto,
+//                        Status = ProxyStatus.Success,
+//                        Message = "OK",
+//                        Source = source,
+//                        SourceStatusCode = StatusCodes.Status200OK.ToString(),
+//                        RequestId = requestId
+//                    },
+//                    onError: err =>
+//                    {
+//                        var code = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
 
-                        if (err.HttpStatus is >= 400 and < 500)
-                        {
-                            _logger.LogWarning("UpKi business error: {Code} {Msg} (reqId={ReqId})", err.Code, err.Message, requestId);
-                            return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-                                message: err.Message, source: source, sourceStatusCode: code, requestId: requestId);
-                        }
+//                        if (err.HttpStatus is >= 400 and < 500)
+//                        {
+//                            _logger.LogWarning("UpKi business error: {Code} {Msg} (reqId={ReqId})", err.Code, err.Message, requestId);
+//                            return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
+//                                message: err.Message, source: source, sourceStatusCode: code, requestId: requestId);
+//                        }
 
-                        _logger.LogError("UpKi technical error: {Code} {Msg} (reqId={ReqId})", err.Code, err.Message, requestId);
-                        return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
-                            message: err.Message, source: source, sourceStatusCode: code, requestId: requestId);
-                    });
-            }
-            catch (OperationCanceledException)
-            {
-                return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
-                    "Żądanie zostało anulowane.", source, "499", requestId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOUprawnieniaKierowcy. reqId={ReqId}", requestId);
-                return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
-                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
-            }
-        }
+//                        _logger.LogError("UpKi technical error: {Code} {Msg} (reqId={ReqId})", err.Code, err.Message, requestId);
+//                        return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
+//                            message: err.Message, source: source, sourceStatusCode: code, requestId: requestId);
+//                    });
+//            }
+//            catch (OperationCanceledException)
+//            {
+//                return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
+//                    "Żądanie zostało anulowane.", source, "499", requestId);
+//            }
+//            catch (Exception ex)
+//            {
+//                _logger.LogError(ex, "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOUprawnieniaKierowcy. reqId={ReqId}", requestId);
+//                return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
+//                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+//            }
+//        }
 
 
     }

@@ -18,7 +18,7 @@ using IntegrationHub.Sources.ANPRS.Extensions;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;
-using IntegrationHub.Sources.CEP.UpKi.Services;
+
 using IntegrationHub.Sources.KSIP.Config;
 using IntegrationHub.Sources.KSIP.Services;
 using IntegrationHub.Sources.ZW.Extensions;
@@ -256,7 +256,6 @@ if (cepConfig!.TestMode)
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiServiceTest>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieServiceTest>();
-    builder.Services.AddScoped<IUpKiService, UpKiServiceTest>();
     Log.Warning("CEP dzia³a w trybie testowym.");
 }
 else
@@ -264,7 +263,6 @@ else
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiService>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieService>();
     //TODO: Zamieniæ na UpKiService w trybie produkcyjnym
-    builder.Services.AddScoped<IUpKiService, UpKiServiceTest>();
     Log.Information("CEP dzia³a w trybie produkcyjnym.");
 }
 

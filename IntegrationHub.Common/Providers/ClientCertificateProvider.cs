@@ -4,7 +4,7 @@ using IntegrationHub.Common.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography.X509Certificates;
 
-
+namespace IntegrationHub.Common.Providers;
 public class ClientCertificateProvider : IClientCertificateProvider
 {
     
