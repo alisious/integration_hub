@@ -6,6 +6,5 @@ namespace IntegrationHub.Sources.CEP.Config
     {
         public string DictionaryShareServiceUrl { get; set; } = string.Empty;
         public string ShareServiceUrl { get; set; } = string.Empty;
-        public string UpKiServiceUrl { get; set; } = string.Empty;
     }
 }

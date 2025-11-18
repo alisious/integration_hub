@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <soap:Fault>
+         <faultcode>soap:Server</faultcode>
+         <faultstring>FaultId: 20230116:114722_UPK_436b4ae3-f105-4cd1-938a-da53a51ceb20, Kody: UPKI-1030, Komunikaty: Brak danych.</faultstring>
+         <detail>
+            <ns2:cepikException xmlns:ns2="http://exceptions.api.cepik.coi.gov.pl" xmlns:ns3="http://uprawnieniakierowcow-cek.tru.api.cepik.coi.gov.pl">
+               <komunikaty>
+                  <typ>ERROR</typ>
+                  <kod>UPKI-1030</kod>
+                  <komunikat>Brak danych.</komunikat>
+                  <szczegoly>Nie znaleziono dokumentu.</szczegoly>
+                  <identyfikatorBledu>20230116:114722_UPK_436b4ae3-f105-4cd1-938a-da53a51ceb20</identyfikatorBledu>
+               </komunikaty>
+            </ns2:cepikException>
+         </detail>
+      </soap:Fault>
+   </soap:Body>
+</soap:Envelope>

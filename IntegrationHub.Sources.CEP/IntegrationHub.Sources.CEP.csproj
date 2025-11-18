@@ -8,6 +8,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Connected Services\IntegrationHub.Sources.CEPiK.ConnectedServices\**" />
+    <EmbeddedResource Remove="Connected Services\IntegrationHub.Sources.CEPiK.ConnectedServices\**" />
+    <None Remove="Connected Services\IntegrationHub.Sources.CEPiK.ConnectedServices\**" />
+  </ItemGroup>
+  <ItemGroup>
 	<PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="System.ServiceModel.Http" />
     <PackageReference Include="System.ServiceModel.NetTcp" />
@@ -17,11 +22,5 @@
   <ItemGroup>
     <ProjectReference Include="..\IntegrationHub.Common\IntegrationHub.Common.csproj" />
     <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UprawnieniaKierowcow\Contracts\" />
-    <Folder Include="UprawnieniaKierowcow\Helpers\" />
-    <Folder Include="UprawnieniaKierowcow\RequestValidation\" />
-    <Folder Include="UprawnieniaKierowcow\Services\" />
   </ItemGroup>
 </Project>

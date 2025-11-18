@@ -18,6 +18,7 @@ using IntegrationHub.Sources.ANPRS.Extensions;
 using IntegrationHub.Sources.CEP.Config;
 using IntegrationHub.Sources.CEP.Services;
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;
+using IntegrationHub.Sources.CEP.UpKi.Extensions;
 
 using IntegrationHub.Sources.KSIP.Config;
 using IntegrationHub.Sources.KSIP.Services;
@@ -42,6 +43,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Trentum.Horkos;
+
 
 
 // Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
@@ -290,6 +292,11 @@ switch (ksipConfig.SourceMode)
 }
 
 /**************************************************************/
+// ====== CEPiK UpKi CLIENT ======
+builder.Services.AddCEPiKUpKi(builder.Configuration, out var cepikLogMessage);
+Log.Information(cepikLogMessage);
+
+
 // ====== ANPRS CLIENT ======
 builder.Services.AddANPRS(builder.Configuration, out var anprsLogMessage);
 Log.Information(anprsLogMessage);
@@ -506,7 +513,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integration Hub API V1");
-    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    //c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
     c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
 });
 

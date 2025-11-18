@@ -24,6 +24,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
     {
         private readonly ILogger<CEPUdostepnianieServiceTest> _logger;
         private readonly string _testDataDir;
+        private const string SourceName = "CEP";
 
         public CEPUdostepnianieServiceTest(ILogger<CEPUdostepnianieServiceTest> logger, IHostEnvironment env)
         {
@@ -46,7 +47,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId); // BusinessError / 400
+                var baseResp = vr.ToProxyResponse(SourceName, requestId); // BusinessError / 400
                 return new ProxyResponse<PytanieOPojazdResponse>
                 {
                     RequestId = baseResp.RequestId,
@@ -101,7 +102,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId);
+                var baseResp = vr.ToProxyResponse(SourceName, requestId);
                 return new ProxyResponse<PytanieOPojazdRozszerzoneResponse>
                 {
                     RequestId = baseResp.RequestId,
@@ -163,7 +164,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId);
+                var baseResp = vr.ToProxyResponse(SourceName, requestId);
                 return new ProxyResponse<PytanieODokumentPojazduResponse>
                 {
                     RequestId = requestId,
@@ -237,7 +238,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId);
+                var baseResp = vr.ToProxyResponse(SourceName, requestId);
                 return new ProxyResponse<PytanieOListeCzynnosciPojazduResponse>
                 {
                     RequestId = requestId,
@@ -311,7 +312,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId);
+                var baseResp = vr.ToProxyResponse(SourceName, requestId);
                 return new ProxyResponse<PytanieOHistorieLicznikaResponse>
                 {
                     RequestId = requestId,
@@ -385,7 +386,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId);
+                var baseResp = vr.ToProxyResponse(SourceName, requestId);
                 return new ProxyResponse<PytanieOPodmiotResponse>
                 {
                     RequestId = requestId,

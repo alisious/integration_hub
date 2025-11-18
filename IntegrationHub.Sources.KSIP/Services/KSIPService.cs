@@ -81,7 +81,7 @@ namespace IntegrationHub.Sources.KSIP.Services
             var vr = _validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(requestId);
+                var baseResp = vr.ToProxyResponse(SourceName, requestId);
                 return FromValidation<SprawdzenieOsobyWRuchuDrogowymResponse>(baseResp, requestId);
             }
 

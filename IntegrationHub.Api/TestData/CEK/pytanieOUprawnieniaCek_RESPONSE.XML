@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <ns3:DaneDokumentuResponse xmlns:ns3="http://uprawnieniakierowcow-cek.tru.api.cepik.coi.gov.pl" xmlns:ns2="http://exceptions.api.cepik.coi.gov.pl">
+         <dokumentUprawnieniaKierowcy>
+            <dokumentId>302894182</dokumentId>
+            <typDokumentu>
+               <kod>DICT155_PJ</kod>
+               <wartoscOpisowa>Prawo jazdy</wartoscOpisowa>
+            </typDokumentu>
+            <numerDokumentu>04437051432</numerDokumentu>
+            <seriaNumerDokumentu>G1998499</seriaNumerDokumentu>
+            <organWydajacyDokument>
+               <kod>DICT061_1432</kod>
+               <wartoscOpisowa>STAROSTA WARSZAWSKI ZACHODNI</wartoscOpisowa>
+            </organWydajacyDokument>
+            <dataWydania>2005-09-12+02:00</dataWydania>
+            <parametrOsobaId>
+               <osobaId>260425636</osobaId>
+               <wariantId>1</wariantId>
+               <idk>2050817121311403030302470</idk>
+               <daneKierowcy>
+                  <numerPesel>73020916558</numerPesel>
+                  <imiePierwsze>JACEK</imiePierwsze>
+                  <nazwisko>KORPUSIK</nazwisko>
+                  <dataUrodzenia>1973-02-09+01:00</dataUrodzenia>
+                  <miejsceUrodzenia>DZIAŁDOWO</miejsceUrodzenia>
+                  <adres>
+                     <miejsce>
+                        <kodPocztowyKrajowy>05-092</kodPocztowyKrajowy>
+                        <nazwaMiejscowosci>ŁOMIANKI</nazwaMiejscowosci>
+                     </miejsce>
+                     <nrLokalu>3</nrLokalu>
+                     <miejscowoscPodstawowa/>
+                     <ulica>
+                        <nazwaUlicy>STASZICA</nazwaUlicy>
+                        <nazwaUlicyZDokumentu>STASZICA</nazwaUlicyZDokumentu>
+                        <nrDomu>6 K</nrDomu>
+                     </ulica>
+                  </adres>
+               </daneKierowcy>
+            </parametrOsobaId>
+            <stanDokumentu>
+               <stanDokumentu>
+                  <kod>DICT003_WYD</kod>
+                  <wartoscOpisowa>Wydany</wartoscOpisowa>
+               </stanDokumentu>
+               <dataZmianyStanu>2005-09-12T03:00:00+02:00</dataZmianyStanu>
+               <podmiotZmianyStanu>
+                  <kod>DICT061_1432</kod>
+                  <wartoscOpisowa>STAROSTWO POWIATU WARSZAWSKIEGO ZACHODNIEGO</wartoscOpisowa>
+               </podmiotZmianyStanu>
+            </stanDokumentu>
+            <daneUprawnieniaKategorii>
+               <kategoria>
+                  <kod>DICT060_A</kod>
+                  <wartoscOpisowa>A</wartoscOpisowa>
+               </kategoria>
+               <dataWydania>1990-05-04+02:00</dataWydania>
+            </daneUprawnieniaKategorii>
+            <daneUprawnieniaKategorii>
+               <kategoria>
+                  <kod>DICT060_B</kod>
+                  <wartoscOpisowa>B</wartoscOpisowa>
+               </kategoria>
+               <dataWydania>1990-05-04+02:00</dataWydania>
+            </daneUprawnieniaKategorii>
+            <daneUprawnieniaKategorii>
+               <kategoria>
+                  <kod>DICT060_T</kod>
+                  <wartoscOpisowa>T</wartoscOpisowa>
+               </kategoria>
+               <dataWydania>1990-05-04+02:00</dataWydania>
+            </daneUprawnieniaKategorii>
+         </dokumentUprawnieniaKierowcy>
+      </ns3:DaneDokumentuResponse>
+   </soap:Body>
+</soap:Envelope>

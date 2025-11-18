@@ -6,15 +6,13 @@ namespace IntegrationHub.Common.RequestValidation
 {
     public static class ValidationResultExtensions
     {
-        private const string SourceName = "CEP";
-
-        public static ProxyResponse<object> ToProxyResponse(this ValidationResult vr, string requestId)
+        public static ProxyResponse<object> ToProxyResponse(this ValidationResult vr,string sourceName, string requestId)
         {
             // Zakładamy wywołanie tylko dla błędów.
             return new ProxyResponse<object>
             {
                 RequestId = requestId,
-                Source = SourceName,
+                Source = sourceName,
                 Status = ProxyStatus.BusinessError,
                 SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
                 Message = vr.MessageError ?? "Błąd walidacji żądania."
@@ -23,8 +21,8 @@ namespace IntegrationHub.Common.RequestValidation
 
      
         //Zwraca ProxyResponse<object> jeśli walidacja NIE jest poprawna; w przeciwnym razie null.
-        public static ProxyResponse<object>? ToProxyResponseOrNull(this ValidationResult vr, string requestId)
-            => vr.IsValid ? null : vr.ToProxyResponse(requestId);
+        public static ProxyResponse<object>? ToProxyResponseOrNull(this ValidationResult vr, string sourceName, string requestId)
+            => vr.IsValid ? null : vr.ToProxyResponse(sourceName, requestId);
 
     }
 }

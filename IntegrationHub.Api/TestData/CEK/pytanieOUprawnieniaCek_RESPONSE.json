@@ -1,0 +1,102 @@
+{
+  "data": {
+    "dataZapytania": null,
+    "dokumentyUprawnieniaKierowcy": [
+      {
+        "dokumentId": "809869045",
+        "typDokumentu": {
+          "kod": "DICT155_PJ",
+          "wartoscOpisowa": "Prawo jazdy"
+        },
+        "numerDokumentu": "00459151465028",
+        "seriaNumerDokumentu": "Q0250418",
+        "organWydajacyDokument": {
+          "kod": "DICT061_1465028",
+          "wartoscOpisowa": "PREZYDENT M.ST. WARSZAWY"
+        },
+        "dataWaznosci": "2030-03-31",
+        "dataWydania": "2015-03-31",
+        "parametrOsobaId": {
+          "osobaId": "385307137",
+          "wariantId": "2",
+          "tokenKierowcy": null,
+          "idk": "2150317103531002031601782",
+          "daneKierowcy": {
+            "numerPesel": "81040709629",
+            "imiePierwsze": "EDYTA",
+            "nazwisko": "KOROLCZUK",
+            "dataUrodzenia": "1981-04-07",
+            "miejsceUrodzenia": "OSTROWIEC ŚWIĘTOKRZYSKI",
+            "adres": {
+              "miejsce": {
+                "kodTERYT": null,
+                "kodWojewodztwa": null,
+                "nazwaWojewodztwaStanu": null,
+                "kodPowiatu": null,
+                "nazwaPowiatuDzielnicy": null,
+                "kodGminy": null,
+                "nazwaGminy": null,
+                "kodMiejscowosci": null,
+                "nazwaMiejscowosci": "WARSZAWA",
+                "kodPocztowyKrajowy": "01-471"
+              },
+              "nrLokalu": "4",
+              "miejscowoscPodstawowa": {
+                "kodMiejscowosciPodstawowej": null,
+                "nazwaMiejscowosciPodstawowej": null
+              },
+              "kraj": null,
+              "ulica": {
+                "cechaUlicy": null,
+                "kodUlicy": null,
+                "nazwaUlicy": "NARWIK",
+                "nazwaUlicyZDokumentu": "NARWIK",
+                "nrDomu": "12"
+              }
+            }
+          }
+        },
+        "stanDokumentu": {
+          "stanDokumentu": {
+            "kod": "DICT003_WYD",
+            "wartoscOpisowa": "Wydany"
+          },
+          "dataZmianyStanu": "2015-03-31",
+          "podmiotZmianyStanu": {
+            "kod": "DICT061_1465028",
+            "wartoscOpisowa": "URZĄD M.ST. WARSZAWY DELEGATURA BIURA ADMINISTRACJI I SPRAW OBYWATELSKICH W DZIELNICY BEMOWO"
+          },
+          "powodZmianyStanu": []
+        },
+        "daneZakazuCofniecia": [],
+        "ograniczenia": [
+          {
+            "kodOgraniczenia": "DICT094_01",
+            "wartoscOgraniczenia": "01",
+            "opisKodu": "Wymagana korekta lub ochrona wzroku",
+            "dataDo": null
+          }
+        ],
+        "daneUprawnieniaKategorii": [
+          {
+            "kategoria": {
+              "kod": "DICT060_B",
+              "wartoscOpisowa": "B"
+            },
+            "dataWaznosci": "2030-03-31",
+            "dataWydania": "2001-05-21",
+            "daneZakazuCofniecia": [],
+            "ograniczenia": []
+          }
+        ],
+        "komunikatBiznesowy": null
+      }
+    ],
+    "komunikat": null
+  },
+  "status": 0,
+  "message": "OK",
+  "source": "CEPiK",
+  "sourceStatusCode": "200",
+  "requestId": "dd2872e654d448ec92aba5c5f06dec59"
+}

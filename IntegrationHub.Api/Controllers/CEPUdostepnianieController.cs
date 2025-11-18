@@ -1,11 +1,16 @@
 ﻿// IntegrationHub.Sources.CEP/Controllers/CEPUdostepnianieController.cs
 using IntegrationHub.Common.Contracts;                       // ProxyResponse<T>, ProxyStatus
+using IntegrationHub.Common.Primitives;                 // Error
+using IntegrationHub.Common.RequestValidation;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;    // PytanieOPojazdRequest, PytanieOPojazdResponse
 using IntegrationHub.Sources.CEP.Udostepnianie.Services;                   // ICEPUdostepnianieService
+using IntegrationHub.Sources.CEP.UpKi.Contracts;
+using IntegrationHub.Sources.CEP.UpKi.RequestValidation;
+using IntegrationHub.Sources.CEP.UpKi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;                  // (opcjonalnie) ładniejszy opis w Swagger
-using IntegrationHub.Common.Primitives;                 // Error
 //using IntegrationHub.Sources.CEP.UpKi.Contracts;        // DaneDokumentuRequestDto, DaneDokumentuResponseDto
 //using IntegrationHub.Sources.CEP.UpKi.Services;
 
@@ -19,14 +24,17 @@ namespace IntegrationHub.Sources.CEP.Controllers
     public sealed class CEPUdostepnianieController : ControllerBase
     {
         private readonly ICEPUdostepnianieService _service;
+        private readonly IUpKiService _upkiService;
         private readonly ILogger<CEPUdostepnianieController> _logger;
         
 
         public CEPUdostepnianieController(
             ICEPUdostepnianieService service,
+            IUpKiService upkiService,
             ILogger<CEPUdostepnianieController> logger)
         {
             _service = service;
+            _upkiService = upkiService;
             _logger = logger;
         }
 
@@ -482,6 +490,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
             [FromBody] PytanieOPodmiotRequest body,
             CancellationToken ct)
         {
+            var sourceName = "CEP";
             var requestId = Guid.NewGuid().ToString("N");
 
             try
@@ -503,7 +512,7 @@ namespace IntegrationHub.Sources.CEP.Controllers
                 return new ProxyResponse<PytanieOPodmiotResponse>
                 {
                     RequestId = requestId,
-                    Source = "CEP",
+                    Source = sourceName,
                     Status = ProxyStatus.TechnicalError,
                     SourceStatusCode = "500",
                     Message = "Wystąpił nieoczekiwany błąd po stronie API."
@@ -511,148 +520,161 @@ namespace IntegrationHub.Sources.CEP.Controllers
             }
         }
 
-//        [HttpPost("uprawnienia-kierowcy")]
-//        [Consumes("application/json")]
-//        [Produces(typeof(ProxyResponse<DaneDokumentuResponseDto>))]
-//        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status200OK)]
-//        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status400BadRequest)]
-//        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponseDto>), StatusCodes.Status500InternalServerError)]
-//        [SwaggerOperation(
-//    Summary = "CEPIK/UpKi – Pytanie o uprawnienia kierowcy",
-//    Description = "Zwraca dane dokumentu uprawnień kierowcy (kategorie, ograniczenia, zakazy). " +
-//                  "Wejście: jeden z bloków — danePesel albo daneOsoby."
-//)]
-//        public async Task<ProxyResponse<DaneDokumentuResponseDto>> PytanieOUprawnieniaKierowcy(
-//    [FromBody] DaneDokumentuRequestDto body,
-//    CancellationToken ct = default)
-//        {
-//            var requestId = Guid.NewGuid().ToString("N");
-//            const string source = "CEP.UpKi";
+        /// <summary>
+        /// Sprawdzenie w CEK uprawnień kierowcy (PJ/PT), ważności dokumentu oraz zakazów/cofnięć.
+        /// </summary>
+        [HttpPost("uprawnienia-kierowcy")]
+        [SwaggerOperation(
+    Summary = "Sprawdzenie uprawnień kierowcy w CEK (PJ/PT)",
+    Description = @"
+Usługa umożliwia sprawdzenie w Centralnej Ewidencji Kierowców informacji o posiadanych przez daną osobę uprawnieniach do kierowania pojazdem (PJ) lub tramwajem (PT), potwierdzenie ważności dokumentu prawa jazdy oraz daty jego wydania.
 
-//            // --- WALIDACJA KRYTERIÓW ---
-//            // musi być dokładnie JEDEN blok: danePesel XOR daneOsoby
-//            var hasPesel = body?.DanePesel is not null;
-//            var hasOsoba = body?.DaneOsoby is not null;
+Wyszukiwanie może być wykonane:
+<ul>
+  <li>na datę aktualną (gdy pole <b>dataZapytania</b> nie jest podane), lub</li>
+  <li>na wskazaną datę podaną w polu <b>dataZapytania</b> (format RRRR-MM-DD).</li>
+</ul>
 
-//            if (body is null || hasPesel == hasOsoba)
-//            {
-//                return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-//                    "Podaj dokładnie jeden z bloków: danePesel albo daneOsoby.",
-//                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
-//            }
+Minimalna kombinacja pól potrzebnych do wyszukania (wystarczy jedno z poniższych kryteriów):
+<ul>
+  <li><b>numerPesel</b>, opcjonalnie <b>dataZapytania</b></li>
+  <li><b>numerDokumentu</b>, opcjonalnie <b>dataZapytania</b></li>
+  <li><b>seriaNumerDokumentu</b>, opcjonalnie <b>dataZapytania</b></li>
+  <li><b>daneOsoby</b>:
+      <ul>
+        <li><b>imiePierwsze</b></li>
+        <li><b>nazwisko</b></li>
+        <li><b>dataUrodzenia</b></li>
+      </ul>
+      opcjonalnie <b>dataZapytania</b>
+  </li>
+  <li><b>osobaId</b>, opcjonalnie <b>dataZapytania</b></li>
+  <li><b>idk</b>, opcjonalnie <b>dataZapytania</b></li>
+</ul>
+dataZapytania i dataUrodzenia w formacie <b>'RRRR-MM-DD' (yyyy-MM-dd)</b>.
 
-//            if (hasPesel)
-//            {
-//                var pesel = body!.DanePesel!.NumerPesel?.Trim();
-//                if (string.IsNullOrWhiteSpace(pesel))
-//                {
-//                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-//                        "Wymagane: danePesel.numerPesel.",
-//                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
-//                }
-//            }
-//            else // hasOsoba
-//            {
-//                var o = body!.DaneOsoby!;
-//                if (string.IsNullOrWhiteSpace(o.ImiePierwsze) || string.IsNullOrWhiteSpace(o.Nazwisko))
-//                {
-//                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-//                        "Wymagane: daneOsoby.imiePierwsze oraz daneOsoby.nazwisko.",
-//                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
-//                }
+W odpowiedzi zwracane są:
+<ul>
+  <li>lista dokumentów i ich aktualny stan,</li>
+  <li>uprawnienia kierowcy (PJ/PT),</li>
+  <li>zakazy i cofnięcia dotyczące dokumentów oraz uprawnień,</li>
+  <li>komunikaty biznesowe aktualne dla danego zapytania.</li>
+</ul>
 
-//                // dataUrodzenia – wymagane; format wejściowy JSON to „RRRR-MM-DD” (DateOnly).
-//                // Jeśli nie przyszła (default 0001-01-01), zgłaszamy błąd.
-//                if (o.DataUrodzenia == default)
-//                {
-//                    return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-//                        "Wymagane: daneOsoby.dataUrodzenia w formacie 'RRRR-MM-DD'.",
-//                        source, StatusCodes.Status400BadRequest.ToString(), requestId);
-//                }
-//            }
+Komunikaty błędów:
+<ul>
+  <li><b>UPKI-1000</b> – problem z komunikacją z serwerem</li>
+  <li><b>UPKI-1010</b> – błąd walidacji</li>
+  <li><b>UPKI-1020</b> – błąd słowników</li>
+  <li><b>UPKI-1030</b> – brak danych</li>
+</ul>
 
-//            // --- UZUPEŁNIENIE dataZapytania = NOW, gdy nie podano ---
-//            // Tworzymy znormalizowane DTO, bo właściwości w DTO są init-only.
-//            DaneDokumentuRequestDto normalized;
-//            if (hasPesel)
-//            {
-//                var p = body!.DanePesel!;
-//                var dz = p.DataZapytania == default
-//                    ? DateTime.Now
-//                    : p.DataZapytania;
+Dla środowiska testowego dostępne są dane przykładowe dla <b>numerPesel = 73020916558</b>.
+")]
 
-//                normalized = new DaneDokumentuRequestDto
-//                {
-//                    DanePesel = new DanePesel
-//                    {
-//                        NumerPesel = p.NumerPesel?.Trim() ?? string.Empty,
-//                        DataZapytania = dz
-//                    },
-//                    DaneOsoby = null
-//                };
-//            }
-//            else
-//            {
-//                var o = body!.DaneOsoby!;
-//                var dz = o.DataZapytania == default
-//                    ? DateTime.Now
-//                    : o.DataZapytania;
 
-//                normalized = new DaneDokumentuRequestDto
-//                {
-//                    DanePesel = null,
-//                    DaneOsoby = new DaneOsoby
-//                    {
-//                        ImiePierwsze = o.ImiePierwsze!.Trim(),
-//                        Nazwisko = o.Nazwisko!.Trim(),
-//                        DataUrodzenia = o.DataUrodzenia, // DateOnly – już zweryfikowany
-//                        DataZapytania = dz               // domyślnie NOW, jeśli nie podano
-//                    }
-//                };
-//            }
+        [ProducesResponseType(typeof(ProxyResponse<DaneDokumentuResponse>), StatusCodes.Status200OK)]
+        public async Task<ProxyResponse<DaneDokumentuResponse>> PytanieOUprawnieniaKierowcy(
+            [FromBody] DaneDokumentuRequest body,
+            CancellationToken ct = default)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string sourceName = "CEPiK";
 
-//            try
-//            {
-//                var result = await _upkiService.GetDriverPermissionsAsync(normalized, ct); // używamy znormalizowanego DTO
+            try
+            {
+                if (body is null)
+                {
+                    return ProxyResponses.BusinessError<DaneDokumentuResponse>(
+                        "Body (DaneDokumentuRequest) nie może być null.",
+                        sourceName,
+                        StatusCodes.Status400BadRequest.ToString(),
+                        requestId);
+                }
 
-//                return result.Match(
-//                    onSuccess: dto => new ProxyResponse<DaneDokumentuResponseDto>
-//                    {
-//                        Data = dto,
-//                        Status = ProxyStatus.Success,
-//                        Message = "OK",
-//                        Source = source,
-//                        SourceStatusCode = StatusCodes.Status200OK.ToString(),
-//                        RequestId = requestId
-//                    },
-//                    onError: err =>
-//                    {
-//                        var code = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
+                // 1) Walidacja + normalizacja (trim, format dat)
+                var validator = new DaneDokumentuRequestValidator();
+                var vr = validator.ValidateAndNormalize(body);
+                if (!vr.IsValid)
+                {
+                    // Błąd walidacji – mapujemy przez ValidationResultExtensions
+                    var baseResp = vr.ToProxyResponse(sourceName, requestId);
+                    return new ProxyResponse<DaneDokumentuResponse>
+                    {
+                        RequestId = requestId,
+                        Source = sourceName,
+                        Status = baseResp.Status,
+                        SourceStatusCode = baseResp.SourceStatusCode,
+                        Message = baseResp.Message
+                    };
+                }
 
-//                        if (err.HttpStatus is >= 400 and < 500)
-//                        {
-//                            _logger.LogWarning("UpKi business error: {Code} {Msg} (reqId={ReqId})", err.Code, err.Message, requestId);
-//                            return ProxyResponses.BusinessError<DaneDokumentuResponseDto>(
-//                                message: err.Message, source: source, sourceStatusCode: code, requestId: requestId);
-//                        }
+                // 3) Wywołanie serwisu UpKi
+                var result = await _upkiService.GetDriverPermissionsAsync(body, ct);
 
-//                        _logger.LogError("UpKi technical error: {Code} {Msg} (reqId={ReqId})", err.Code, err.Message, requestId);
-//                        return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
-//                            message: err.Message, source: source, sourceStatusCode: code, requestId: requestId);
-//                    });
-//            }
-//            catch (OperationCanceledException)
-//            {
-//                return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
-//                    "Żądanie zostało anulowane.", source, "499", requestId);
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOUprawnieniaKierowcy. reqId={ReqId}", requestId);
-//                return ProxyResponses.TechnicalError<DaneDokumentuResponseDto>(
-//                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
-//            }
-//        }
+                return result.Match(
+                    onSuccess: dto => new ProxyResponse<DaneDokumentuResponse>
+                    {
+                        Data = dto,
+                        Status = ProxyStatus.Success,
+                        Message = "OK",
+                        Source = sourceName,
+                        SourceStatusCode = StatusCodes.Status200OK.ToString(),
+                        RequestId = requestId
+                    },
+                    onError: err =>
+                    {
+                        var code = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
+
+                        if (err.HttpStatus is >= 400 and < 500)
+                        {
+                            // Błąd biznesowy (np. brak danych UPKI-1030)
+                            _logger.LogWarning(
+                                "CEPiK UpKi business error: {Code} {Msg} (reqId={ReqId})",
+                                err.Code, err.Message, requestId);
+
+                            return ProxyResponses.BusinessError<DaneDokumentuResponse>(
+                                message: err.Message,
+                                source: sourceName,
+                                sourceStatusCode: code,
+                                requestId: requestId);
+                        }
+
+                        // Błąd techniczny (komunikacja, wyjątek, UPKI-1000 itp.)
+                        _logger.LogError(
+                            "CEPiK UpKi technical error: {Code} {Msg} (reqId={ReqId})",
+                            err.Code, err.Message, requestId);
+
+                        return ProxyResponses.TechnicalError<DaneDokumentuResponse>(
+                            message: err.Message,
+                            source: sourceName,
+                            sourceStatusCode: code,
+                            requestId: requestId);
+                    });
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                return ProxyResponses.TechnicalError<DaneDokumentuResponse>(
+                    "Żądanie zostało anulowane.",
+                    sourceName,
+                    "499",
+                    requestId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOUprawnieniaKierowcy. reqId={ReqId}",
+                    requestId);
+
+                return ProxyResponses.TechnicalError<DaneDokumentuResponse>(
+                    $"Nieoczekiwany błąd: {ex.Message}",
+                    sourceName,
+                    StatusCodes.Status500InternalServerError.ToString(),
+                    requestId);
+            }
+        }
+
 
 
     }

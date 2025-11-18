@@ -153,7 +153,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 CEPUdostepnianieSoapActions.PytanieOPojazd,
                 (b, rid) => PytanieOPojazdEnvelope.Create(b, rid),
                 PytanieOPojazdResponseXmlMapper.Parse,
-                b => new PytanieOPojazdRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(requestId),
+                b => new PytanieOPojazdRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(SourceName,requestId),
                 ct);
 
 
@@ -269,7 +269,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 CEPUdostepnianieSoapActions.PytanieOPojazdRozszerzone,
                 (b, rid) => PytanieOPojazdRozszerzoneEnvelope.Create(b, rid),
                 PytanieOPojazdRozszerzoneResponseXmlMapper.Parse,
-                b => new PytanieOPojazdRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(requestId),
+                b => new PytanieOPojazdRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(SourceName,requestId),
                 ct);
 
         //public async Task<ProxyResponse<PytanieOPojazdRozszerzoneResponse>> PytanieOPojazdRozszerzoneAsync(
@@ -378,7 +378,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 CEPUdostepnianieSoapActions.PytanieODokumentPojazdu,
                 (b, rid) => PytanieODokumentPojazduEnvelope.Create(b, rid),
                 PytanieODokumentPojazduResponseXmlMapper.Parse,
-                b => new PytanieODokumentPojazduRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(requestId),
+                b => new PytanieODokumentPojazduRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(SourceName, requestId),
                 ct);
         //public async Task<ProxyResponse<PytanieODokumentPojazduResponse>> PytanieODokumentPojazduAsync(
         //    PytanieODokumentPojazduRequest body,
@@ -485,7 +485,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 CEPUdostepnianieSoapActions.PytanieOListeCzynnosciPojazdu,
                 (b, rid) => PytanieOListeCzynnosciPojazduEnvelope.Create(b, rid),
                 PytanieOListeCzynnosciPojazduResponseXmlMapper.Parse,
-                b => new PytanieOListeCzynnosciPojazduRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(requestId),
+                b => new PytanieOListeCzynnosciPojazduRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(SourceName, requestId),
                 ct);
         //public async Task<ProxyResponse<PytanieOListeCzynnosciPojazduResponse>> PytanieOListeCzynnosciPojazduAsync(
         //    PytanieOListeCzynnosciPojazduRequest body,
@@ -592,7 +592,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 CEPUdostepnianieSoapActions.PytanieOHistorieLicznika,
                 (b, rid) => PytanieOHistorieLicznikaEnvelope.Create(b, rid),
                 PytanieOHistorieLicznikaResponseXmlMapper.Parse,
-                b => new PytanieOHistorieLicznikaRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(requestId),
+                b => new PytanieOHistorieLicznikaRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(SourceName,requestId),
                 ct);
         //public async Task<ProxyResponse<PytanieOHistorieLicznikaResponse>> PytanieOHistorieLicznikaAsync(
         //    PytanieOHistorieLicznikaRequest body,
@@ -699,7 +699,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 CEPUdostepnianieSoapActions.PytanieOPodmiot,
                 (b, rid) => PytanieOPodmiotEnvelope.Create(b, rid),
                 PytanieOPodmiotResponseXmlMapper.Parse,
-                b => new PytanieOPodmiotRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(requestId),
+                b => new PytanieOPodmiotRequestValidator().ValidateAndNormalize(b).ToProxyResponseOrNull(SourceName,requestId),
                 ct);
         //public async Task<ProxyResponse<PytanieOPodmiotResponse>> PytanieOPodmiotAsync(
         //    PytanieOPodmiotRequest body,
