@@ -72,6 +72,18 @@ namespace IntegrationHub.PIESP.Data
                 e.Property(x => x.Type).IsRequired().HasMaxLength(100);
                 e.Property(x => x.Unit).HasMaxLength(200);
                 e.Property(x => x.Status).IsRequired();
+                // Współrzędne faktycznego rozpoczęcia / zakończenia służby
+                e.Property(x => x.ActualStartLatitude)
+                    .HasColumnType("decimal(9,6)");
+
+                e.Property(x => x.ActualStartLongitude)
+                    .HasColumnType("decimal(9,6)");
+
+                e.Property(x => x.ActualEndLatitude)
+                    .HasColumnType("decimal(9,6)");
+
+                e.Property(x => x.ActualEndLongitude)
+                    .HasColumnType("decimal(9,6)");
                 // relacja na FK UserId (bez nawigacji po stronie Duty -> User w tym minimalnym zakresie)
                 e.HasOne<User>()
                     .WithMany()

@@ -13,7 +13,7 @@ public class ClientCertificateProvider : IClientCertificateProvider
     {
         _logger = logger;
     }
-    public X509Certificate2 GetClientCertificate(ExternalServiceConfigBase config)
+    public X509Certificate2 GetClientCertificate(ExternalServiceConfigBase config, string? thumbprint = null)
     {
         if (config == null)
             throw new ArgumentNullException(nameof(config));
@@ -25,6 +25,12 @@ public class ClientCertificateProvider : IClientCertificateProvider
 
         using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
         store.Open(OpenFlags.ReadOnly);
+
+        // Nadpisanie thumbprinta, jeśli podano w argumencie: Pozwala to na dynamiczne przekazywanie thumbprinta.
+        if (!string.IsNullOrEmpty(thumbprint))
+        {
+            config.ClientCertificateThumbprint = thumbprint;
+        }
 
         var normalized = config.ClientCertificateThumbprint.Replace(" ", "").ToUpperInvariant();
 

@@ -4,6 +4,7 @@ namespace IntegrationHub.Sources.KSIP.Config
 {
     public class KSIPConfig :ExternalServiceConfigBase
     {
+        public string TestClientCertificateThumbprint { get; set; } = default!;
         /// <summary>
         /// Adres usługi rejestracji MRD5 w trybie testowym
         /// </summary>
@@ -23,5 +24,8 @@ namespace IntegrationHub.Sources.KSIP.Config
         /// <summary>   
         /// Identyfikator Żandarmerii Wojskowej w KSIP
         public string UnitId { get; set; } = String.Empty;
+        public string? SystemName { get; set; } = "ŻW";
+        public string? ApplicationName { get; set; } = "ŻW";
+        public string? ModuleName { get; set; } = "ZW-KSIP";
     }
 }

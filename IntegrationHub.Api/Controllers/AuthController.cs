@@ -181,7 +181,7 @@ namespace IntegrationHub.PIESP.Controllers
             Summary = "Bieżący użytkownik (profil)",
             Description = "Odczytuje GUID z claimu NameIdentifier i zwraca pełny rekord użytkownika z listą ról."
         )]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IntegrationHub.PIESP.Models.User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Me()

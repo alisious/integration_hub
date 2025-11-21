@@ -1,346 +1,248 @@
-﻿using IntegrationHub.Common.Contracts;
-using IntegrationHub.Common.Interfaces; // IClientCertificateProvider
-using IntegrationHub.Common.RequestValidation;
+﻿using IntegrationHub.Common.Primitives;
 using IntegrationHub.Sources.KSIP.Config;
 using IntegrationHub.Sources.KSIP.Contracts;
 using IntegrationHub.Sources.KSIP.Helpers;
 using IntegrationHub.Sources.KSIP.Mappers;
 using IntegrationHub.Sources.KSIP.RequestValidation;
-using IntegrationHub.Sources.KSIP.SprawdzenieOsobyWRDService;
-using IntegrationHub.Infrastructure.Audit;                // IAuditSink, SourceCallLogItem, AuditBodyHelper
-using Microsoft.Extensions.Configuration;               // IConfiguration
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
-using System.Diagnostics;                               // Stopwatch
-using System.IO;
+using System.Linq;
 using System.Net;
-using System.ServiceModel;
+using System.Net.Http;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Xml.Linq;
 
 namespace IntegrationHub.Sources.KSIP.Services
 {
-    public interface IKSIPService
-    {
-        Task<ProxyResponse<SprawdzenieOsobyWRuchuDrogowymResponse>> SprawdzenieOsobyWRuchuDrogowymAsync(
-            SprawdzenieOsobyWRuchuDrogowymRequest body,
-            string requestId,
-            CancellationToken ct = default);
-    }
-
+    /// <summary>
+    /// Produkcyjna implementacja serwisu KSIP – wywołuje realny endpoint
+    /// SprawdzenieOsoby w ruchu drogowym za pomocą HttpClient "KSIP.SprawdzenieOsobyClient".
+    /// </summary>
     public sealed class KSIPService : IKSIPService
     {
-        private const string SourceName = "KSIP";
-        private const string ActionName = "SprawdzenieOsobyWRD";   // nazwa akcji do audit logów
+        private const string HttpClientName = "KSIP.SprawdzenieOsobyClient";
 
-        private readonly KSIPConfig _cfg;
+        /// <summary>
+        /// Wartość nagłówka SOAPAction dla operacji SprawdzenieOsoby / PersonOffencesSearch.
+        /// </summary>
+        private const string SoapActionSprawdzenieOsobyWRD = "um:opSprawdzenieOsoby";
+
         private readonly ILogger<KSIPService> _logger;
-        private readonly IRequestValidator<SprawdzenieOsobyWRuchuDrogowymRequest> _validator;
-        private readonly IClientCertificateProvider _certProvider;
-
-        private readonly IAuditSink _audit;                        // <— AUDYT
-        private readonly IConfiguration _configuration;            // <— do AuditBodyHelper.PrepareBody
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly KSIPConfig _config; // zakładam, że już masz KSIPConfig – jest rejestrowany w ServiceCollectionExtensions
 
         public KSIPService(
-            IOptions<KSIPConfig> cfg,
             ILogger<KSIPService> logger,
-            IClientCertificateProvider certProvider,
-            IAuditSink audit,                                      // <— AUDYT
-            IConfiguration configuration)                          // <— do PrepareBody
+            IHttpClientFactory httpClientFactory,
+            KSIPConfig config)
         {
-            _cfg = cfg.Value ?? throw new ArgumentNullException(nameof(cfg));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _validator = new SprawdzenieOsobyWRuchuDrogowymRequestValidator();
-            _certProvider = certProvider ?? throw new ArgumentNullException(nameof(certProvider));
-            _audit = audit ?? throw new ArgumentNullException(nameof(audit));
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        private static ProxyResponse<T> FromValidation<T>(ProxyResponse<object> vr, string requestId) =>
-            new()
-            {
-                RequestId = requestId,
-                Source = SourceName,
-                Status = vr.Status,
-                SourceStatusCode = vr.SourceStatusCode,
-                Message = vr.Message
-            };
-
-        public async Task<ProxyResponse<SprawdzenieOsobyWRuchuDrogowymResponse>> SprawdzenieOsobyWRuchuDrogowymAsync(
-            SprawdzenieOsobyWRuchuDrogowymRequest body,
+        public async Task<Result<SprawdzenieOsobyResponse, Error>> SprawdzenieOsobyWRuchuDrogowymAsync(
+            SprawdzenieOsobyRequest body,
             string requestId,
             CancellationToken ct = default)
         {
-            if (string.IsNullOrWhiteSpace(requestId)) requestId = Guid.NewGuid().ToString("N");
+            if (body is null)
+            {
+                return ErrorFactory.BusinessError(
+                    ErrorCodeEnum.ValidationError,
+                    "Body (SprawdzenieOsobyRequest) nie może być null.");
+            }
 
             // 1) Walidacja
-            var vr = _validator.ValidateAndNormalize(body);
+            var validator = new SprawdzenieOsobyRequestValidator();
+            var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var baseResp = vr.ToProxyResponse(SourceName, requestId);
-                return FromValidation<SprawdzenieOsobyWRuchuDrogowymResponse>(baseResp, requestId);
+                return ErrorFactory.BusinessError(
+                    ErrorCodeEnum.ValidationError,
+                    vr.MessageError ?? "Błąd walidacji SprawdzenieOsobyRequest.");
             }
 
-            // 2) Endpoint
-            var endpointUrl = _cfg.TestMode ? _cfg.TestSprawdzenieOsobyRDServiceUrl : _cfg.SprawdzenieOsobyRDServiceUrl;
-            if (string.IsNullOrWhiteSpace(endpointUrl))
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    "Brak adresu usługi KSIP w konfiguracji.",
-                    SourceName, ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
+            var getByPesel = !string.IsNullOrWhiteSpace(body.NrPesel);
 
-            // 3) Binding HTTPS + cert klienta
-            var binding = new System.ServiceModel.BasicHttpBinding(System.ServiceModel.BasicHttpSecurityMode.Transport)
+            // 2) Budowa SOAP envelope
+            // UnitID pobieramy z konfiguracji – jeśli nie zdefiniowane, rzucamy błąd techniczny.
+            var unitId = _config.UnitId; // dodaj tę właściwość w KSIPConfig
+            if (string.IsNullOrWhiteSpace(unitId))
             {
-                AllowCookies = false,
-                MaxBufferSize = int.MaxValue,
-                MaxReceivedMessageSize = int.MaxValue,
-                MaxBufferPoolSize = int.MaxValue,
-                OpenTimeout = TimeSpan.FromSeconds(Math.Max(5, _cfg.TimeoutSeconds)),
-                CloseTimeout = TimeSpan.FromSeconds(Math.Max(5, _cfg.TimeoutSeconds)),
-                SendTimeout = TimeSpan.FromSeconds(Math.Max(5, _cfg.TimeoutSeconds)),
-                ReceiveTimeout = TimeSpan.FromSeconds(Math.Max(5, _cfg.TimeoutSeconds)),
+                return ErrorFactory.TechnicalError(
+                    ErrorCodeEnum.ExternalServiceError,
+                    "Brak skonfigurowanego UnitId dla KSIP w appsettings.");
+            }
+
+            
+            var soapXml = SprawdzenieOsobyEnvelope.Create(
+                body,
+                requestId,
+                unitId,
+                systemName: _config.SystemName ?? "ŻW",
+                applicationName: _config.ApplicationName ?? "ŻW",
+                moduleName: _config.ModuleName ?? "ZW-KSIP",
+                terminalName: body.TerminalName ?? "ZW-KSIP");
+
+            //_logger.LogInformation(soapXml);
+
+            var client = _httpClientFactory.CreateClient(HttpClientName);
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, string.Empty)
+            {
+                Content = new StringContent(soapXml, Encoding.UTF8, "text/xml")
             };
-            binding.Security.Transport.ClientCredentialType = System.ServiceModel.HttpClientCredentialType.Certificate;
-            binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
 
-            var address = new System.ServiceModel.EndpointAddress(endpointUrl);
-            var client = new PersonServiceClient(binding, address);
+            // SOAPAction – zwykle wymagany przez endpoint
+            request.Headers.Add("SOAPAction", SoapActionSprawdzenieOsobyWRD);
 
-            // 4) Przygotowanie (cert, trust)
+            string? responseXml = null;
+
             try
             {
-                var clientCert = _certProvider.GetClientCertificate(_cfg);
-                client.ClientCredentials.ClientCertificate.Certificate = clientCert;
+                // 3) Wywołanie HTTP
+                using var response = await client
+                    .SendAsync(request, HttpCompletionOption.ResponseContentRead, ct)
+                    .ConfigureAwait(false);
 
-                if (_cfg.TrustServerCertificate)
+                var statusCode = (int)response.StatusCode;
+                responseXml = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    System.Net.ServicePointManager.ServerCertificateValidationCallback = (_, __, ___, ____) => true;
+                    // Najpierw próbujemy zinterpretować odpowiedź jako błąd biznesowy
+                    var (code, message, details) = TryParseSoapFault(responseXml);
+
+                    if (!string.IsNullOrWhiteSpace(code) || !string.IsNullOrWhiteSpace(message))
+                    {
+                        _logger.LogWarning(
+                            "KSIPService – błąd biznesowy KSIP. Kod={Code}, Message={Message}, HttpStatus={Status}",
+                            code, message, statusCode);
+
+                        return ErrorFactory.BusinessError(
+                            ErrorCodeEnum.ExternalServiceError,
+                            message ?? "Nieznany błąd biznesowy zwrócony przez usługę KSIP.",
+                            details: code ?? details);
+                    }
+
+                    // Jeśli nie mamy sensownego błędu biznesowego – traktujemy jako błąd techniczny HTTP
+                    var msg = $"Wywołanie KSIP SprawdzenieOsobyWRD zwróciło status HTTP {statusCode} ({response.StatusCode}).";
+
+                    _logger.LogError(
+                        "KSIPService – błąd techniczny HTTP. Status={Status}, Message={Message}",
+                        statusCode, msg);
+
+                    return ErrorFactory.TechnicalError(
+                        ErrorCodeEnum.ExternalServiceError,
+                        message: msg,
+                        httpStatus: statusCode,
+                        details: responseXml);
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Błąd konfiguracji WCF klienta KSIP. RID={RequestId}", requestId);
 
-                // AUDYT: błąd konfiguracji klienta, jeszcze przed wywołaniem
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
-                    HttpStatus: null,
-                    FaultCode: null,
-                    FaultMessage: null,
-                    DurationMs: 0,
-                    ErrorMessage: $"Client config error: {ex.Message}",
-                    RequestBody: null,
-                    ResponseBody: null
-                ), ct);
-
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    ex.Message, SourceName, ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
-            }
-
-            // 5) Zbuduj request + serializacja do audytu
-            var req = SprawdzenieOsobyRequestCreator.Create(body, requestId, body.UserId!, _cfg.UnitId);
-            string? reqXml = null;
-            try { reqXml = SerializeXml(req); } catch { /* best-effort */ }
-
-            // 6) Wywołanie + audyt + obsługa błędów
-            var sw = Stopwatch.StartNew();
-            try
-            {
-                _logger.LogInformation("KSIP start: {Action}, RID={RequestId}, Endpoint={Endpoint}",
-                    ActionName, requestId, endpointUrl);
-
-                var wcfResp = await client.SprawdzenieOsobyWRDAsync(req).ConfigureAwait(false);
-
-                // serializacja odpowiedzi do audytu (best-effort)
-                string? respXml = null;
-                try { respXml = SerializeXml(wcfResp); } catch { /* best-effort */ }
                 
-                if (_cfg.SourceMode != Common.Config.SourceMode.Production)
+                // 4) Mapowanie SOAP -> DTO
+                var dto = SprawdzenieOsobyResponseMapper.MapFromSoapEnvelope(responseXml);
+                //5) Sprawdzenie czy State = 0 tzn. brak wykroczeń 
+                if (dto.State == 0)
                 {
-                    _logger.LogInformation("KSIP request: {RequestXml}", reqXml ?? "<null>");
-                    // W trybie innym niż produkcyjny logujemy pełną odpowiedź (w tym dane osobowe)
-                    _logger.LogInformation("KSIP response: {ResponseXml}", respXml ?? "<null>");
+                    var msg = "";
+                    if (getByPesel)
+                    {
+                        msg = $"Nie znaleziono wpisów dla osoby: PESEL = {body.NrPesel}.";
+                    }
+                    else
+                    {
+                        msg = $"Nie znaleziono wpisów dla osoby: {body.FirstName} {body.LastName}, ur. {body.BirthDate}.";
+                    }
+
+                    _logger.LogWarning(msg);
+                    return ErrorFactory.BusinessError(
+                        ErrorCodeEnum.NotFoundError,
+                        message: msg);
                 }
 
-                _logger.LogInformation("KSIP done: {Action}, RID={RequestId}", ActionName, requestId);
-               
-                var dto = SprawdzenieOsobyWRuchuDrogowymResponseMapper.Map(wcfResp?.SprawdzenieOsobyResponse);
-
-                _logger.LogInformation("KSIP done: {Action}, RID={RequestId}", ActionName, requestId);
-
-                // AUDYT: sukces (WCF nie daje HTTP, więc HttpStatus=null; Fault=null)
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
-                    HttpStatus: (int)HttpStatusCode.OK,
-                    FaultCode: null,
-                    FaultMessage: null,
-                    DurationMs: (int)sw.Elapsed.TotalMilliseconds,
-                    ErrorMessage: null,
-                    RequestBody: AuditBodyHelper.PrepareBody(reqXml, _configuration),
-                    ResponseBody: AuditBodyHelper.PrepareBody(respXml, _configuration)
-                ), ct);
-
-                return ProxyResponses.Success(dto, SourceName, ((int)HttpStatusCode.OK).ToString(), requestId);
+                // implicit conversion SprawdzenieOsobyResponse -> Result<SprawdzenieOsobyResponse, Error>
+                return dto;
             }
-            catch (FaultException fe)
+            catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
             {
-                _logger.LogWarning(fe, "KSIP SOAP Fault, RID={RequestId}", requestId);
-                string faultCode = fe.Code?.Name ?? "SOAP_FAULT";
+                _logger.LogWarning(oce,
+                    "KSIPService – operacja anulowana przez wywołującego.");
 
-                // AUDYT: Fault (ResponseBody raczej brak; WCF zamyka komunikat)
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
-                    HttpStatus: (int)HttpStatusCode.OK,
-                    FaultCode: faultCode,
-                    FaultMessage: fe.Message,
-                    DurationMs: (int)sw.Elapsed.TotalMilliseconds,
-                    ErrorMessage: null,
-                    RequestBody: AuditBodyHelper.PrepareBody(reqXml, _configuration),
-                    ResponseBody: null
-                ), ct);
-
-                return ProxyResponses.BusinessError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    fe.Message, SourceName, faultCode, requestId);
+                return ErrorFactory.TechnicalError(
+                    codeEnum: ErrorCodeEnum.OperationCanceledError,
+                    message: "Operacja została anulowana przez wywołującego.",
+                    httpStatus: (int)HttpStatusCode.RequestTimeout);
             }
-            catch (TimeoutException te)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(te, "KSIP timeout, RID={RequestId}", requestId);
+                // Zwykle błąd mapowania/biznesowy (np. nietypowa odpowiedź)
+                var (code, message, details) = TryParseSoapFault(responseXml);
 
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
-                    HttpStatus: (int)HttpStatusCode.RequestTimeout,
-                    FaultCode: null,
-                    FaultMessage: null,
-                    DurationMs: (int)sw.Elapsed.TotalMilliseconds,
-                    ErrorMessage: $"Timeout: {te.Message}",
-                    RequestBody: AuditBodyHelper.PrepareBody(reqXml, _configuration),
-                    ResponseBody: null
-                ), ct);
+                _logger.LogWarning(ex,
+                    "KSIPService – błąd biznesowy podczas mapowania odpowiedzi KSIP. Kod={Code}, Message={Message}",
+                    code, message);
 
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    "Przekroczono limit czasu połączenia do usługi SOAP.",
-                    SourceName, ((int)HttpStatusCode.RequestTimeout).ToString(), requestId);
-            }
-            catch (CommunicationException ce)
-            {
-                _logger.LogError(ce, "KSIP communication error, RID={RequestId}", requestId);
-
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
-                    HttpStatus: (int)HttpStatusCode.BadGateway,
-                    FaultCode: null,
-                    FaultMessage: null,
-                    DurationMs: (int)sw.Elapsed.TotalMilliseconds,
-                    ErrorMessage: $"Communication error: {ce.Message}",
-                    RequestBody: AuditBodyHelper.PrepareBody(reqXml, _configuration),
-                    ResponseBody: null
-                ), ct);
-
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    $"Błąd komunikacji SOAP: {ce.Message}",
-                    SourceName, ((int)HttpStatusCode.BadGateway).ToString(), requestId);
-            }
-            catch (OperationCanceledException) when (ct.IsCancellationRequested)
-            {
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
-                    HttpStatus: (int)HttpStatusCode.RequestTimeout,
-                    FaultCode: null,
-                    FaultMessage: null,
-                    DurationMs: (int)sw.Elapsed.TotalMilliseconds,
-                    ErrorMessage: "Canceled by caller",
-                    RequestBody: AuditBodyHelper.PrepareBody(reqXml, _configuration),
-                    ResponseBody: null
-                ), ct);
-
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    "Operacja została anulowana.",
-                    SourceName, ((int)HttpStatusCode.RequestTimeout).ToString(), requestId);
+                return new Error(
+                    Code: code ?? "KSIP-BUSINESS-ERROR",
+                    Message: message ?? ex.Message,
+                    HttpStatus: (int)HttpStatusCode.BadRequest,
+                    Details: details ?? responseXml);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "KSIP unhandled error, RID={RequestId}", requestId);
+                _logger.LogError(ex,
+                    "KSIPService – błąd techniczny podczas wywołania KSIP SprawdzenieOsobyWRD.");
 
-                await _audit.Enqueue(new SourceCallLogItem(
-                    RequestId: requestId,
-                    Source: SourceName,
-                    EndpointUrl: endpointUrl,
-                    Action: ActionName,
+                return new Error(
+                    Code: "KSIP-TECHNICAL",
+                    Message: ex.Message,
                     HttpStatus: (int)HttpStatusCode.InternalServerError,
-                    FaultCode: null,
-                    FaultMessage: null,
-                    DurationMs: (int)sw.Elapsed.TotalMilliseconds,
-                    ErrorMessage: ex.Message,
-                    RequestBody: AuditBodyHelper.PrepareBody(reqXml, _configuration),
-                    ResponseBody: null
-                ), ct);
-
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyWRuchuDrogowymResponse>(
-                    ex.Message, SourceName, ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
-            }
-            finally
-            {
-                try
-                {
-                    if (client.State == System.ServiceModel.CommunicationState.Faulted)
-                        client.Abort();
-                    else
-                        await client.CloseAsync().ConfigureAwait(false);
-                }
-                catch
-                {
-                    client.Abort();
-                }
+                    Details: responseXml);
             }
         }
 
-        // === helpers ===
-
-        private static string SerializeXml<T>(T obj)
+        /// <summary>
+        /// Prosta analiza SOAP Fault (jeśli KSIP zwróci standardowy fault).
+        /// Analogicznie do TryParseCepikException w UpKiService, ale dla SOAP Fault.
+        /// </summary>
+        private static (string? Code, string? Message, string? Details) TryParseSoapFault(string? xml)
         {
-            if (obj is null) return string.Empty;
+            if (string.IsNullOrWhiteSpace(xml))
+                return (null, null, null);
 
-            // Używamy standardowego XmlSerializer (best-effort, dla audytu).
-            var ns = new XmlSerializerNamespaces();
-            ns.Add(string.Empty, string.Empty);
-
-            var ser = new XmlSerializer(typeof(T));
-            using var sw = new Utf8StringWriter();
-            using var xw = XmlWriter.Create(sw, new XmlWriterSettings
+            try
             {
-                OmitXmlDeclaration = false,
-                Indent = false,
-                Encoding = Encoding.UTF8
-            });
-            ser.Serialize(xw, obj, ns);
-            return sw.ToString();
-        }
+                var doc = XDocument.Parse(xml);
 
-        private sealed class Utf8StringWriter : StringWriter
-        {
-            public override Encoding Encoding => Encoding.UTF8;
+                var fault = doc
+                    .Descendants()
+                    .FirstOrDefault(e => e.Name.LocalName == "Fault");
+
+                if (fault == null)
+                    return (null, null, null);
+
+                string? Get(string localName) =>
+                    fault.Elements().FirstOrDefault(e => e.Name.LocalName == localName)?.Value.Trim();
+
+                var code = Get("faultcode");
+                var msg = Get("faultstring");
+                var details = fault
+                    .Elements()
+                    .FirstOrDefault(e => e.Name.LocalName == "detail")
+                    ?.Value
+                    .Trim();
+
+                return (code, msg, details);
+            }
+            catch
+            {
+                return (null, null, null);
+            }
         }
     }
 }

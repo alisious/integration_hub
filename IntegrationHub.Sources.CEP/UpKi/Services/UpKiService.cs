@@ -40,10 +40,10 @@ namespace IntegrationHub.Sources.CEP.UpKi.Services
         {
             if (body is null)
             {
-                return new Error(
-                    Code: "REQUEST_NULL",
-                    Message: "Body (DaneDokumentuRequest) nie może być null.",
-                    HttpStatus: (int)HttpStatusCode.BadRequest);
+                return ErrorFactory.BusinessError(
+                    ErrorCodeEnum.ValidationError,
+                    message: "Body (DaneDokumentuRequest) nie może być null."
+                    );
             }
 
             // 1) Walidacja wejścia – tak samo jak w wersji testowej
@@ -51,11 +51,10 @@ namespace IntegrationHub.Sources.CEP.UpKi.Services
             var vr = validator.ValidateAndNormalize(body);
             if (!vr.IsValid)
             {
-                var message = vr.ToString();
-                return new Error(
-                    Code: "REQUEST_VALIDATION",
-                    Message: message,
-                    HttpStatus: (int)HttpStatusCode.BadRequest);
+                return ErrorFactory.BusinessError(
+                    ErrorCodeEnum.ValidationError,
+                    message: vr.MessageError ?? "Błąd walidacji DaneDokumentuRequest."
+                );
             }
 
             // 2) Budowa SOAP envelope
@@ -95,11 +94,10 @@ namespace IntegrationHub.Sources.CEP.UpKi.Services
                             "UpKiService – błąd biznesowy CEK/UpKi. Kod={Code}, Message={Message}, HttpStatus={Status}",
                             code, message, statusCode);
 
-                        return new Error(
-                            Code: code ?? "UPKI-ERROR",
-                            Message: message ?? "Błąd biznesowy zwrócony przez CEK (UpKi).",
-                            HttpStatus: statusCode,
-                            Details: details);
+                        return ErrorFactory.BusinessError(
+                            ErrorCodeEnum.ExternalServiceError,
+                            message: message ?? "Błąd biznesowy zwrócony przez CEK (UpKi).",
+                            details: code);
                     }
 
                     // Techniczny HTTP error
@@ -108,11 +106,12 @@ namespace IntegrationHub.Sources.CEP.UpKi.Services
                         "UpKiService – błąd techniczny HTTP. Status={Status}, Message={Message}",
                         statusCode, msg);
 
-                    return new Error(
-                        Code: "UPKI-HTTP",
-                        Message: msg,
-                        HttpStatus: statusCode,
-                        Details: responseXml);
+                    return ErrorFactory.TechnicalError(
+                        ErrorCodeEnum.ExternalServiceError,
+                        message: msg,
+                        httpStatus: statusCode,
+                        details: responseXml
+                    );
                 }
 
                 // 4) Mapowanie SOAP → DTO

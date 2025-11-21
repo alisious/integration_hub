@@ -1,9 +1,13 @@
-﻿using IntegrationHub.PIESP.Exceptions;
+﻿using IntegrationHub.Common.Contracts;
+using IntegrationHub.PIESP.Exceptions;
 using IntegrationHub.PIESP.Models;
 using IntegrationHub.PIESP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 using System.Security.Claims;
 
 namespace IntegrationHub.PIESP.Controllers
@@ -19,6 +23,7 @@ namespace IntegrationHub.PIESP.Controllers
     public class DutyController : ControllerBase
     {
         private readonly DutyService _duties;
+        private readonly string _sourceName = "PIESP";
 
         public DutyController(DutyService duties)
         {
@@ -39,13 +44,34 @@ namespace IntegrationHub.PIESP.Controllers
             Summary = "Moje służby – zaplanowane",
             Description = "Pobiera z bazy służby użytkownika o statusie Planned w wybranym dniu (lub dziś)."
         )]
-        [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<Duty> >), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult GetDutiesPlannedForMe([FromQuery] DateTime? date = null)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ProxyResponse<IEnumerable<Duty>> GetDutiesPlannedForMe([FromQuery] DateTime? date = null)
         {
-            if (!TryGetUserId(out var userId)) return Forbid();
+            var requestId = Guid.NewGuid().ToString();
+
+            if (!TryGetUserId(out var userId)) return ProxyResponses.BusinessError<IEnumerable<Duty>>(
+                "Nieznany użytkownik!",
+                _sourceName,
+                HttpStatusCode.Unauthorized.ToString(),
+                requestId);
+            
             var duties = _duties.GetDutiesPlannedForUser(userId, date);
-            return Ok(duties);
+            if (duties.IsNullOrEmpty())
+            {
+                return ProxyResponses.BusinessError<IEnumerable<Duty>>(
+                    $"Brak zaplanowanych służb dla użytkownika w dniu {(date ?? DateTime.Today).ToString("yyyy-MM-dd")}.",
+                    _sourceName,
+                    HttpStatusCode.NotFound.ToString(),
+                    requestId);
+            }
+
+            return ProxyResponses.Success(
+                duties, 
+                _sourceName, 
+                HttpStatusCode.OK.ToString(), 
+                requestId);
         }
 
         /// <summary>Zwraca służby bieżącego użytkownika w danym dniu.</summary>
@@ -74,62 +100,162 @@ namespace IntegrationHub.PIESP.Controllers
             Description = "Zwraca pojedynczy rekord służby o statusie InProgress dla aktualnie zalogowanego użytkownika. " +
                           "Jeśli brak – HTTP 404. Jeśli wykryto wiele rekordów InProgress (błąd danych) – HTTP 409."
         )]
-        [ProducesResponseType(typeof(Duty), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<Duty>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
-        public IActionResult GetMyCurrentDuty()
+        public ProxyResponse<Duty> GetMyCurrentDuty()
         {
-            if (!TryGetUserId(out var userId)) return Forbid();
+            
+            
+            var requestId = Guid.NewGuid().ToString();
+
+            if (!TryGetUserId(out var userId)) return ProxyResponses.BusinessError<Duty>(
+                "Nieznany użytkownik!",
+                _sourceName,
+                HttpStatusCode.NotFound.ToString(),
+                requestId);
+
 
             try
             {
                 var duty = _duties.GetCurrentDutyForUser(userId);
-                return duty is null ? NotFound() : Ok(duty);
+                return duty is null ? 
+                    ProxyResponses.BusinessError<Duty>(
+                        "Brak służby w toku dla tego użytkownika.",
+                        _sourceName, 
+                        HttpStatusCode.NotFound.ToString(),
+                        requestId) 
+                    :
+                    ProxyResponses.Success(
+                        duty, 
+                        _sourceName,
+                        HttpStatusCode.OK.ToString(),
+                        requestId);
             }
             catch (InvalidOperationException)
             {
                 // SingleOrDefault wykrył >1 rekord – naruszenie założenia biznesowego
-                return Conflict("W systemie istnieje więcej niż jedna służba w toku dla tego użytkownika.");
+                return ProxyResponses.BusinessError<Duty>(
+                    "W systemie istnieje więcej niż jedna służba w toku dla tego użytkownika.",
+                    _sourceName,
+                    HttpStatusCode.Conflict.ToString(),
+                    requestId);
             }
         }
 
-        public record StartEndDutyRequest(DateTime DateTimeUtc);
+        public record StartEndDutyRequest(
+            int DutyId,
+            DateTime DateTimeUtc,
+            decimal? Latitude,
+            decimal? Longitude
+        );
 
         /// <summary>Rozpoczyna służbę (ustawia Status=InProgress i ActualStart).</summary>
         /// <param name="dutyId">Id służby.</param>
         /// <param name="req">Czas rozpoczęcia w UTC.</param>
-        [HttpPost("{dutyId}/start")]
+        [HttpPost("start")]
         [SwaggerOperation(
             Summary = "Start służby",
             Description = "Startuje wskazaną służbę użytkownika. Waliduje brak innej trwającej służby."
         )]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<Duty>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
-        public IActionResult StartDuty(int dutyId, [FromBody] StartEndDutyRequest req)
+
+        public ProxyResponse<Duty> StartDuty([FromBody] StartEndDutyRequest req)
         {
-            if (!TryGetUserId(out var userId)) return Forbid();
-            var ok = _duties.StartDuty(dutyId, userId, req.DateTimeUtc);
-            return ok ? Ok() : Conflict("Nie można rozpocząć tej służby.");
+            var requestId = Guid.NewGuid().ToString();
+            var result = new ProxyResponse<Duty>();
+
+            try
+            {
+                if (!TryGetUserId(out var userId)) result = ProxyResponses.BusinessError<Duty>(
+                    "Nieznany użytkownik!",
+                    _sourceName,
+                    HttpStatusCode.NotFound.ToString(),
+                    requestId);
+
+                var ok = _duties.StartDuty(
+                    req.DutyId,
+                    userId,
+                    req.DateTimeUtc,
+                    req.Latitude,
+                    req.Longitude);
+                if (ok)
+                {
+                    var currentDuty = _duties.GetCurrentDutyForUser(userId);
+                    result = ProxyResponses.Success(currentDuty!, _sourceName, HttpStatusCode.OK.ToString(), requestId);
+                    result.Message = "Służba rozpoczęta!";
+                }
+                else
+                {
+                    result = ProxyResponses.BusinessError<Duty>("Nie można rozpocząć tej służby.", _sourceName, HttpStatusCode.Conflict.ToString(), requestId);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = ProxyResponses.TechnicalError<Duty>(
+                    ex.Message,
+                    _sourceName,
+                    HttpStatusCode.InternalServerError.ToString(),
+                    requestId);
+            }
+            return result;
         }
 
         /// <summary>Kończy służbę (ustawia Status=Finished i ActualEnd).</summary>
         /// <param name="dutyId">Id służby.</param>
         /// <param name="req">Czas zakończenia w UTC.</param>
-        [HttpPost("{dutyId}/finish")]
+        [HttpPost("finish")]
         [SwaggerOperation(
             Summary = "Zakończenie służby",
             Description = "Kończy wskazaną służbę użytkownika. Wymaga, by służba była InProgress."
         )]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<Duty>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
-        public IActionResult FinishDuty(int dutyId, [FromBody] StartEndDutyRequest req)
+        public ProxyResponse<Duty> FinishDuty([FromBody] StartEndDutyRequest req)
         {
-            if (!TryGetUserId(out var userId)) return Forbid();
-            var ok = _duties.FinishDuty(dutyId, userId, req.DateTimeUtc);
-            return ok ? Ok() : Conflict("Nie można zakończyć tej służby.");
+
+            var requestId = Guid.NewGuid().ToString();
+            var result = new ProxyResponse<Duty>();
+
+            try
+            {
+                if (!TryGetUserId(out var userId)) result = ProxyResponses.BusinessError<Duty>(
+                        "Nieznany użytkownik!",
+                        _sourceName,
+                        HttpStatusCode.NotFound.ToString(),
+                        requestId);
+
+                var ok = _duties.FinishDuty(
+                    req.DutyId,
+                    userId,
+                    req.DateTimeUtc,
+                    req.Latitude,
+                    req.Longitude);
+                if (ok)
+                {
+                    var currentDuty = _duties.GetDuty(req.DutyId);
+                    result = ProxyResponses.Success(currentDuty!, _sourceName, HttpStatusCode.OK.ToString(), requestId);
+                    result.Message = "Służba zakończona!";
+                }
+                else
+                {
+                    result = ProxyResponses.BusinessError<Duty>("Nie można zakończyć tej służby.", _sourceName, HttpStatusCode.Conflict.ToString(), requestId);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = ProxyResponses.TechnicalError<Duty>(
+                    ex.Message,
+                    _sourceName,
+                    HttpStatusCode.InternalServerError.ToString(),
+                    requestId);
+            }
+            
+            return result;
+            
         }
     }
 }

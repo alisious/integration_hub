@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <env:Header xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+      <wsa:Action>PersonOffencesSearch</wsa:Action>
+      <wsa:MessageID>urn:f8f501f1-c613-11f0-8d28-5cb901955d68</wsa:MessageID>
+      <wsa:ReplyTo>
+         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+         <wsa:ReferenceParameters>
+            <instra:tracking.ecid xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">5174e741-80f5-42e6-ac58-9d06425670da-00004300</instra:tracking.ecid>
+            <instra:tracking.FlowId xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">8521648198</instra:tracking.FlowId>
+            <instra:tracking.CorrelationFlowId xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">0000PeXR_7yEWN0pzwx0iW1d7NaG00CGGV</instra:tracking.CorrelationFlowId>
+            <instra:tracking.quiescing.SCAEntityId xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">240040</instra:tracking.quiescing.SCAEntityId>
+         </wsa:ReferenceParameters>
+      </wsa:ReplyTo>
+      <wsa:FaultTo>
+         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+      </wsa:FaultTo>
+   </env:Header>
+   <env:Body xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+      <tns:SprawdzenieOsobyResponse xmlns:lib="http://policja.gov.pl/EnterpriseObjectLibrary/Common/V1" xmlns:tns="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby">
+         <tns:Person>
+            <tns:PersonName>
+               <tns:FirstName>MATEUSZ</tns:FirstName>
+               <tns:LastName>DZIODKO</tns:LastName>
+            </tns:PersonName>
+            <tns:PESELNumber>03290901192</tns:PESELNumber>
+            <tns:BirthDate>2003-09-09</tns:BirthDate>
+         </tns:Person>
+         <tns:OffenseRecord>
+            <tns:IncidentDate>2024-12-16</tns:IncidentDate>
+            <tns:FinePaymentDate>2025-01-06</tns:FinePaymentDate>
+            <tns:ValidationOfDecisonDate>2024-12-16</tns:ValidationOfDecisonDate>
+            <tns:PersonCriminalRecordClassification>
+               <tns:LegalClassificationCode>art. 86b § 1 pkt 5 k.w.</tns:LegalClassificationCode>
+               <tns:ClassificationCode>B07 22r</tns:ClassificationCode>
+               <tns:Description>Naruszenie zakazu jazdy wzdłuż po chodniku lub przejściu dla pieszych</tns:Description>
+            </tns:PersonCriminalRecordClassification>
+         </tns:OffenseRecord>
+         <tns:State>1</tns:State>
+      </tns:SprawdzenieOsobyResponse>
+   </env:Body>
+</soapenv:Envelope>

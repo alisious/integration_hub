@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:spr="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <spr:SprawdzenieOsobyRequest>
+         <spr:RequestHeader>
+            <spr:RequestID>9B82F1F8-110A-4D23-AEE1-A4359DF47892</spr:RequestID>
+            <spr:Timestamp>2025-11-19T18:39:10Z</spr:Timestamp>
+            <spr:AuditRecord>
+               <spr:SystemName>ŻW</spr:SystemName>
+               <!--Optional:-->
+               <spr:ApplicationName>ŻW</spr:ApplicationName>
+               <!--Optional:-->
+               <spr:ModuleName>TEST</spr:ModuleName>
+               <!--Optional:-->
+               <spr:TerminalName>TEST</spr:TerminalName>
+               <!--Optional:-->
+               <spr:UserProfile>
+                  <!--Optional:-->
+                  <spr:UserID>ZW0099</spr:UserID>
+                  <!--Optional:-->
+                  <spr:UnitID>77859</spr:UnitID>
+               </spr:UserProfile>
+            </spr:AuditRecord>
+         </spr:RequestHeader>
+         <spr:RequestBody>
+            <!--You have a CHOICE of the next 2 items at this level-->
+            <spr:NrPESEL>03290901192</spr:NrPESEL>
+         </spr:RequestBody>
+      </spr:SprawdzenieOsobyRequest>
+   </soapenv:Body>
+</soapenv:Envelope>

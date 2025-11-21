@@ -22,6 +22,7 @@ using IntegrationHub.Sources.CEP.UpKi.Extensions;
 
 using IntegrationHub.Sources.KSIP.Config;
 using IntegrationHub.Sources.KSIP.Services;
+using IntegrationHub.Sources.KSIP.Extensions;
 using IntegrationHub.Sources.ZW.Extensions;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Services;
@@ -271,25 +272,8 @@ else
 /**************************************************************/
 // ====== KSIP CLIENT ======
 // Rejestracja konfiguracji KSIP
-builder.Services.Configure<KSIPConfig>(builder.Configuration.GetSection("ExternalServices:KSIP"));
-var ksipConfig = builder.Configuration.GetSection("ExternalServices:KSIP").Get<KSIPConfig>();
-switch (ksipConfig.SourceMode)
-{
-    case SourceMode.Test:
-        Log.Warning("KSIP dzia³a w trybie testowym.");
-        builder.Services.AddTransient<IKSIPService, KSIPService>();
-        break;
-    case SourceMode.Production:
-        Log.Information("KSIP dzia³a w trybie produkcyjnym.");
-        builder.Services.AddTransient<IKSIPService, KSIPService>();
-        break;
-    case SourceMode.Development:
-        Log.Information("KSIP dzia³a w trybie deweloperskim bez po³¹czenia ze Ÿród³em.");
-        break;
-    default:
-        Log.Warning("KSIP dzia³a bez okreœlonego trybu (brak konfiguracji).");
-        break;
-}
+builder.Services.AddKSIP(builder.Configuration, out var ksipLogMessage);
+Log.Information(ksipLogMessage);
 
 /**************************************************************/
 // ====== CEPiK UpKi CLIENT ======

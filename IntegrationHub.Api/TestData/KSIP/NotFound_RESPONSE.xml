@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <env:Header xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+      <wsa:Action>PersonOffencesSearch</wsa:Action>
+      <wsa:MessageID>urn:b2d6419e-c64e-11f0-b593-5cb901955eb8</wsa:MessageID>
+      <wsa:ReplyTo>
+         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+         <wsa:ReferenceParameters>
+            <instra:tracking.ecid xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">5174e741-80f5-42e6-ac58-9d06425670da-00004fa1</instra:tracking.ecid>
+            <instra:tracking.FlowId xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">8524590174</instra:tracking.FlowId>
+            <instra:tracking.CorrelationFlowId xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">0000PeYvn0LEWN0pzwx0iW1d7NaG00FcYu</instra:tracking.CorrelationFlowId>
+            <instra:tracking.quiescing.SCAEntityId xmlns:instra="http://xmlns.oracle.com/sca/tracking/1.0">240040</instra:tracking.quiescing.SCAEntityId>
+         </wsa:ReferenceParameters>
+      </wsa:ReplyTo>
+      <wsa:FaultTo>
+         <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+      </wsa:FaultTo>
+   </env:Header>
+   <env:Body xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+      <tns:SprawdzenieOsobyResponse xmlns:lib="http://policja.gov.pl/EnterpriseObjectLibrary/Common/V1" xmlns:tns="http://policja.gov.pl/RuchDrogowy/SprawdzenieOsoby">
+         <tns:State>0</tns:State>
+      </tns:SprawdzenieOsobyResponse>
+   </env:Body>
+</soapenv:Envelope>

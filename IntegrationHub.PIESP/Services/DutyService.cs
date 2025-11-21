@@ -59,9 +59,14 @@ namespace IntegrationHub.PIESP.Services
         }
 
         /// <summary>
-        /// Rozpoczyna służbę (zmiana statusu i ActualStart).
+        /// Rozpoczyna służbę (zmiana statusu, ActualStart i zapis współrzędnych startu).
         /// </summary>
-        public bool StartDuty(int dutyId, Guid userId, DateTime startedAt)
+        public bool StartDuty(
+            int dutyId, 
+            Guid userId, 
+            DateTime startedAt,
+            decimal? startLatitude = null,
+            decimal? startLongitude = null)
         {
             var duty = _context.Duties.FirstOrDefault(d => d.Id == dutyId && d.UserId == userId);
             if (duty == null || duty.Status == DutyStatus.InProgress || duty.Status == DutyStatus.Finished)
@@ -76,15 +81,22 @@ namespace IntegrationHub.PIESP.Services
 
             duty.Status = DutyStatus.InProgress;
             duty.ActualStart = startedAt;
+            duty.ActualStartLatitude = startLatitude;
+            duty.ActualStartLongitude = startLongitude;
 
             _context.SaveChanges();
             return true;
         }
 
         /// <summary>
-        /// Kończy służbę (zmiana statusu i ActualEnd).
+        /// Kończy służbę (zmiana statusu, ActualEnd i zapis współrzędnych zakończenia).
         /// </summary>
-        public bool FinishDuty(int dutyId, Guid userId, DateTime finishedAt)
+        public bool FinishDuty(
+            int dutyId, 
+            Guid userId, 
+            DateTime finishedAt,
+            decimal? endLatitude = null,
+            decimal? endLongitude = null)
         {
             var duty = _context.Duties.FirstOrDefault(d => d.Id == dutyId && d.UserId == userId && d.Status == DutyStatus.InProgress);
             if (duty == null)
@@ -92,6 +104,8 @@ namespace IntegrationHub.PIESP.Services
 
             duty.Status = DutyStatus.Finished;
             duty.ActualEnd = finishedAt;
+            duty.ActualEndLatitude = endLatitude;
+            duty.ActualEndLongitude = endLongitude;
 
             _context.SaveChanges();
             return true;
@@ -110,6 +124,18 @@ namespace IntegrationHub.PIESP.Services
                 .AsNoTracking()
                 .Where(d => d.UserId == userId && d.Status == DutyStatus.InProgress)
                 .SingleOrDefault();
+        }
+
+        /// <summary>
+        /// Zwraca służbę.
+        /// </summary>
+        /// <param name="dutyId">Id służby.</param>
+        /// <returns>Służba wg dutyId lub null, gdy brak.</returns>
+        public Duty? GetDuty(int dutyId)
+        {
+            return _context.Duties
+                .AsNoTracking()
+                .FirstOrDefault(d => d.Id == dutyId);
         }
     }
 }

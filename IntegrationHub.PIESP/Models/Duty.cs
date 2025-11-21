@@ -65,5 +65,29 @@ namespace IntegrationHub.PIESP.Models
         /// </summary>
         [JsonPropertyName("actualEnd")]
         public DateTime? ActualEnd { get; set; }
+
+        /// <summary>
+        /// Szerokość geograficzna miejsca faktycznego rozpoczęcia służby.
+        /// </summary>
+        [JsonPropertyName("actualStartLatitude")]
+        public decimal? ActualStartLatitude { get; set; }
+
+        /// <summary>
+        /// Długość geograficzna miejsca faktycznego rozpoczęcia służby.
+        /// </summary>
+        [JsonPropertyName("actualStartLongitude")]
+        public decimal? ActualStartLongitude { get; set; }
+
+        /// <summary>
+        /// Szerokość geograficzna miejsca faktycznego zakończenia służby.
+        /// </summary>
+        [JsonPropertyName("actualEndLatitude")]
+        public decimal? ActualEndLatitude { get; set; }
+
+        /// <summary>
+        /// Długość geograficzna miejsca faktycznego zakończenia służby.
+        /// </summary>
+        [JsonPropertyName("actualEndLongitude")]
+        public decimal? ActualEndLongitude { get; set; }
     }
 }
