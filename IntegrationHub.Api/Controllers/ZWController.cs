@@ -681,6 +681,94 @@ namespace IntegrationHub.Api.Controllers
             }
         }
 
+        [HttpPost("bron-osoba/by-address")]
+        [Produces(typeof(ProxyResponse<BronOsobaResponse>))]
+        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+    Summary = "ZW – dane osoby posiadającej broń prywatną wg adresu",
+    Description = @"
+<p>Usługa zwraca dane osoby posiadającej broń prywatną na podstawie adresu przechowywania broni w rejestrze ZW.</p>
+<ul>
+  <li>wyszukuje wpis w tabeli <code>piesp.BronAdresy</code> na podstawie parametrów adresowych,</li>
+  <li>wymagane minimalne kryteria wyszukiwania: miejscowość i numer domu,</li>
+  <li>jeśli znaleziono więcej niż jedną lokalizację, zwracany jest błąd biznesowy z prośbą o doprecyzowanie kryteriów,</li>
+  <li>jeśli nie znaleziono żadnej lokalizacji, zwracany jest błąd biznesowy typu NotFound,</li>
+  <li>w środowisku testowym dostępna jest lokalizacja testowa: Miejscowość: <code>WARSZAW</code>, Ulica: <code>BRZOZOWA</code>, Numer domu: <code>12</code>.</li>
+</ul>
+<p>Parametry należy przekazać w formacie JSON w ciele żądania zgodnie z modelem <code>BronAdresRequest</code>.</p>"
+)]
+        public async Task<ProxyResponse<BronOsobaResponse>> GetPrivateWeaponHolderByAddressAsync(
+    [FromBody] BronAdresRequest body,
+    CancellationToken ct = default)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ZW";
+
+            try
+            {
+                if (body is null)
+                {
+                    return ProxyResponses.BusinessError<BronOsobaResponse>(
+                        message: "Body żądania nie może być null.",
+                        source: source,
+                        sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
+                        requestId: requestId);
+                }
+
+                // Serwis zwraca: Result<BronOsobaResponse, Error>
+                var result = await _wantedService.GetBronAdresAsync(body, ct);
+
+                // Użycie ProxyResponseMapper.ToProxyResponse (metoda rozszerzająca)
+                var proxy = result.ToProxyResponse();
+
+                // Uzupełniamy metadane ProxyResponse
+                proxy.Source = source;
+                proxy.RequestId = requestId;
+
+                if (result.IsSuccess)
+                {
+                    proxy.Status = ProxyStatus.Success;
+                    proxy.SourceStatusCode = StatusCodes.Status200OK.ToString();
+                    proxy.Message = "Znaleziono dane posiadacza broni prywatnej dla wskazanego adresu.";
+                }
+                else
+                {
+                    var err = result.Error;
+
+                    proxy.Status = err.ErrorKind == ErrorKindEnum.Business
+                        ? ProxyStatus.BusinessError
+                        : ProxyStatus.TechnicalError;
+
+                    proxy.SourceStatusCode = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
+                    // Message ustawił już ProxyResponseMapper (err.Message).
+                }
+
+                return proxy;
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                    message: "Żądanie zostało anulowane.",
+                    source: source,
+                    sourceStatusCode: "499",
+                    requestId: requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                    message: $"Nieoczekiwany błąd: {ex.Message}",
+                    source: source,
+                    sourceStatusCode: StatusCodes.Status500InternalServerError.ToString(),
+                    requestId: requestId);
+            }
+        }
+
+
+
+
 
     }
 }

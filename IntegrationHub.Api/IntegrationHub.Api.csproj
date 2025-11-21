@@ -60,6 +60,24 @@
     <None Update="TestData\CEP\pobierzListeSlownikow_RESPONSE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\KSIP\dziodko_Person_REQUEST.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\KSIP\dziodko_PESEL_REQUEST.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\KSIP\dziodko_RESPONSE.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\KSIP\NotFound_RESPONSE.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\KSIP\OsobaJest_State0_RESPONSE.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\KSIP\template_REQUEST.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\SRP\UdostepnijAktualneDaneOsobyPoPesel_RESPONSE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -13,5 +13,9 @@ namespace IntegrationHub.Sources.ZW.Interfaces
             OsobaZolnierzRequest request,
             CancellationToken ct = default);
 
+        Task<Result<BronOsobaResponse, Error>> GetBronAdresAsync(
+            BronAdresRequest request,
+            CancellationToken ct = default);
+
     }
 }

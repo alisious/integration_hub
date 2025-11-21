@@ -1,17 +1,18 @@
-﻿using IntegrationHub.Common.Primitives;
+﻿using Dapper;
+using IntegrationHub.Common.Primitives;
 using IntegrationHub.Sources.ZW.Config;
 using IntegrationHub.Sources.ZW.Contracts;
 using IntegrationHub.Sources.ZW.Interfaces;
+using IntegrationHub.Sources.ZW.RequestValidation;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Microsoft.Data.SqlClient;
-using Dapper;
 
 namespace IntegrationHub.Sources.ZW.Services
 {
@@ -228,8 +229,165 @@ namespace IntegrationHub.Sources.ZW.Services
             }
         }
 
+        public async Task<Result<BronOsobaResponse, Error>> GetBronAdresAsync(
+    BronAdresRequest request,
+    CancellationToken ct = default)
+        {
+            if (request is null)
+            {
+                return ErrorFactory.BusinessError(
+                    ErrorCodeEnum.ValidationError,
+                    "Request nie może być null.");
+            }
+
+            var validator = new BronAdresRequestValidator();
+            var vr = validator.ValidateAndNormalize(request);
+            if (!vr.IsValid)
+            {
+                return ErrorFactory.BusinessError(
+                    ErrorCodeEnum.ValidationError,
+                    vr.MessageError ?? "Błąd walidacji BronAdresRequest.");
+            }
+
+            const string baseSql = @"
+        SELECT
+            BA_BOPESEL      AS [Pesel],
+            BA_MIEJSCOWOSC  AS [Miejscowosc],
+            BA_ULICA        AS [Ulica],
+            BA_NUMER_DOMU   AS [NumerDomu],
+            BA_NUMER_LOKALU AS [NumerLokalu],
+            BA_KOD_POCZTOWY AS [KodPocztowy],
+            BA_POCZTA       AS [Poczta],
+            BA_OPIS         AS [Opis]
+        FROM piesp.BronAdresy WITH (NOLOCK)
+        WHERE 1 = 1";
+
+            var sqlBuilder = new StringBuilder(baseSql);
+            var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrWhiteSpace(request.Miejscowosc))
+            {
+                sqlBuilder.AppendLine(" AND BA_MIEJSCOWOSC = @Miejscowosc");
+                parameters.Add("Miejscowosc", request.Miejscowosc);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Ulica))
+            {
+                sqlBuilder.AppendLine(" AND BA_ULICA = @Ulica");
+                parameters.Add("Ulica", request.Ulica);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.NumerDomu))
+            {
+                sqlBuilder.AppendLine(" AND BA_NUMER_DOMU = @NumerDomu");
+                parameters.Add("NumerDomu", request.NumerDomu);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.NumerLokalu))
+            {
+                sqlBuilder.AppendLine(" AND BA_NUMER_LOKALU = @NumerLokalu");
+                parameters.Add("NumerLokalu", request.NumerLokalu);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.KodPocztowy))
+            {
+                sqlBuilder.AppendLine(" AND BA_KOD_POCZTOWY = @KodPocztowy");
+                parameters.Add("KodPocztowy", request.KodPocztowy);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Poczta))
+            {
+                sqlBuilder.AppendLine(" AND BA_POCZTA = @Poczta");
+                parameters.Add("Poczta", request.Poczta);
+            }
+
+            sqlBuilder.AppendLine(@"
+        ORDER BY BA_MIEJSCOWOSC, BA_ULICA, BA_NUMER_DOMU, BA_NUMER_LOKALU;");
+
+            var sql = sqlBuilder.ToString();
+
+            try
+            {
+                await using var conn = new SqlConnection(_cs);
+                await conn.OpenAsync(ct);
+
+                var rows = (await conn.QueryAsync<BronAdresFlatRow>(
+                    new CommandDefinition(
+                        sql,
+                        parameters,
+                        commandType: CommandType.Text,
+                        commandTimeout: _timeout,
+                        cancellationToken: ct)))
+                    .ToList();
+
+                if (rows.Count == 0)
+                {
+                    return ErrorFactory.BusinessError(
+                        ErrorCodeEnum.NotFoundError,
+                        "Nie znaleziono lokalizacji spełniającej zadane kryteria.");
+                }
+
+                if (rows.Count > 1)
+                {
+                    return ErrorFactory.BusinessError(
+                        ErrorCodeEnum.ValidationError,
+                        "Znaleziono więcej niż jedną lokalizację. Doprecyzuj parametry wyszukiwania.");
+                }
+
+                var row = rows[0];
+
+                var adres = new BronAdresDto
+                {
+                    Miejscowosc = row.Miejscowosc,
+                    Ulica = row.Ulica,
+                    NumerDomu = row.NumerDomu,
+                    NumerLokalu = row.NumerLokalu,
+                    KodPocztowy = row.KodPocztowy,
+                    Poczta = row.Poczta,
+                    Opis = row.Opis
+                };
+
+                var response = new BronOsobaResponse
+                {
+                    Pesel = row.Pesel,              // z piesp.BronAdresy
+                    Adresy = new List<BronAdresDto> { adres }
+                };
+
+                return response;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "ZW.GetBronAdresAsync failed for {@Request}", request);
+                return ErrorFactory.TechnicalError(
+                    ErrorCodeEnum.SqlError,
+                    "Błąd połączenia z bazą ZW.",
+                    details: ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ZW.GetBronAdresAsync unexpected error for {@Request}", request);
+                return ErrorFactory.TechnicalError(
+                    ErrorCodeEnum.UnexpectedError,
+                    "Nieoczekiwany błąd podczas odczytu z ZW.",
+                    details: ex.Message);
+            }
+        }
+
+        // Internal DTO do mapowania wyników z piesp.BronAdresy
+        private sealed class BronAdresFlatRow
+        {
+            public string Pesel { get; set; } = default!;
+            public string Miejscowosc { get; set; } = default!;
+            public string? Ulica { get; set; }
+            public string NumerDomu { get; set; } = default!;
+            public string? NumerLokalu { get; set; }
+            public string? KodPocztowy { get; set; }
+            public string? Poczta { get; set; }
+            public string? Opis { get; set; }
+        }
 
     }
 }
+
     
 
