@@ -14,8 +14,11 @@ namespace Trentum.Horkos;
 
 public sealed class ObligationsService : IObligationsService
 {
-    private const string TblAnnual = "dbo.ZobowiazaniaRoczne";
-    private const string TblDischarged = "dbo.ZobowiazaniaPoZwolnieniu";
+    //private const string TblAnnual = "dbo.ZobowiazaniaRoczne";
+    //private const string TblDischarged = "dbo.ZobowiazaniaPoZwolnieniu";
+
+    private const string TblAnnual = "dbo.ListaZobowiazanych";
+    private const string TblDischarged = "dbo.ListaZobowiazanych";
 
     private readonly IDbConnectionFactory _factory;
 
@@ -84,6 +87,7 @@ public sealed class ObligationsService : IObligationsService
     {
         // Zamiana na DataTable (najprostsza droga bez dodatkowych paczek)
         var dt = new DataTable();
+        dt.Columns.Add("Rodzaj", typeof(int));
         dt.Columns.Add("HorkosListaZobowiazanychId", typeof(int));
         dt.Columns.Add("Rok", typeof(int));
         dt.Columns.Add("Stopien", typeof(string));
@@ -98,6 +102,7 @@ public sealed class ObligationsService : IObligationsService
         {
             dynamic x = r!;
             dt.Rows.Add(
+                x.Rodzaj,
                 x.HorkosListaZobowiazanychId,
                 x.Rok,
                 x.Stopien,
@@ -118,7 +123,7 @@ public sealed class ObligationsService : IObligationsService
             BatchSize = 5000,
             BulkCopyTimeout = 0 // bez limitu (lub ustaw wg potrzeb)
         };
-
+        bulk.ColumnMappings.Add("Rodzaj", "Rodzaj");
         bulk.ColumnMappings.Add("HorkosListaZobowiazanychId", "HorkosListaZobowiazanychId");
         bulk.ColumnMappings.Add("Rok", "Rok");
         bulk.ColumnMappings.Add("Stopien", "Stopien");
@@ -140,6 +145,7 @@ public sealed class ObligationsService : IObligationsService
     {
         // Zamiana na DataTable (najprostsza droga bez dodatkowych paczek)
         var dt = new DataTable();
+        dt.Columns.Add("Rodzaj", typeof(int));
         dt.Columns.Add("HorkosListaZobowiazanychId", typeof(int));
         dt.Columns.Add("Rok", typeof(int));
         dt.Columns.Add("Miesiac", typeof(string));
@@ -156,6 +162,7 @@ public sealed class ObligationsService : IObligationsService
         {
             dynamic x = r!;
             dt.Rows.Add(
+                x.Rodzaj,
                 x.HorkosListaZobowiazanychId,
                 x.Rok,
                 x.Miesiac,
@@ -178,7 +185,7 @@ public sealed class ObligationsService : IObligationsService
             BatchSize = 5000,
             BulkCopyTimeout = 0 // bez limitu (lub ustaw wg potrzeb)
         };
-
+        bulk.ColumnMappings.Add("Rodzaj", "Rodzaj");
         bulk.ColumnMappings.Add("HorkosListaZobowiazanychId", "HorkosListaZobowiazanychId");
         bulk.ColumnMappings.Add("Rok", "Rok");
         bulk.ColumnMappings.Add("Miesiac", "Miesiac");
@@ -214,6 +221,7 @@ public sealed class ObligationsService : IObligationsService
     private static IEnumerable<object> CreateAnnualParams(IReadOnlyList<CsvPeopleParser.Osoba> people, int horkosListId, int rok)
         => people.Select(p => new
         {
+            Rodzaj = 0, // 0 = roczne
             HorkosListaZobowiazanychId = horkosListId,
             Rok = rok,
             p.Stopien,
@@ -228,6 +236,7 @@ public sealed class ObligationsService : IObligationsService
     private static IEnumerable<object> CreateDischargedParams(IReadOnlyList<CsvPeopleParser.OsobaZwolniona> people, int horkosListId, int rok, string miesiac)
         => people.Select(p => new
         {
+            Rodzaj = 1, // 1 = po zwolnieniu
             HorkosListaZobowiazanychId = horkosListId,
             Rok = rok,
             Miesiac = miesiac,

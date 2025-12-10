@@ -47,20 +47,20 @@ using Trentum.Horkos;
 
 
 
-// Serilog – bootstrap logger, ¿eby logowaæ od samego pocz¹tku
+// Serilog ï¿½ bootstrap logger, ï¿½eby logowaï¿½ od samego poczï¿½tku
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
-// KONFIGURACJA SERILOG – musi byæ przed builder.Build() U¿ywaj konfiguracji Seriloga z appsettings.*.json
-builder.Logging.ClearProviders(); // usuñ domyœlnego ConsoleLoggera itp.
+// KONFIGURACJA SERILOG ï¿½ musi byï¿½ przed builder.Build() Uï¿½ywaj konfiguracji Seriloga z appsettings.*.json
+builder.Logging.ClearProviders(); // usuï¿½ domyï¿½lnego ConsoleLoggera itp.
 builder.Host.UseSerilog((ctx, services, cfg) =>
 cfg.ReadFrom.Configuration(ctx.Configuration)
        .ReadFrom.Services(services));
 
-//Konfiguracja CORS – PROD + localhost (dev)
+//Konfiguracja CORS ï¿½ PROD + localhost (dev)
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>() ?? Array.Empty<string>();
@@ -69,9 +69,9 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("PIESP", p =>
         p
-        // zezwól na originy z appsettings (PROD)
+        // zezwï¿½l na originy z appsettings (PROD)
         .WithOrigins(allowedOrigins)
-        // i dodatkowo zezwól na localhost (dev)
+        // i dodatkowo zezwï¿½l na localhost (dev)
         .SetIsOriginAllowed(origin =>
         {
             if (Uri.TryCreate(origin, UriKind.Absolute, out var uri) && uri.IsLoopback) return true;
@@ -79,7 +79,7 @@ builder.Services.AddCors(opt =>
         })
         .AllowAnyHeader()
         .AllowAnyMethod()
-        // .AllowCredentials() // w³¹cz TYLKO jeœli faktycznie u¿ywacie cookies/credentials
+        // .AllowCredentials() // wï¿½ï¿½cz TYLKO jeï¿½li faktycznie uï¿½ywacie cookies/credentials
         .SetPreflightMaxAge(TimeSpan.FromHours(1))
     );
 });
@@ -131,28 +131,28 @@ var srpConfig = builder.Configuration.GetSection("ExternalServices:SRP").Get<Srp
 
 builder.Services.AddHttpClient("SrpServiceClient", c =>
 {
-    // Ca³kowity timeout HttpClient wy³¹czamy – kontrolujemy czas przez pipeline (Attempt/Total)
+    // Caï¿½kowity timeout HttpClient wyï¿½ï¿½czamy ï¿½ kontrolujemy czas przez pipeline (Attempt/Total)
     c.Timeout = Timeout.InfiniteTimeSpan;
-    // Spróbuj HTTP/2 (wenn dostêpny), z fallbackiem w dó³ – lepsze mno¿enie strumieni
+    // Sprï¿½buj HTTP/2 (wenn dostï¿½pny), z fallbackiem w dï¿½ ï¿½ lepsze mnoï¿½enie strumieni
     c.DefaultRequestVersion = HttpVersion.Version20;
     c.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
 })
-// 1) Handler audytu Ÿróde³ – wspólny mechanizm dla SRP
+// 1) Handler audytu ï¿½rï¿½deï¿½ ï¿½ wspï¿½lny mechanizm dla SRP
 .AddHttpMessageHandler(sp =>
 {
     var factory = sp.GetRequiredService<Func<string, SourceAuditHandler>>();
     return factory("SRP");
 })
 
-// Handler gniazd – klucz do wydajnoœci równoleg³ych wywo³añ
+// Handler gniazd ï¿½ klucz do wydajnoï¿½ci rï¿½wnolegï¿½ych wywoï¿½aï¿½
 .ConfigurePrimaryHttpMessageHandler(sp =>
 {
 
-    // Uwaga: NIE ³adujemy certyfikatu w trybie testowym
+    // Uwaga: NIE ï¿½adujemy certyfikatu w trybie testowym
     if (srpConfig?.TestMode == true)
     {
         
-        Log.Warning("SRP dzia³a w TRYBIE TESTOWYM. Nie u¿ywam certyfikatu klienta.");
+        Log.Warning("SRP dziaï¿½a w TRYBIE TESTOWYM. Nie uï¿½ywam certyfikatu klienta.");
         return new HttpClientHandler();
 
     }
@@ -164,16 +164,16 @@ builder.Services.AddHttpClient("SrpServiceClient", c =>
 
     // ZLATA ZASADA: MaxConnectionsPerServer >= 2 * maxParallel (zapas)
     var maxConn = Math.Max(16, (config.HttpMaxConnectionsPerServer ?? 0)); // opcjonalnie z appsettings
-    if (maxConn <= 0) maxConn = 32; // domyœlnie pod bulk
+    if (maxConn <= 0) maxConn = 32; // domyï¿½lnie pod bulk
 
     var h = new SocketsHttpHandler
     {
         AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         MaxConnectionsPerServer = maxConn,
-        PooledConnectionLifetime = TimeSpan.FromMinutes(5), // rotacja po³¹czeñ (DNS/zdrowie)
+        PooledConnectionLifetime = TimeSpan.FromMinutes(5), // rotacja poï¿½ï¿½czeï¿½ (DNS/zdrowie)
         PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
         ConnectTimeout = TimeSpan.FromSeconds(5),
-        // W .NET 8 dostêpne: utrzymanie po³¹czeñ H2 przy d³u¿szej bezczynnoœci
+        // W .NET 8 dostï¿½pne: utrzymanie poï¿½ï¿½czeï¿½ H2 przy dï¿½uï¿½szej bezczynnoï¿½ci
         KeepAlivePingDelay = TimeSpan.FromSeconds(30),
         KeepAlivePingTimeout = TimeSpan.FromSeconds(15),
         KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always
@@ -190,22 +190,22 @@ builder.Services.AddHttpClient("SrpServiceClient", c =>
     return h;
 })
 
-// Polly v8 – gotowy „standard” z dopracowaniem czasów i progów
+// Polly v8 ï¿½ gotowy ï¿½standardï¿½ z dopracowaniem czasï¿½w i progï¿½w
 .AddStandardResilienceHandler(opt =>
 {
-    // 1) Timeout pojedynczej próby (wa¿ne przy retrach)
+    // 1) Timeout pojedynczej prï¿½by (waï¿½ne przy retrach)
     opt.AttemptTimeout.Timeout = TimeSpan.FromSeconds(10);
 
-    // 2) £¹czny limit czasu ca³ego ¿¹dania (przez wszystkie retry)
+    // 2) ï¿½ï¿½czny limit czasu caï¿½ego ï¿½ï¿½dania (przez wszystkie retry)
     opt.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
 
-    // 3) Retry – exponential + jitter (domyœlnie na 5xx/408/transport; 429 te¿ jest sensowny na odczytach)
+    // 3) Retry ï¿½ exponential + jitter (domyï¿½lnie na 5xx/408/transport; 429 teï¿½ jest sensowny na odczytach)
     opt.Retry.MaxRetryAttempts = 3;
 
-    // 4) Circuit Breaker – ¿eby nie „mêczyæ” us³ugi gdy ewidentnie ma k³opot
-    opt.CircuitBreaker.FailureRatio = 0.2;                // 20% pora¿ek w oknie => przerwa
+    // 4) Circuit Breaker ï¿½ ï¿½eby nie ï¿½mï¿½czyï¿½ usï¿½ugi gdy ewidentnie ma kï¿½opot
+    opt.CircuitBreaker.FailureRatio = 0.2;                // 20% poraï¿½ek w oknie => przerwa
     opt.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(60);
-    opt.CircuitBreaker.MinimumThroughput = 20;            // minimalna liczba prób do oceny
+    opt.CircuitBreaker.MinimumThroughput = 20;            // minimalna liczba prï¿½b do oceny
     opt.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
 });
 
@@ -228,6 +228,7 @@ var cepConfig = builder.Configuration.GetSection("ExternalServices:CEP").Get<CEP
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();
 builder.Services.AddScoped<SupervisorService>();
+builder.Services.AddScoped<IntegrationHub.PIESP.Services.IDictService, IntegrationHub.PIESP.Services.DictService>();
 
 builder.Services.AddSingleton<IRequestValidator<WPMRequest>, WPMRequestValidator>();
 
@@ -243,10 +244,10 @@ builder.Services.AddScoped<IZWSourceFacade, ZWSourceFacade>();
 if (srpConfig!.TestMode)
 {
     
-    // Jeœli TestMode, zarejestruj PeselService jako PeselServiceTest
+    // Jeï¿½li TestMode, zarejestruj PeselService jako PeselServiceTest
     builder.Services.AddTransient<IPeselService, PeselServiceTest>();
     builder.Services.AddTransient<IRdoService, RdoServiceTest>();
-    Log.Warning("SRP dzia³a w trybie testowym.");
+    Log.Warning("SRP dziaï¿½a w trybie testowym.");
 }
 else
 {
@@ -259,14 +260,14 @@ if (cepConfig!.TestMode)
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiServiceTest>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieServiceTest>();
-    Log.Warning("CEP dzia³a w trybie testowym.");
+    Log.Warning("CEP dziaï¿½a w trybie testowym.");
 }
 else
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiService>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieService>();
-    //TODO: Zamieniæ na UpKiService w trybie produkcyjnym
-    Log.Information("CEP dzia³a w trybie produkcyjnym.");
+    //TODO: Zamieniï¿½ na UpKiService w trybie produkcyjnym
+    Log.Information("CEP dziaï¿½a w trybie produkcyjnym.");
 }
 
 /**************************************************************/
@@ -320,7 +321,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 if (string.IsNullOrEmpty(jti) || await auth.IsTokenRevokedAsync(jti))
                 { ctx.Fail("Token revoked or missing jti."); return; }
 
-                // 2) wersjonowanie tokenu (force-logout / zmiana ról)
+                // 2) wersjonowanie tokenu (force-logout / zmiana rï¿½l)
                 var uidStr = ctx.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var verStr = ctx.Principal?.FindFirst("ver")?.Value;
                 if (!Guid.TryParse(uidStr, out var uid) || !int.TryParse(verStr, out var ver))
@@ -343,40 +344,40 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Integration Hub API",
         Version = "v1",
-        Description = @"System API dla aplikacji patrolowej ¯andarmerii Wojskowej.
+        Description = @"System API dla aplikacji patrolowej ï¿½andarmerii Wojskowej.
 
-    W bazie danych znajduj¹ siê:
+    W bazie danych znajdujï¿½ siï¿½:
 
-    - **U¿ytkownicy**: 'kpr. Jan Kowalski' (badge: 1111, PIN: 1111), 'mjr Tomasz Nowak' (badge: 2222, PIN: 2222), z przypisanymi rolami takimi jak `User` i `Supervisor`.
+    - **Uï¿½ytkownicy**: 'kpr. Jan Kowalski' (badge: 1111, PIN: 1111), 'mjr Tomasz Nowak' (badge: 2222, PIN: 2222), z przypisanymi rolami takimi jak `User` i `Supervisor`.
     - **PIN-y**: przechowywane jako hashe, logowanie wymaga numeru odznaki i PIN-u.
-    - **S³u¿by**: przypisane do u¿ytkownika 1111, typy: 'Patrol pieszy', 'Patrol zapobiegawczy', 'Kontrola ruchu', 'Zabezpieczenie wydarzenia', w dniach od 18 do 21.06.2025 r.
-    - **Kody bezpieczeñstwa**: generowane na 10 minut w celu resetu PIN-u.
+    - **Sï¿½uï¿½by**: przypisane do uï¿½ytkownika 1111, typy: 'Patrol pieszy', 'Patrol zapobiegawczy', 'Kontrola ruchu', 'Zabezpieczenie wydarzenia', w dniach od 18 do 21.06.2025 r.
+    - **Kody bezpieczeï¿½stwa**: generowane na 10 minut w celu resetu PIN-u.
     - **Role**: `User`, `Supervisor`, `PowerUser`.
 
-    **Autoryzacja**: Wymagany token JWT przesy³any w nag³ówku:
-    **Autoryzacja JWT – Jak korzystaæ w Swaggerze:**
+    **Autoryzacja**: Wymagany token JWT przesyï¿½any w nagï¿½ï¿½wku:
+    **Autoryzacja JWT ï¿½ Jak korzystaï¿½ w Swaggerze:**
 
-    1. Wywo³aj endpoint POST /piesp/auth/login z treœci¹:
+    1. Wywoï¿½aj endpoint POST /piesp/auth/login z treï¿½ciï¿½:
 
        badgeNumber: 1111
        pin: 1111
 
-       OdpowiedŸ zawiera token JWT (w polu ''token'').
+       Odpowiedï¿½ zawiera token JWT (w polu ''token'').
 
-    2. Kliknij przycisk Authorize (k³ódka w prawym górnym rogu).
+    2. Kliknij przycisk Authorize (kï¿½ï¿½dka w prawym gï¿½rnym rogu).
     3. Wklej token w formacie:
 
        Bearer [wklej_token_tutaj]
 
-    4. Kliknij Authorize, a nastêpnie Close.
-    5. Teraz mo¿esz wywo³ywaæ wszystkie zabezpieczone endpointy.
+    4. Kliknij Authorize, a nastï¿½pnie Close.
+    5. Teraz moï¿½esz wywoï¿½ywaï¿½ wszystkie zabezpieczone endpointy.
 
-    Token JWT jest wa¿ny 1 dzieñ. Po jego wygaœniêciu zaloguj siê ponownie, aby uzyskaæ nowy token.
+    Token JWT jest waï¿½ny 1 dzieï¿½. Po jego wygaï¿½niï¿½ciu zaloguj siï¿½ ponownie, aby uzyskaï¿½ nowy token.
 
     Zalecane testowe dane logowania:
 
-    - Badge: 1111, PIN: 1111 (Dowódca patrolu)
-    - Badge: 2222, PIN: 2222 (Oficer dy¿urny)"
+    - Badge: 1111, PIN: 1111 (Dowï¿½dca patrolu)
+    - Badge: 2222, PIN: 2222 (Oficer dyï¿½urny)"
     });
     options.MapType<IFormFile>(() => new OpenApiSchema 
     { 
@@ -392,7 +393,7 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "WprowadŸ JWT w formacie 'Bearer {token}'",
+        Description = "Wprowadï¿½ JWT w formacie 'Bearer {token}'",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
@@ -408,11 +409,11 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 
-    options.EnableAnnotations();// ¿eby dzia³a³ [SwaggerOperation] itd.
-    options.ExampleFilters();// ¿eby dzia³a³y [SwaggerResponseExample]
+    options.EnableAnnotations();// ï¿½eby dziaï¿½aï¿½ [SwaggerOperation] itd.
+    options.ExampleFilters();// ï¿½eby dziaï¿½aï¿½y [SwaggerResponseExample]
 });
 
-// Wskazanie assembly, w którym s¹ klasy przyk³adów wyników dzia³ania metod konrolerów:
+// Wskazanie assembly, w ktï¿½rym sï¿½ klasy przykï¿½adï¿½w wynikï¿½w dziaï¿½ania metod konrolerï¿½w:
 builder.Services.AddSwaggerExamplesFromAssemblyOf<
     IntegrationHub.Api.Swagger.Examples.SRP.SearchPerson200Example>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<
@@ -426,7 +427,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
     // opcjonalnie dodaj znane proxy/sieci:
-    // KnownProxies = { IPAddress.Parse("10.0.0.1") }
+    KnownProxies = { IPAddress.Parse("20.100.30.4") }
 });
 
 app.Lifetime.ApplicationStarted.Register(() =>
@@ -446,13 +447,13 @@ app.Lifetime.ApplicationStarted.Register(() =>
             if (string.IsNullOrWhiteSpace(rdoUrl)) return;
 
             var warmupEnabled = cfg.GetValue<bool?>("ExternalServices:SRP:WarmUpEnabled") ?? false;
-            if (!warmupEnabled) return; // <-- wy³¹cza warm-up
+            if (!warmupEnabled) return; // <-- wyï¿½ï¿½cza warm-up
 
 
-            // równoleg³oœæ ~ po³owa MaxConnectionsPerServer (bezpiecznie dla dziesi¹tek userów)
+            // rï¿½wnolegï¿½oï¿½ï¿½ ~ poï¿½owa MaxConnectionsPerServer (bezpiecznie dla dziesiï¿½tek userï¿½w)
             var maxConns = cfg.GetValue<int?>("ExternalServices:SRP:HttpMaxConnectionsPerServer") ?? 32;
             var parallelism = Math.Clamp(maxConns / 2, 4, 32);
-            var attempts = 2; // po 2 lekkie strza³y
+            var attempts = 2; // po 2 lekkie strzaï¿½y
 
             using var sem = new SemaphoreSlim(parallelism);
             var tasks = new List<Task>();
@@ -475,9 +476,9 @@ app.Lifetime.ApplicationStarted.Register(() =>
                                     VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
                                 };
                                 using var resp = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cts.Token);
-                                break; // handshake/ALPN/H2 i po³¹czenia w puli s¹ gotowe
+                                break; // handshake/ALPN/H2 i poï¿½ï¿½czenia w puli sï¿½ gotowe
                             }
-                            catch { /* spróbuj kolejny candidate */ }
+                            catch { /* sprï¿½buj kolejny candidate */ }
                         }
                     }
                     finally { sem.Release(); }
@@ -486,7 +487,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 
             await Task.WhenAll(tasks);
         }
-        catch { /* warm-up nie mo¿e blokowaæ startu */ }
+        catch { /* warm-up nie moï¿½e blokowaï¿½ startu */ }
     });
 });
 

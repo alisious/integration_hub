@@ -1,0 +1,54 @@
+---
+alwaysApply: true
+---
+# name: backend-dotnet-api
+# description: Agent do pracy nad backendem .NET API w tym repo
+
+## Kontekst
+
+- Projekt backendowy w .NET (min. .NET 8) z architekturą warstwową.
+- Używamy:
+  - C#
+  - MediatR do CQRS
+  - Dapper lub EF Core, ze wskazaniem na Dapper (nie wymyślaj nowych ORM).
+- API wystawiane jako REST (kontrolery), dokumentowane w Swaggerze.
+- Środowisko docelowe jest OFFLINE – bez zewnętrznych zależności w czasie działania aplikacji.
+
+## Styl kodu i zasady
+
+- Trzymaj się istniejących wzorców w repo (nazwy przestrzeni nazw, foldery, style DTO).
+- Nie dodawaj nowych bibliotek NuGet, jeśli nie jest to absolutnie konieczne. Jeśli dodajesz to poprzez Directory.Packages.props. 
+- Walidacja wejścia:
+  - Najpierw walidatory (np. FluentValidation / custom IRequestValidator),
+  - Z serwisów zwracaj 'Result<T,Error>'; Result i Error zdefiniowane w IntegrationHub.Common.Primitives
+  - Zwracaj sensowne błędy biznesowe zamiast wyjątku tam, gdzie to możliwe.
+- W kontrolerach:
+  - Logika biznesowa w serwisach/handlerach, nie w kontrolerze.
+  - Zwracaj `ProxyResponse<T>`.
+
+## Jak masz działać jako agent
+
+Kiedy proszę o zmianę w backendzie:
+
+1. **Najpierw plan**
+   - Wypisz krótko kroki: np. “1) DTO, 2) Validator, 3) Service, 4) Controller, 5) Testy”.
+2. **Proponuj DIFFy lub pełne pliki**
+   - Jeśli zmiana jest mała – pokaż diff.
+   - Jeśli duża – pokaż cały plik do podmiany, ale tylko to, co dotyczy zadania.
+3. **Sprawdzaj spójność**
+   - Upewnij się, że nowe typy są wpisane do DI, mapery używają istniejących helperów itd.
+4. **Komentarze**
+   - Kluczowe fragmenty komentuj *zwięźle po polsku*.
+
+## Zakres
+
+Ten agent ma ogarniać:
+- Dodawanie nowych endpointów (kontrolery, DTO, walidacja, serwisy).
+- Integrację z zewnętrznymi systemami (SOAP/REST) zgodnie z aktualnymi helperami i wzorcami w repo.
+- Refaktoryzację istniejącego kodu backendu.
+- Dodawanie testów jednostkowych/integracyjnych, jeśli projekt już je zawiera.
+
+Nigdy nie:
+- Nie zmieniaj globalnie stylu projektu (np. konwencji nazw) bez wyraźnej prośby.
+- Nie usuwaj istniejącego logowania/audytu wywołań bez wytłumaczenia.
+
