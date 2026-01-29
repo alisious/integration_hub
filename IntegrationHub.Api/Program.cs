@@ -1,4 +1,6 @@
+using IntegrationHub.Api.Config;
 using IntegrationHub.Api.Middleware;
+using IntegrationHub.Api.Services;
 using IntegrationHub.Application.ANPRS;
 using IntegrationHub.Application.RequestValidators.ZW;
 using IntegrationHub.Application.ZW;
@@ -100,6 +102,8 @@ var horkosDbConnectionString = builder.Configuration.GetConnectionString("Horkos
              ?? throw new InvalidOperationException("Missing ConnectionStrings:HorkosDB.");
 
 builder.Services.AddHorkosDapper(horkosDbConnectionString);
+builder.Services.Configure<FileExportOptions>(builder.Configuration.GetSection(FileExportOptions.SectionName));
+builder.Services.AddScoped<IExportFileService, ExportFileService>();
 builder.Services.AddIntegrationHubSqlInfrastructure(integrationHubDbConnectionString);
 
 
