@@ -56,6 +56,120 @@ namespace IntegrationHub.Application.ANPRS
             };
         }
 
+        public async Task<ReportFileLink> WriteLicensePlateAsync(
+            string numberPlate,
+            DateTime dateFrom, DateTime dateTo,
+            string? userName, string? unitName,
+            IEnumerable<LicenseplateDto> events,
+            CancellationToken ct)
+        {
+            var now = DateTime.UtcNow;
+            var ts = now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+
+            string? relFolder =
+                _cfg["ANPRS:Reports:ReportsFolderRelativePath"]
+                ?? _cfg["ExternalServices:ANPRS:Reports:ReportsFolderRelativePath"]
+                ?? "anprs_reports";
+
+            var absFolder = Path.Combine(_env.ContentRootPath, relFolder);
+            Directory.CreateDirectory(absFolder);
+
+            var baseName = $"license-plate-{ts}";
+            var htmlPath = Path.Combine(absFolder, $"{baseName}.html");
+
+            var html = BuildLicensePlateHtml(numberPlate, dateFrom, dateTo, now, userName, unitName, events);
+            await File.WriteAllTextAsync(htmlPath, html, Encoding.UTF8, ct);
+
+            return new ReportFileLink
+            {
+                FileName = $"{baseName}.html",
+                Url = $"/ANPRS/reports/files/{baseName}.html"
+            };
+        }
+
+        // HTML raportu wg numeru rejestracyjnego (wzór: ZPO – Autor, Zakres dat, zdarzenia ze zdjęciami).
+        private static string BuildLicensePlateHtml(
+            string numberPlate,
+            DateTime dateFrom, DateTime dateTo, DateTime now,
+            string? userName, string? unitName,
+            IEnumerable<LicenseplateDto> events)
+        {
+            var list = events.ToList();
+            var count = list.Count;
+            var statusText = count == 0
+                ? "Brak zdarzeń w ANPRS wg. zadanych kryteriów."
+                : $"Pobrano dane zdarzeń z ANPRS. Liczba zdarzeń: {count}.";
+
+            var dateFromStr = dateFrom.ToString("yyyy-MM-dd");
+            var dateToStr = dateTo.ToString("yyyy-MM-dd");
+            var nowStr = now.ToString("yyyy-MM-dd HH:mm");
+
+            var sb = new StringBuilder();
+            sb.Append("""
+                
+            <!DOCTYPE html>
+            <html lang="pl">
+            <head>
+            <meta charset="UTF-8">
+            <title>ANPRS: Raport zdarzeń dotyczących pojazdu</title>
+            <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .report-header table { width: 100%; margin-bottom: 40px; }
+            .report-header td { padding: 6px 8px; }
+            .event { page-break-after: always; margin-bottom: 60px; }
+            .event-details table { width: 100%; border-collapse: collapse; }
+            .event-details td { padding: 4px 8px; }
+            .event-images img { display: block; margin-top: 12px; margin-bottom: 12px; width: 793px; max-width: 100%; height: auto; }
+            @media print { @page { size: A4 portrait; margin: 15mm; } }
+            </style>
+            </head>
+            <body>
+            <h1>ANPRS: Raport zdarzeń dotyczących pojazdu</h1>
+            <div class="report-header">
+            <table>
+            <tr><td><strong>Autor:</strong> 
+            """);
+            sb.Append(E(userName ?? "")).Append("</td><td></td></tr>\n");
+            sb.Append("<tr><td><strong>Data raportu:</strong> ").Append(E(nowStr)).Append("</td><td></td></tr>\n");
+            sb.Append("<tr><td><strong>Jednostka organizacyjna:</strong> ").Append(E(unitName ?? "")).Append("</td><td></td></tr>\n");
+            sb.Append("<tr><td><strong>Numer rejestracyjny:</strong> ").Append(E(numberPlate)).Append("</td><td></td></tr>\n");
+            // Typ pojazdu i Kraj pojazdu z pierwszego zdarzenia (jeśli jest)
+            var first = list.FirstOrDefault();
+            sb.Append("<tr><td><strong>Typ pojazdu:</strong> ").Append(E(first?.VehicleType ?? "")).Append("</td><td></td></tr>\n");
+            sb.Append("<tr><td><strong>Kraj pojazdu:</strong> ").Append(E(first?.Country ?? "")).Append("</td><td></td></tr>\n");
+            sb.Append("<tr><td><strong>Zakres dat:</strong> ").Append(E(dateFromStr)).Append(" – ").Append(E(dateToStr)).Append("</td><td></td></tr>\n");
+            sb.Append("<tr><td><strong>Status raportu:</strong> ").Append(E(statusText)).Append("</td><td></td></tr>\n");
+            sb.Append("</table>\n</div>\n");
+
+            foreach (var ev in list)
+            {
+                sb.Append("<div class=\"event\">\n<div class=\"event-details\">\n<table>\n");
+                sb.Append("<tr><td><strong>Lokalizacja:</strong> ").Append(E(ev.Location)).Append("</td><td></td></tr>\n");
+                sb.Append("<tr><td><strong>Data zdarzenia:</strong> ").Append(E(ev.EventDate.ToString("yyyy-MM-dd HH:mm:ss"))).Append("</td><td></td></tr>\n");
+                sb.Append("<tr><td><strong>Kraj BCP:</strong> ").Append(E(ev.BcpCountry)).Append("</td><td></td></tr>\n");
+                sb.Append("<tr><td><strong>BCP:</strong> ").Append(E(ev.Bcp)).Append("</td><td></td></tr>\n");
+                sb.Append("<tr><td><strong>Latitude:</strong> ").Append(ev.Latitude.ToString(CultureInfo.InvariantCulture)).Append("</td><td></td></tr>\n");
+                sb.Append("<tr><td><strong>Longitude:</strong> ").Append(ev.Longitude.ToString(CultureInfo.InvariantCulture)).Append("</td><td></td></tr>\n");
+                sb.Append("</table>\n</div>\n");
+                if (ev.Photos != null && ev.Photos.Count > 0)
+                {
+                    sb.Append("<div class=\"event-images\">\n");
+                    foreach (var p in ev.Photos)
+                    {
+                        if (!string.IsNullOrWhiteSpace(p.Zdjecie))
+                            sb.Append("<img src=\"data:image/jpeg;base64,").Append(p.Zdjecie).Append("\" />\n");
+                    }
+                    sb.Append("</div>\n");
+                }
+                sb.Append("</div>\n");
+            }
+
+            sb.Append("</body>\n</html>");
+            return sb.ToString();
+
+            static string E(string? s) => System.Net.WebUtility.HtmlEncode(s ?? "");
+        }
+
         // HTML: szerokość "strony" 210 mm (A4), z wewnętrznym paddingiem ~15 mm.
         private static string BuildHtml(
             string country, string system, string bcp,

@@ -28,5 +28,11 @@ namespace IntegrationHub.Application.ANPRS
         DateTime dateFrom, DateTime dateTo,
         string? userName, string? unitName,
         CancellationToken ct);
+
+        Task<ReportFileLink> GenerateLicensePlateReportWithPhotosAsync(
+            string numberPlate,
+            DateTime dateFrom, DateTime dateTo,
+            string? userName, string? unitName,
+            CancellationToken ct);
     }
 }

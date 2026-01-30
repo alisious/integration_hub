@@ -114,5 +114,46 @@ namespace IntegrationHub.Application.ANPRS
             return link;
         }
 
+        public async Task<ReportFileLink> GenerateLicensePlateReportWithPhotosAsync(
+            string numberPlate,
+            DateTime dateFrom, DateTime dateTo,
+            string? userName, string? unitName,
+            CancellationToken ct)
+        {
+            var list = (await GetLicensePlateWithGeoAsync(numberPlate, dateFrom, dateTo, ct)).ToList();
+
+            int maxParallel = _cfg.GetValue<int?>("ExternalServices:ANPRS:Reports:MaxParallelPhotoFetch") ?? 8;
+            int maxPhotosPerEvent = _cfg.GetValue<int?>("ExternalServices:ANPRS:Reports:MaxPhotosPerEvent") ?? 4;
+
+            var throttler = new SemaphoreSlim(Math.Max(1, maxParallel));
+            var tasks = list.Select(async ev =>
+            {
+                await throttler.WaitAsync(ct);
+                try
+                {
+                    var meta = await _sourceFacade.GetPhotosWithMetaAsync(ev.Id, ct);
+                    var photos = meta.Photos.Take(Math.Max(0, maxPhotosPerEvent)).ToList();
+                    ev.Photos = photos;
+                    ev.PhotosComplete = meta.PhotosComplete;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Photo fetch failed for event {Id}", ev.Id);
+                    ev.Photos = new List<VehiclePhotoRowDto>();
+                    ev.PhotosComplete = "Brak danych";
+                }
+                finally { throttler.Release(); }
+            });
+            await Task.WhenAll(tasks);
+
+            var link = await _writer.WriteLicensePlateAsync(
+                numberPlate, dateFrom, dateTo,
+                userName, unitName,
+                list,
+                ct);
+
+            _logger.LogInformation("ANPRS license plate report generated (HTML): {File}", link.FileName);
+            return link;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿
+
 using IntegrationHub.Api.Swagger.Examples.ANPRS;
 using IntegrationHub.Application.ANPRS;                    // IANPRSDictionaryFacade, IANPRSReportsFacade
 using IntegrationHub.Common.Contracts;                   // ProxyResponse, ProxyResponses, ProxyStatus
@@ -582,6 +582,76 @@ namespace IntegrationHub.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// ANPRS – Generuj raport wg numeru rejestracyjnego (HTML) ze zdjęciami.
+        /// Pobiera zdarzenia dla numeru rejestracyjnego, dociąga zdjęcia, generuje raport HTML i zwraca link do pliku.
+        /// </summary>
+        /// <remarks>
+        /// Oczekiwana treść żądania (application/json):
+        /// { "numberPlate": "WR456HM", "dateFrom": "2025-06-13", "dateTo": "2025-06-16", "userName": "ZII A", "unitName": "KGŻW" }
+        /// </remarks>
+        [HttpPost("reports/license-plate/file")]
+        [Consumes("application/json")]
+        [Produces(typeof(ProxyResponse<ReportFileLink>))]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<ReportFileLink>), StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "ANPRS – Generuj raport wg numeru rejestracyjnego (HTML) ze zdjęciami",
+            Description = "Pobiera zdarzenia LicenseplateWithGeo, dociąga zdjęcia, generuje raport HTML (wzór ZPO) i zwraca link/metadane pliku."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(Code404NotFoundExample))]
+        public async Task<ProxyResponse<ReportFileLink>> GenerateLicensePlateReportWithPhotos(
+            [FromBody] LicensePlateReportRequest req,
+            CancellationToken ct)
+        {
+            var requestId = Guid.NewGuid().ToString("N");
+            const string source = "ANPRS";
+
+            if (req is null || string.IsNullOrWhiteSpace(req.NumberPlate))
+            {
+                return ProxyResponses.BusinessError<ReportFileLink>(
+                    "Parametr 'numberPlate' jest wymagany.",
+                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
+            }
+
+            if (req.DateFrom > req.DateTo)
+            {
+                return ProxyResponses.BusinessError<ReportFileLink>(
+                    "Parametr 'dateFrom' nie może być większy niż 'dateTo'.",
+                    source, StatusCodes.Status400BadRequest.ToString(), requestId);
+            }
+
+            try
+            {
+                var link = await _reportsFacade.GenerateLicensePlateReportWithPhotosAsync(
+                    req.NumberPlate.Trim(),
+                    req.DateFrom,
+                    req.DateTo,
+                    string.IsNullOrWhiteSpace(req.UserName) ? null : req.UserName!.Trim(),
+                    string.IsNullOrWhiteSpace(req.UnitName) ? null : req.UnitName!.Trim(),
+                    ct);
+
+                return ProxyResponses.Success(link, source, StatusCodes.Status200OK.ToString(), requestId);
+            }
+            catch (ANPRSHttpException ex)
+            {
+                var (code, message) = ExtractHttpCodeAndMessage(ex);
+                return ProxyResponses.BusinessError<ReportFileLink>(
+                    message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
+            }
+            catch (OperationCanceledException)
+            {
+                return ProxyResponses.TechnicalError<ReportFileLink>(
+                    "Żądanie zostało anulowane.", source, "499", requestId);
+            }
+            catch (Exception ex)
+            {
+                return ProxyResponses.TechnicalError<ReportFileLink>(
+                    $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
+            }
+        }
 
         #endregion
 

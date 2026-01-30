@@ -1,4 +1,4 @@
-﻿using IntegrationHub.Domain.Contracts.ANPRS;
+using IntegrationHub.Domain.Contracts.ANPRS;
 
 namespace IntegrationHub.Application.ANPRS
 {
@@ -10,6 +10,13 @@ namespace IntegrationHub.Application.ANPRS
             DateTime dateFrom, DateTime dateTo,
             string? userName, string? unitName,
             IEnumerable<VehicleInPointDto> events,
+            CancellationToken ct);
+
+        Task<ReportFileLink> WriteLicensePlateAsync(
+            string numberPlate,
+            DateTime dateFrom, DateTime dateTo,
+            string? userName, string? unitName,
+            IEnumerable<LicenseplateDto> events,
             CancellationToken ct);
     }
 }

@@ -54,7 +54,7 @@ namespace IntegrationHub.Sources.ANPRS.Services
             }
         }
 
-        public Task<LicensePlateReportResponse?> GetLicensePlateWithGeoAsync(
+        public async Task<LicensePlateReportResponse?> GetLicensePlateWithGeoAsync(
             string numberPlate, DateTime dateFrom, DateTime dateTo,
             CancellationToken ct = default)
         {
@@ -63,15 +63,23 @@ namespace IntegrationHub.Sources.ANPRS.Services
                       $"&dateFrom={dateFrom:yyyy-MM-dd}" +
                       $"&dateTo={dateTo:yyyy-MM-dd}";
 
-            return _auditor.InvokeAsync<LicensePlateReportResponse>(
-                source: Source,
-                endpointUrl: url,
-                action: "GET /Reports/LicenseplateWithGeo",
-                call: () => _client.GetAsync<LicensePlateReportResponse>(url, ct),
-                ct: ct,
-                requestBody: null,
-                addOutgoingHeader: id => _client.SetCorrelationIdHeader(id)
-            );
+            try
+            {
+                return await _auditor.InvokeAsync<LicensePlateReportResponse>(
+                    source: Source,
+                    endpointUrl: url,
+                    action: "GET /Reports/LicenseplateWithGeo",
+                    call: () => _client.GetAsync<LicensePlateReportResponse>(url, ct),
+                    ct: ct,
+                    requestBody: null,
+                    addOutgoingHeader: id => _client.SetCorrelationIdHeader(id)
+                );
+            }
+            catch (ANPRSHttpException ex) when (ex.StatusCode == 404)
+            {
+                // Brak zdarzeń dla numeru rejestracyjnego – API ANPRS zwraca 404; traktujemy jako pusty wynik.
+                return null;
+            }
         }
     }
 }
