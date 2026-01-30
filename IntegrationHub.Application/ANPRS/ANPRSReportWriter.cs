@@ -1,4 +1,4 @@
-﻿using IntegrationHub.Domain.Contracts.ANPRS;
+using IntegrationHub.Domain.Contracts.ANPRS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -116,7 +116,9 @@ namespace IntegrationHub.Application.ANPRS
               .Append(E(userName ?? ""))
               .Append("</td></tr><tr><td><strong>Jednostka organizacyjna:</strong></td><td>")
               .Append(E(unitName ?? ""))
-              .Append("</td></tr></table></div>");
+              .Append("</td></tr><tr><td><strong>Liczba zdarzeń spełniających zadane kryteria:</strong></td><td>")
+              .Append(events.Count())
+              .Append(".</td></tr></table></div>");
 
             foreach (var ev in events)
             {

@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.ANPRS/Services/ANPRSReportsService.cs
+// IntegrationHub.Sources.ANPRS/Services/ANPRSReportsService.cs
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +23,7 @@ namespace IntegrationHub.Sources.ANPRS.Services
             _auditor = auditor;
         }
 
-        public Task<VehiclesInPointResponse?> GetVehiclesInPointWithGeoAsync(
+        public async Task<VehiclesInPointResponse?> GetVehiclesInPointWithGeoAsync(
             string country, string system, string bcp,
             DateTime dateFrom, DateTime dateTo,
             CancellationToken ct = default)
@@ -35,15 +35,23 @@ namespace IntegrationHub.Sources.ANPRS.Services
                       $"&dateFrom={dateFrom:yyyy-MM-dd HH:mm:ss}" +
                       $"&dateTo={dateTo:yyyy-MM-dd HH:mm:ss}";
 
-            return _auditor.InvokeAsync<VehiclesInPointResponse>(
-                source: Source,
-                endpointUrl: url,
-                action: "GET /Reports/VehiclesInPointWithGeo",
-                call: () => _client.GetAsync<VehiclesInPointResponse>(url, ct),
-                ct: ct,
-                requestBody: null,
-                addOutgoingHeader: id => _client.SetCorrelationIdHeader(id)
-            );
+            try
+            {
+                return await _auditor.InvokeAsync<VehiclesInPointResponse>(
+                    source: Source,
+                    endpointUrl: url,
+                    action: "GET /Reports/VehiclesInPointWithGeo",
+                    call: () => _client.GetAsync<VehiclesInPointResponse>(url, ct),
+                    ct: ct,
+                    requestBody: null,
+                    addOutgoingHeader: id => _client.SetCorrelationIdHeader(id)
+                );
+            }
+            catch (ANPRSHttpException ex) when (ex.StatusCode == 404)
+            {
+                // Brak zdarzeń w punkcie – API ANPRS zwraca 404; traktujemy jako pusty wynik i pozwalamy wygenerować raport z nagłówkiem.
+                return null;
+            }
         }
 
         public Task<LicensePlateReportResponse?> GetLicensePlateWithGeoAsync(
