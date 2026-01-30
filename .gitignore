@@ -229,6 +229,9 @@ _pkginfo.txt
 # but keep track of directories ending in .cache
 !?*.[Cc]ache/
 
+# Wygenerowane eksporty i dane aplikacji (Horkos, ANPRS itd.)
+App_Data/
+
 # Others
 ClientBin/
 ~$*
