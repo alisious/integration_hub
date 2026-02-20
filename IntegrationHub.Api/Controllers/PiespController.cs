@@ -80,7 +80,7 @@ namespace IntegrationHub.PIESP.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IReadOnlyList<DictItem>>(
+                return ProxyResponseFactory.TechnicalError<IReadOnlyList<DictItem>>(
                     message: "Żądanie zostało anulowane.",
                     source: _sourceName,
                     sourceStatusCode: "499",
@@ -88,7 +88,7 @@ namespace IntegrationHub.PIESP.Controllers
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IReadOnlyList<DictItem>>(
+                return ProxyResponseFactory.TechnicalError<IReadOnlyList<DictItem>>(
                     message: $"Nieoczekiwany błąd: {ex.Message}",
                     source: _sourceName,
                     sourceStatusCode: StatusCodes.Status500InternalServerError.ToString(),

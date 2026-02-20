@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.CEP.Services/CEPUdostepnianieService.cs
+// IntegrationHub.Sources.CEP.Services/CEPUdostepnianieService.cs
 using IntegrationHub.Common.Contracts;                 // ProxyResponse<T>, ProxyStatus
 using IntegrationHub.Common.Exceptions;                // SoapIntegrationException
 using IntegrationHub.Sources.CEP.Config;               // CEPConfig
@@ -99,7 +99,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             // 2) Endpoint z cfg
             var endpointUrl = _cfg.ShareServiceUrl;
             if (string.IsNullOrWhiteSpace(endpointUrl))
-                return ProxyResponses.TechnicalError<TRes>(
+                return ProxyResponseFactory.TechnicalError<TRes>(
                     "Brak ShareServiceUrl w konfiguracji CEP.", SourceName, ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
 
             // 3) Envelope
@@ -113,35 +113,35 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 // HTTP != 2xx ⇒ błąd techniczny (status HTTP jako tekst)
                 var httpCode = ((int)status).ToString();
                 if ((int)status < 200 || (int)status >= 300)
-                    return ProxyResponses.TechnicalError<TRes>($"HTTP {(int)status}", SourceName, httpCode, requestId);
+                    return ProxyResponseFactory.TechnicalError<TRes>($"HTTP {(int)status}", SourceName, httpCode, requestId);
 
                 // 5) Mapowanie XML → DTO
                 var dto = mapXml(xml);
-                return ProxyResponses.Success(dto, SourceName, ((int)HttpStatusCode.OK).ToString(), requestId);
+                return ProxyResponseFactory.Success(dto, SourceName, ((int)HttpStatusCode.OK).ToString(), requestId);
             }
             catch (SoapFaultException sfx)
             {
                 // SOAP Fault = błąd biznesowy
                 _logger.LogWarning(sfx, "SOAP FAULT: {Action} RID={RequestId} Code={Code}", soapAction, requestId, sfx.FaultCode ?? "SOAP_FAULT");
                 var code = string.IsNullOrEmpty(sfx.FaultCode) ? "SOAP_FAULT" : sfx.FaultCode!;
-                return ProxyResponses.BusinessError<TRes>(sfx.Message, SourceName, code, requestId);
+                return ProxyResponseFactory.BusinessError<TRes>(sfx.Message, SourceName, code, requestId);
             }
             catch (SoapIntegrationException sie)
             {
                 // Transport/timeout/anulowanie – błąd techniczny
                 _logger.LogError(sie, "SOAP transport error: {Action} RID={RequestId}", soapAction, requestId);
                 var http = ((int?)(sie.HttpStatus ?? HttpStatusCode.BadGateway)).ToString();
-                return ProxyResponses.TechnicalError<TRes>(sie.Message, SourceName, http, requestId);
+                return ProxyResponseFactory.TechnicalError<TRes>(sie.Message, SourceName, http, requestId);
             }
             catch (OperationCanceledException oce) when (ct.IsCancellationRequested)
             {
                 _logger.LogWarning(oce, "Operation canceled by caller: {Action} RID={RequestId}", soapAction, requestId);
-                return ProxyResponses.TechnicalError<TRes>("Operacja została anulowana.", SourceName, ((int)HttpStatusCode.RequestTimeout).ToString(), requestId);
+                return ProxyResponseFactory.TechnicalError<TRes>("Operacja została anulowana.", SourceName, ((int)HttpStatusCode.RequestTimeout).ToString(), requestId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled error: {Action} RID={RequestId}", soapAction, requestId);
-                return ProxyResponses.TechnicalError<TRes>(ex.Message, SourceName, ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
+                return ProxyResponseFactory.TechnicalError<TRes>(ex.Message, SourceName, ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
             }
         }
 

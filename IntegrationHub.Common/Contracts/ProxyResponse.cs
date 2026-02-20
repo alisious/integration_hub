@@ -1,4 +1,4 @@
-﻿namespace IntegrationHub.Common.Contracts;
+namespace IntegrationHub.Common.Contracts;
 /// <summary>
 /// Uniwersalna odpowiedź zwracana przez API-proxy. 
 /// Zawiera dane biznesowe, status wywołania (sukces, błąd biznesowy, błąd techniczny),
@@ -51,7 +51,7 @@ public enum ProxyStatus
     TechnicalError
 }
 
-public static class ProxyResponses
+public static class ProxyResponseFactory
 {
     public static ProxyResponse<T> Success<T>(T data, string source, string sourceStatusCode, string requestId) =>
         new()

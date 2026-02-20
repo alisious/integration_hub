@@ -1,4 +1,4 @@
-﻿using IntegrationHub.Common.Contracts;
+using IntegrationHub.Common.Contracts;
 using IntegrationHub.PIESP.Exceptions;
 using IntegrationHub.PIESP.Models;
 using IntegrationHub.PIESP.Services;
@@ -51,7 +51,7 @@ namespace IntegrationHub.PIESP.Controllers
         {
             var requestId = Guid.NewGuid().ToString();
 
-            if (!TryGetUserId(out var userId)) return ProxyResponses.BusinessError<IEnumerable<Duty>>(
+            if (!TryGetUserId(out var userId)) return ProxyResponseFactory.BusinessError<IEnumerable<Duty>>(
                 "Nieznany użytkownik!",
                 _sourceName,
                 HttpStatusCode.Unauthorized.ToString(),
@@ -60,14 +60,14 @@ namespace IntegrationHub.PIESP.Controllers
             var duties = _duties.GetDutiesPlannedForUser(userId, date);
             if (duties.IsNullOrEmpty())
             {
-                return ProxyResponses.BusinessError<IEnumerable<Duty>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<Duty>>(
                     $"Brak zaplanowanych służb dla użytkownika w dniu {(date ?? DateTime.Today).ToString("yyyy-MM-dd")}.",
                     _sourceName,
                     HttpStatusCode.NotFound.ToString(),
                     requestId);
             }
 
-            return ProxyResponses.Success(
+            return ProxyResponseFactory.Success(
                 duties, 
                 _sourceName, 
                 HttpStatusCode.OK.ToString(), 
@@ -109,7 +109,7 @@ namespace IntegrationHub.PIESP.Controllers
             
             var requestId = Guid.NewGuid().ToString();
 
-            if (!TryGetUserId(out var userId)) return ProxyResponses.BusinessError<Duty>(
+            if (!TryGetUserId(out var userId)) return ProxyResponseFactory.BusinessError<Duty>(
                 "Nieznany użytkownik!",
                 _sourceName,
                 HttpStatusCode.NotFound.ToString(),
@@ -120,13 +120,13 @@ namespace IntegrationHub.PIESP.Controllers
             {
                 var duty = _duties.GetCurrentDutyForUser(userId);
                 return duty is null ? 
-                    ProxyResponses.BusinessError<Duty>(
+                    ProxyResponseFactory.BusinessError<Duty>(
                         "Brak służby w toku dla tego użytkownika.",
                         _sourceName, 
                         HttpStatusCode.NotFound.ToString(),
                         requestId) 
                     :
-                    ProxyResponses.Success(
+                    ProxyResponseFactory.Success(
                         duty, 
                         _sourceName,
                         HttpStatusCode.OK.ToString(),
@@ -135,7 +135,7 @@ namespace IntegrationHub.PIESP.Controllers
             catch (InvalidOperationException)
             {
                 // SingleOrDefault wykrył >1 rekord – naruszenie założenia biznesowego
-                return ProxyResponses.BusinessError<Duty>(
+                return ProxyResponseFactory.BusinessError<Duty>(
                     "W systemie istnieje więcej niż jedna służba w toku dla tego użytkownika.",
                     _sourceName,
                     HttpStatusCode.Conflict.ToString(),
@@ -169,7 +169,7 @@ namespace IntegrationHub.PIESP.Controllers
 
             try
             {
-                if (!TryGetUserId(out var userId)) result = ProxyResponses.BusinessError<Duty>(
+                if (!TryGetUserId(out var userId)) result = ProxyResponseFactory.BusinessError<Duty>(
                     "Nieznany użytkownik!",
                     _sourceName,
                     HttpStatusCode.NotFound.ToString(),
@@ -184,17 +184,17 @@ namespace IntegrationHub.PIESP.Controllers
                 if (ok)
                 {
                     var currentDuty = _duties.GetCurrentDutyForUser(userId);
-                    result = ProxyResponses.Success(currentDuty!, _sourceName, HttpStatusCode.OK.ToString(), requestId);
+                    result = ProxyResponseFactory.Success(currentDuty!, _sourceName, HttpStatusCode.OK.ToString(), requestId);
                     result.Message = "Służba rozpoczęta!";
                 }
                 else
                 {
-                    result = ProxyResponses.BusinessError<Duty>("Nie można rozpocząć tej służby.", _sourceName, HttpStatusCode.Conflict.ToString(), requestId);
+                    result = ProxyResponseFactory.BusinessError<Duty>("Nie można rozpocząć tej służby.", _sourceName, HttpStatusCode.Conflict.ToString(), requestId);
                 }
             }
             catch (Exception ex)
             {
-                result = ProxyResponses.TechnicalError<Duty>(
+                result = ProxyResponseFactory.TechnicalError<Duty>(
                     ex.Message,
                     _sourceName,
                     HttpStatusCode.InternalServerError.ToString(),
@@ -222,7 +222,7 @@ namespace IntegrationHub.PIESP.Controllers
 
             try
             {
-                if (!TryGetUserId(out var userId)) result = ProxyResponses.BusinessError<Duty>(
+                if (!TryGetUserId(out var userId)) result = ProxyResponseFactory.BusinessError<Duty>(
                         "Nieznany użytkownik!",
                         _sourceName,
                         HttpStatusCode.NotFound.ToString(),
@@ -237,17 +237,17 @@ namespace IntegrationHub.PIESP.Controllers
                 if (ok)
                 {
                     var currentDuty = _duties.GetDuty(req.DutyId);
-                    result = ProxyResponses.Success(currentDuty!, _sourceName, HttpStatusCode.OK.ToString(), requestId);
+                    result = ProxyResponseFactory.Success(currentDuty!, _sourceName, HttpStatusCode.OK.ToString(), requestId);
                     result.Message = "Służba zakończona!";
                 }
                 else
                 {
-                    result = ProxyResponses.BusinessError<Duty>("Nie można zakończyć tej służby.", _sourceName, HttpStatusCode.Conflict.ToString(), requestId);
+                    result = ProxyResponseFactory.BusinessError<Duty>("Nie można zakończyć tej służby.", _sourceName, HttpStatusCode.Conflict.ToString(), requestId);
                 }
             }
             catch (Exception ex)
             {
-                result = ProxyResponses.TechnicalError<Duty>(
+                result = ProxyResponseFactory.TechnicalError<Duty>(
                     ex.Message,
                     _sourceName,
                     HttpStatusCode.InternalServerError.ToString(),

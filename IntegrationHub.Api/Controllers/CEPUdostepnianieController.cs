@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.CEP/Controllers/CEPUdostepnianieController.cs
+// IntegrationHub.Sources.CEP/Controllers/CEPUdostepnianieController.cs
 using IntegrationHub.Common.Contracts;                       // ProxyResponse<T>, ProxyStatus
 using IntegrationHub.Common.Primitives;                 // Error
 using IntegrationHub.Common.RequestValidation;
@@ -585,7 +585,7 @@ Dla środowiska testowego dostępne są dane przykładowe dla <b>numerPesel = 73
             {
                 if (body is null)
                 {
-                    return ProxyResponses.BusinessError<DaneDokumentuResponse>(
+                    return ProxyResponseFactory.BusinessError<DaneDokumentuResponse>(
                         "Body (DaneDokumentuRequest) nie może być null.",
                         sourceName,
                         StatusCodes.Status400BadRequest.ToString(),
@@ -633,7 +633,7 @@ Dla środowiska testowego dostępne są dane przykładowe dla <b>numerPesel = 73
                                 "CEPiK UpKi business error: {Code} {Msg} (reqId={ReqId})",
                                 err.Code, err.Message, requestId);
 
-                            return ProxyResponses.BusinessError<DaneDokumentuResponse>(
+                            return ProxyResponseFactory.BusinessError<DaneDokumentuResponse>(
                                 message: err.Message,
                                 source: sourceName,
                                 sourceStatusCode: code,
@@ -645,7 +645,7 @@ Dla środowiska testowego dostępne są dane przykładowe dla <b>numerPesel = 73
                             "CEPiK UpKi technical error: {Code} {Msg} (reqId={ReqId})",
                             err.Code, err.Message, requestId);
 
-                        return ProxyResponses.TechnicalError<DaneDokumentuResponse>(
+                        return ProxyResponseFactory.TechnicalError<DaneDokumentuResponse>(
                             message: err.Message,
                             source: sourceName,
                             sourceStatusCode: code,
@@ -654,7 +654,7 @@ Dla środowiska testowego dostępne są dane przykładowe dla <b>numerPesel = 73
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                return ProxyResponses.TechnicalError<DaneDokumentuResponse>(
+                return ProxyResponseFactory.TechnicalError<DaneDokumentuResponse>(
                     "Żądanie zostało anulowane.",
                     sourceName,
                     "499",
@@ -667,7 +667,7 @@ Dla środowiska testowego dostępne są dane przykładowe dla <b>numerPesel = 73
                     "Nieoczekiwany błąd w CEPUdostepnianieController.PytanieOUprawnieniaKierowcy. reqId={ReqId}",
                     requestId);
 
-                return ProxyResponses.TechnicalError<DaneDokumentuResponse>(
+                return ProxyResponseFactory.TechnicalError<DaneDokumentuResponse>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     sourceName,
                     StatusCodes.Status500InternalServerError.ToString(),

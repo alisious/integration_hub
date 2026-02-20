@@ -1,4 +1,4 @@
-﻿using IntegrationHub.Common.Contracts;          // ProxyResponse<T>, ProxyStatus
+using IntegrationHub.Common.Contracts;          // ProxyResponse<T>, ProxyStatus
 using IntegrationHub.Common.Primitives;         // Result<T,Error>, Error
 using IntegrationHub.Common.RequestValidation;  // ValidationResult, ToProxyResponse()
 using IntegrationHub.Sources.KSIP.Config;       // KSIPConfig
@@ -71,7 +71,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
                 //
                 if (body is null)
                 {
-                    return ProxyResponses.BusinessError<SprawdzenieOsobyResponse>(
+                    return ProxyResponseFactory.BusinessError<SprawdzenieOsobyResponse>(
                         "Body (SprawdzenieOsobyRequest) nie może być null.",
                         _sourceName,
                         StatusCodes.Status400BadRequest.ToString(),
@@ -124,7 +124,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
                                 "KSIP business error: {Code} {Message} (reqId={ReqId})",
                                 err.Code, err.Message, requestId);
 
-                            return ProxyResponses.BusinessError<SprawdzenieOsobyResponse>(
+                            return ProxyResponseFactory.BusinessError<SprawdzenieOsobyResponse>(
                                 message: err.Message,
                                 source: _sourceName,
                                 sourceStatusCode: code,
@@ -135,7 +135,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
                             "KSIP technical error: {Code} {Message} (reqId={ReqId})",
                             err.Code, err.Message, requestId);
 
-                        return ProxyResponses.TechnicalError<SprawdzenieOsobyResponse>(
+                        return ProxyResponseFactory.TechnicalError<SprawdzenieOsobyResponse>(
                             message: err.Message,
                             source: _sourceName,
                             sourceStatusCode: code,
@@ -147,7 +147,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
             //
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyResponse>(
+                return ProxyResponseFactory.TechnicalError<SprawdzenieOsobyResponse>(
                     "Żądanie zostało anulowane.",
                     _sourceName,
                     "499",
@@ -163,7 +163,7 @@ namespace IntegrationHub.Sources.KSIP.Controllers
                     "Nieoczekiwany błąd w KSIPController.SprawdzenieOsobyWRuchuDrogowym (reqId={ReqId})",
                     requestId);
 
-                return ProxyResponses.TechnicalError<SprawdzenieOsobyResponse>(
+                return ProxyResponseFactory.TechnicalError<SprawdzenieOsobyResponse>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     _sourceName,
                     StatusCodes.Status500InternalServerError.ToString(),

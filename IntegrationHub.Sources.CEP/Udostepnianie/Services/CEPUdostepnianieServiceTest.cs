@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.CEP.Services/CEPUdostepnianieServiceTest.cs
+// IntegrationHub.Sources.CEP.Services/CEPUdostepnianieServiceTest.cs
 using System;
 using System.IO;
 using System.Net;
@@ -63,7 +63,7 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
             try
             {
                 if (!File.Exists(xmlPath))
-                    return ProxyResponses.TechnicalError<PytanieOPojazdResponse>(
+                    return ProxyResponseFactory.TechnicalError<PytanieOPojazdResponse>(
                         $"Brak pliku z danymi testowymi: {xmlPath}", "CEP.Udostepnianie.Test",
                         ((int)HttpStatusCode.InternalServerError).ToString(), requestId);
 

@@ -1,6 +1,6 @@
-﻿using Azure.Core;
+using Azure.Core;
 using IntegrationHub.Application.ZW;              // IZWSourceFacade
-using IntegrationHub.Common.Contracts;           // ProxyResponse, ProxyResponses
+using IntegrationHub.Common.Contracts;           // ProxyResponse, ProxyResponseFactory
 using IntegrationHub.Common.Primitives;
 using IntegrationHub.Common.RequestValidation;   // IRequestValidator<T>, ValidationResult
 using IntegrationHub.Domain.Contracts.ZW;        // WPMRequest, WPMResponse
@@ -68,7 +68,7 @@ namespace IntegrationHub.Api.Controllers
                 var vr = _validator.ValidateAndNormalize(req);
                 if (!vr.IsValid)
                 {
-                    return ProxyResponses.BusinessError<IEnumerable<WPMResponse>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<WPMResponse>>(
                         message: vr.MessageError!,
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -80,7 +80,7 @@ namespace IntegrationHub.Api.Controllers
 
                 if (count == 0)
                 {
-                    return ProxyResponses.BusinessError<IEnumerable<WPMResponse>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<WPMResponse>>(
                         message: "Nie znaleziono pojazdów spełniających zadane kryteria.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status404NotFound.ToString(),
@@ -89,7 +89,7 @@ namespace IntegrationHub.Api.Controllers
 
                 if (count > vehiclesLimit)
                 {
-                    return ProxyResponses.BusinessError<IEnumerable<WPMResponse>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<WPMResponse>>(
                         message: $"Znaleziono więcej niż {vehiclesLimit} pojazdów. Popraw kryteria.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -101,7 +101,7 @@ namespace IntegrationHub.Api.Controllers
                 if (rows.Count == 0)
                 {
                     // Nie powinno się zdarzyć po pre-count, ale zachowujemy bezpieczną ścieżkę
-                    return ProxyResponses.BusinessError<IEnumerable<WPMResponse>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<WPMResponse>>(
                         message: "Nie znaleziono pojazdów spełniających zadane kryteria.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status404NotFound.ToString(),
@@ -122,12 +122,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<WPMResponse>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<WPMResponse>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<WPMResponse>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<WPMResponse>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -154,7 +154,7 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponses.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<ZandWantedPersonDto>>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -168,7 +168,7 @@ namespace IntegrationHub.Api.Controllers
                     {
                         if (list is null || list.Count == 0)
                         {
-                            return ProxyResponses.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                            return ProxyResponseFactory.BusinessError<IEnumerable<ZandWantedPersonDto>>(
                                 message: $"Nie znaleziono osoby/osób poszukiwanych dla PESEL {pesel}.",
                                 source: source,
                                 sourceStatusCode: StatusCodes.Status404NotFound.ToString(),
@@ -191,14 +191,14 @@ namespace IntegrationHub.Api.Controllers
                         // Traktujemy 4xx jako błąd biznesowy, resztę jako techniczny
                         if (err.HttpStatus is >= 400 and < 500)
                         {
-                            return ProxyResponses.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                            return ProxyResponseFactory.BusinessError<IEnumerable<ZandWantedPersonDto>>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: code,
                                 requestId: requestId);
                         }
 
-                        return ProxyResponses.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                        return ProxyResponseFactory.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
                             message: err.Message,
                             source: source,
                             sourceStatusCode: code,
@@ -207,12 +207,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -237,7 +237,7 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponses.BusinessError<bool>(
+                    return ProxyResponseFactory.BusinessError<bool>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -269,14 +269,14 @@ namespace IntegrationHub.Api.Controllers
 
                         if (err.HttpStatus is >= 400 and < 500)
                         {
-                            return ProxyResponses.BusinessError<bool>(
+                            return ProxyResponseFactory.BusinessError<bool>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: code,
                                 requestId: requestId);
                         }
 
-                        return ProxyResponses.TechnicalError<bool>(
+                        return ProxyResponseFactory.TechnicalError<bool>(
                             message: err.Message,
                             source: source,
                             sourceStatusCode: code,
@@ -285,12 +285,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<bool>(
+                return ProxyResponseFactory.TechnicalError<bool>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<bool>(
+                return ProxyResponseFactory.TechnicalError<bool>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -329,7 +329,7 @@ namespace IntegrationHub.Api.Controllers
 
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponses.BusinessError<BronOsobaResponse>(
+                    return ProxyResponseFactory.BusinessError<BronOsobaResponse>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -369,14 +369,14 @@ namespace IntegrationHub.Api.Controllers
                         //Jeśli nie znaleziono osoby lub wystąpił inny błąd biznesowy:
                         if (err.ErrorKind == ErrorKindEnum.Business)
                         {
-                            return ProxyResponses.BusinessError<BronOsobaResponse>(
+                            return ProxyResponseFactory.BusinessError<BronOsobaResponse>(
                                 message: err.Message,   // komunikat biznesowy z obiektu Error
                                 source: source,
                                 sourceStatusCode: err.Code,
                                 requestId: requestId);
                         }
                        
-                        return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                        return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: err.Code,
@@ -386,7 +386,7 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             // Ogólny catch na wszystkie inne nieoczkiwane wyjątki, które nie zostały obsłużone wyżej.
@@ -394,7 +394,7 @@ namespace IntegrationHub.Api.Controllers
             // a w message przekazujemy komunikat wyjątku (bez stack trace).
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     source,
                     StatusCodes.Status500InternalServerError.ToString(),
@@ -433,7 +433,7 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponses.BusinessError<bool>(
+                    return ProxyResponseFactory.BusinessError<bool>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -473,7 +473,7 @@ namespace IntegrationHub.Api.Controllers
                             };
                         }
                         
-                        return ProxyResponses.TechnicalError<bool>(
+                        return ProxyResponseFactory.TechnicalError<bool>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: err.Code,
@@ -483,12 +483,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<bool>(
+                return ProxyResponseFactory.TechnicalError<bool>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<bool>(
+                return ProxyResponseFactory.TechnicalError<bool>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -525,7 +525,7 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponses.BusinessError<OsobaZolnierzResponse>(
+                    return ProxyResponseFactory.BusinessError<OsobaZolnierzResponse>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -554,7 +554,7 @@ namespace IntegrationHub.Api.Controllers
                         // Błędy biznesowe (Validation / NotFound) -> BusinessError
                         if (err.ErrorKind == ErrorKindEnum.Business)
                         {
-                            return ProxyResponses.BusinessError<OsobaZolnierzResponse>(
+                            return ProxyResponseFactory.BusinessError<OsobaZolnierzResponse>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: err.Code,
@@ -562,7 +562,7 @@ namespace IntegrationHub.Api.Controllers
                         }
 
                         // Pozostałe -> błąd techniczny
-                        return ProxyResponses.TechnicalError<OsobaZolnierzResponse>(
+                        return ProxyResponseFactory.TechnicalError<OsobaZolnierzResponse>(
                             message: err.Message,
                             source: source,
                             sourceStatusCode: err.Code,
@@ -571,12 +571,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<OsobaZolnierzResponse>(
+                return ProxyResponseFactory.TechnicalError<OsobaZolnierzResponse>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<OsobaZolnierzResponse>(
+                return ProxyResponseFactory.TechnicalError<OsobaZolnierzResponse>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     source,
                     StatusCodes.Status500InternalServerError.ToString(),
@@ -615,7 +615,7 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponses.BusinessError<bool>(
+                    return ProxyResponseFactory.BusinessError<bool>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -659,7 +659,7 @@ namespace IntegrationHub.Api.Controllers
                         }
 
                         // Błędy techniczne -> TechnicalError
-                        return ProxyResponses.TechnicalError<bool>(
+                        return ProxyResponseFactory.TechnicalError<bool>(
                             message: err.Message,
                             source: source,
                             sourceStatusCode: err.Code,
@@ -668,12 +668,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<bool>(
+                return ProxyResponseFactory.TechnicalError<bool>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<bool>(
+                return ProxyResponseFactory.TechnicalError<bool>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     source,
                     StatusCodes.Status500InternalServerError.ToString(),
@@ -711,7 +711,7 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (body is null)
                 {
-                    return ProxyResponses.BusinessError<BronOsobaResponse>(
+                    return ProxyResponseFactory.BusinessError<BronOsobaResponse>(
                         message: "Body żądania nie może być null.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
@@ -750,7 +750,7 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
                     message: "Żądanie zostało anulowane.",
                     source: source,
                     sourceStatusCode: "499",
@@ -758,7 +758,7 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
                     message: $"Nieoczekiwany błąd: {ex.Message}",
                     source: source,
                     sourceStatusCode: StatusCodes.Status500InternalServerError.ToString(),

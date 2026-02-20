@@ -1,7 +1,7 @@
 
 using IntegrationHub.Api.Swagger.Examples.ANPRS;
 using IntegrationHub.Application.ANPRS;                    // IANPRSDictionaryFacade, IANPRSReportsFacade
-using IntegrationHub.Common.Contracts;                   // ProxyResponse, ProxyResponses, ProxyStatus
+using IntegrationHub.Common.Contracts;                   // ProxyResponse, ProxyResponseFactory, ProxyStatus
 using IntegrationHub.Common.Exceptions;                  // Countries401Example, ...Countries404Example
 using IntegrationHub.Domain.Contracts.ANPRS;
 using IntegrationHub.Sources.ANPRS.Client;                // ANPRSHttpException (rzucany przez ANPRSHttpClient)
@@ -58,26 +58,26 @@ namespace IntegrationHub.Api.Controllers
             {
                 var data = await _dictionariesFacade.GetCountriesAsync(ct);
                 if (data is null)
-                    return ProxyResponses.TechnicalError<IEnumerable<string>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
+                    return ProxyResponseFactory.TechnicalError<IEnumerable<string>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
-                return ProxyResponses.Success<IEnumerable<string>>(data, source, "200", requestId);
+                return ProxyResponseFactory.Success<IEnumerable<string>>(data, source, "200", requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<IEnumerable<string>>(message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
+                return ProxyResponseFactory.BusinessError<IEnumerable<string>>(message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<string>>("Żądanie zostało anulowane.", source, "499", requestId);
+                return ProxyResponseFactory.TechnicalError<IEnumerable<string>>("Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (CertificateException ex)
             {
-                return ProxyResponses.BusinessError<IEnumerable<string>>(ex.Message, source, StatusCodes.Status400BadRequest.ToString(), requestId);
+                return ProxyResponseFactory.BusinessError<IEnumerable<string>>(ex.Message, source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<string>>($"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
+                return ProxyResponseFactory.TechnicalError<IEnumerable<string>>($"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
             }
         }
 
@@ -109,22 +109,22 @@ namespace IntegrationHub.Api.Controllers
             {
                 var data = await _dictionariesFacade.GetBCPAsync(ct);
                 if (data is null)
-                    return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
+                    return ProxyResponseFactory.TechnicalError<IEnumerable<BcpRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
-                return ProxyResponses.Success<IEnumerable<BcpRowDto>>(data, source, "200", requestId);
+                return ProxyResponseFactory.Success<IEnumerable<BcpRowDto>>(data, source, "200", requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<IEnumerable<BcpRowDto>>(message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
+                return ProxyResponseFactory.BusinessError<IEnumerable<BcpRowDto>>(message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>("Żądanie zostało anulowane.", source, "499", requestId);
+                return ProxyResponseFactory.TechnicalError<IEnumerable<BcpRowDto>>("Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>($"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
+                return ProxyResponseFactory.TechnicalError<IEnumerable<BcpRowDto>>($"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
             }
         }
 
@@ -156,22 +156,22 @@ namespace IntegrationHub.Api.Controllers
             {
                 var data = await _dictionariesFacade.GetSystemsAsync(country, ct);
                 if (data is null)
-                    return ProxyResponses.TechnicalError<IEnumerable<SystemRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
+                    return ProxyResponseFactory.TechnicalError<IEnumerable<SystemRowDto>>("Pusta odpowiedź z ANPRS.", source, "502", requestId);
 
-                return ProxyResponses.Success<IEnumerable<SystemRowDto>>(data, source, "200", requestId);
+                return ProxyResponseFactory.Success<IEnumerable<SystemRowDto>>(data, source, "200", requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<IEnumerable<SystemRowDto>>(message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
+                return ProxyResponseFactory.BusinessError<IEnumerable<SystemRowDto>>(message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<SystemRowDto>>("Żądanie zostało anulowane.", source, "499", requestId);
+                return ProxyResponseFactory.TechnicalError<IEnumerable<SystemRowDto>>("Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<SystemRowDto>>($"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
+                return ProxyResponseFactory.TechnicalError<IEnumerable<SystemRowDto>>($"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
             }
         }
 
@@ -223,7 +223,7 @@ namespace IntegrationHub.Api.Controllers
             try
             {
                 if (string.IsNullOrWhiteSpace(country))
-                    return ProxyResponses.BusinessError<IEnumerable<SystemRowDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<SystemRowDto>>(
                         "Parametr 'country' jest wymagany (np. PLN/EST/LTV/LVA).",
                         source, StatusCodes.Status400BadRequest.ToString(), requestId);
 
@@ -234,22 +234,22 @@ namespace IntegrationHub.Api.Controllers
 
                 // 2) pusta lista -> 404
                 if (rows is null || rows.Count == 0)
-                    return ProxyResponses.BusinessError<IEnumerable<SystemRowDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<SystemRowDto>>(
                         $"Brak danych Systems dla country={cc}.",
                         source, StatusCodes.Status404NotFound.ToString(), requestId);
 
                 // 3) OK – zwracamy bezpośrednio SystemRowDto
-                return ProxyResponses.Success<IEnumerable<SystemRowDto>>(
+                return ProxyResponseFactory.Success<IEnumerable<SystemRowDto>>(
                     rows, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<SystemRowDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<SystemRowDto>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<SystemRowDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<SystemRowDto>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -276,20 +276,20 @@ namespace IntegrationHub.Api.Controllers
                 var rows = (await _dictionariesFacade.GetBcpLocalAsync(ct))?.ToList();
 
                 if (rows is null || rows.Count == 0)
-                    return ProxyResponses.BusinessError<IEnumerable<BcpRowDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<BcpRowDto>>(
                         $"Brak danych BCP w lokalnej bazie.",
                         source, StatusCodes.Status404NotFound.ToString(), requestId);
 
-                return ProxyResponses.Success<IEnumerable<BcpRowDto>>(rows, source, StatusCodes.Status200OK.ToString(), requestId);
+                return ProxyResponseFactory.Success<IEnumerable<BcpRowDto>>(rows, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<BcpRowDto>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<BcpRowDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<BcpRowDto>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -316,20 +316,20 @@ namespace IntegrationHub.Api.Controllers
                 var rows = (await _dictionariesFacade.GetCountriesLocalAsync(ct))?.ToList();
 
                 if (rows is null || rows.Count == 0)
-                    return ProxyResponses.BusinessError<IEnumerable<string>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<string>>(
                         $"Brak danych Countries w lokalnej bazie.",
                         source, StatusCodes.Status404NotFound.ToString(), requestId);
 
-                return ProxyResponses.Success<IEnumerable<string>>(rows, source, StatusCodes.Status200OK.ToString(), requestId);
+                return ProxyResponseFactory.Success<IEnumerable<string>>(rows, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<string>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<string>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<string>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<string>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -380,7 +380,7 @@ namespace IntegrationHub.Api.Controllers
                 string.IsNullOrWhiteSpace(system) ||
                 string.IsNullOrWhiteSpace(bcp))
             {
-                return ProxyResponses.BusinessError<IEnumerable<VehicleInPointDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<VehicleInPointDto>>(
                     "Parametry 'country', 'system' i 'bcp' są wymagane.",
                     source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
@@ -392,25 +392,25 @@ namespace IntegrationHub.Api.Controllers
                     country.Trim(), system.Trim(), bcp.Trim(), dateFrom, dateTo, ct))?.ToList();
 
                 if (list is null)
-                    return ProxyResponses.BusinessError<IEnumerable<VehicleInPointDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<VehicleInPointDto>>(
                         "Pusta odpowiedź z ANPRS.", source, StatusCodes.Status502BadGateway.ToString(), requestId);
 
-                return ProxyResponses.Success<IEnumerable<VehicleInPointDto>>(list, source, StatusCodes.Status200OK.ToString(), requestId);
+                return ProxyResponseFactory.Success<IEnumerable<VehicleInPointDto>>(list, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<IEnumerable<VehicleInPointDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<VehicleInPointDto>>(
                     message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<VehicleInPointDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<VehicleInPointDto>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<VehicleInPointDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<VehicleInPointDto>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
             }
         }
@@ -451,13 +451,13 @@ namespace IntegrationHub.Api.Controllers
             // Walidacja wejścia
             if (string.IsNullOrWhiteSpace(numberPlate))
             {
-                return ProxyResponses.BusinessError<IEnumerable<LicenseplateDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<LicenseplateDto>>(
                     "Parametr 'numberPlate' jest wymagany.", source,
                     StatusCodes.Status400BadRequest.ToString(), requestId);
             }
             if (dateFrom > dateTo)
             {
-                return ProxyResponses.BusinessError<IEnumerable<LicenseplateDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<LicenseplateDto>>(
                     "Parametr 'dateFrom' nie może być większy niż 'dateTo'.", source,
                     StatusCodes.Status400BadRequest.ToString(), requestId);
             }
@@ -468,25 +468,25 @@ namespace IntegrationHub.Api.Controllers
                     numberPlate.Trim(), dateFrom, dateTo, ct))?.ToList();
 
                 if (list is null)
-                    return ProxyResponses.BusinessError<IEnumerable<LicenseplateDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<LicenseplateDto>>(
                         "Pusta odpowiedź z ANPRS.", source, StatusCodes.Status502BadGateway.ToString(), requestId);
 
-                return ProxyResponses.Success<IEnumerable<LicenseplateDto>>(list, source, StatusCodes.Status200OK.ToString(), requestId);
+                return ProxyResponseFactory.Success<IEnumerable<LicenseplateDto>>(list, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<IEnumerable<LicenseplateDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<LicenseplateDto>>(
                     message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<LicenseplateDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<LicenseplateDto>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<LicenseplateDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<LicenseplateDto>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, "500", requestId);
             }
         }
@@ -538,14 +538,14 @@ namespace IntegrationHub.Api.Controllers
                 string.IsNullOrWhiteSpace(req.System) ||
                 string.IsNullOrWhiteSpace(req.BcpId))
             {
-                return ProxyResponses.BusinessError<ReportFileLink>(
+                return ProxyResponseFactory.BusinessError<ReportFileLink>(
                     "Parametry 'country', 'system' i 'bcp' są wymagane.",
                     source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
 
             if (req.DateFrom > req.DateTo)
             {
-                return ProxyResponses.BusinessError<ReportFileLink>(
+                return ProxyResponseFactory.BusinessError<ReportFileLink>(
                     "Parametr 'dateFrom' nie może być większy niż 'dateTo'.",
                     source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
@@ -562,22 +562,22 @@ namespace IntegrationHub.Api.Controllers
                     string.IsNullOrWhiteSpace(req.UnitName) ? null : req.UnitName!.Trim(),
                     ct);
 
-                return ProxyResponses.Success(link, source, StatusCodes.Status200OK.ToString(), requestId);
+                return ProxyResponseFactory.Success(link, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<ReportFileLink>(
+                return ProxyResponseFactory.BusinessError<ReportFileLink>(
                     message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<ReportFileLink>(
+                return ProxyResponseFactory.TechnicalError<ReportFileLink>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<ReportFileLink>(
+                return ProxyResponseFactory.TechnicalError<ReportFileLink>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -611,14 +611,14 @@ namespace IntegrationHub.Api.Controllers
 
             if (req is null || string.IsNullOrWhiteSpace(req.NumberPlate))
             {
-                return ProxyResponses.BusinessError<ReportFileLink>(
+                return ProxyResponseFactory.BusinessError<ReportFileLink>(
                     "Parametr 'numberPlate' jest wymagany.",
                     source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
 
             if (req.DateFrom > req.DateTo)
             {
-                return ProxyResponses.BusinessError<ReportFileLink>(
+                return ProxyResponseFactory.BusinessError<ReportFileLink>(
                     "Parametr 'dateFrom' nie może być większy niż 'dateTo'.",
                     source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
@@ -633,22 +633,22 @@ namespace IntegrationHub.Api.Controllers
                     string.IsNullOrWhiteSpace(req.UnitName) ? null : req.UnitName!.Trim(),
                     ct);
 
-                return ProxyResponses.Success(link, source, StatusCodes.Status200OK.ToString(), requestId);
+                return ProxyResponseFactory.Success(link, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<ReportFileLink>(
+                return ProxyResponseFactory.BusinessError<ReportFileLink>(
                     message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<ReportFileLink>(
+                return ProxyResponseFactory.TechnicalError<ReportFileLink>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<ReportFileLink>(
+                return ProxyResponseFactory.TechnicalError<ReportFileLink>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -678,7 +678,7 @@ namespace IntegrationHub.Api.Controllers
 
             if (id == Guid.Empty)
             {
-                return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
                     "Parametr 'id' (GUID) jest wymagany.",
                     source, StatusCodes.Status400BadRequest.ToString(), requestId);
             }
@@ -688,31 +688,31 @@ namespace IntegrationHub.Api.Controllers
                 var rows = (await _sourceFacade.GetPhotosAsync(id,ct))?.ToList();
 
                 if (rows is null)
-                    return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
                         "Pusta odpowiedź z ANPRS.", source, StatusCodes.Status502BadGateway.ToString(), requestId);
 
                 if (rows.Count == 0)
-                    return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
                         $"Brak zdjęć dla zdarzenia id={id}.",
                         source, StatusCodes.Status404NotFound.ToString(), requestId);
 
-                return ProxyResponses.Success<IEnumerable<VehiclePhotoRowDto>>(
+                return ProxyResponseFactory.Success<IEnumerable<VehiclePhotoRowDto>>(
                     rows, source, StatusCodes.Status200OK.ToString(), requestId);
             }
             catch (ANPRSHttpException ex)
             {
                 var (code, message) = ExtractHttpCodeAndMessage(ex);
-                return ProxyResponses.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
+                return ProxyResponseFactory.BusinessError<IEnumerable<VehiclePhotoRowDto>>(
                     message ?? $"ANPRS HTTP {code}.", source, code.ToString(), requestId);
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<VehiclePhotoRowDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<VehiclePhotoRowDto>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponses.TechnicalError<IEnumerable<VehiclePhotoRowDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<VehiclePhotoRowDto>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
