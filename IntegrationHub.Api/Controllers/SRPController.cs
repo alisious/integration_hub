@@ -1,17 +1,12 @@
-﻿using IntegrationHub.Api.Swagger.Examples.SRP;
+using IntegrationHub.Api.Swagger.Examples.SRP;
 using IntegrationHub.Common.Contracts;
-using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Extensions;
 using IntegrationHub.SRP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
-using System.ServiceModel;
-using System.Text;
 
 
 namespace IntegrationHub.Api.Controllers
@@ -24,17 +19,13 @@ namespace IntegrationHub.Api.Controllers
     public class SRPController : ControllerBase
     {
 
-        private readonly SrpConfig _srpConfig;
         private readonly ILogger<SRPController> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IPeselService _peselService;
         private readonly IRdoService _rdoService;
 
-        public SRPController(IPeselService peselService, IRdoService rdoService, IHttpClientFactory httpClientFactory, IOptions<SrpConfig> srpConfig, ILogger<SRPController> logger)
+        public SRPController(IPeselService peselService, IRdoService rdoService, ILogger<SRPController> logger)
         {
-            _srpConfig = srpConfig.Value;
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
             _peselService = peselService;
             _rdoService = rdoService;
         }
@@ -55,30 +46,11 @@ namespace IntegrationHub.Api.Controllers
         public async Task<ProxyResponse<GetCurrentPhotoResponse>> GetCurrentPhoto([FromBody] GetCurrentPhotoRequest body)
         {
             var requestId = Guid.NewGuid().ToString();
-            var hasPesel = !string.IsNullOrWhiteSpace(body.Pesel);
-            var hasPersonId = !string.IsNullOrWhiteSpace(body.IdOsoby);
-            if (!(hasPesel && hasPersonId))
-            {
-                return new ProxyResponse<GetCurrentPhotoResponse>
-                {
-                    RequestId = requestId,
-                    Source = "SRP",
-                    Status = ProxyStatus.BusinessError,
-                    SourceStatusCode = ((int)HttpStatusCode.BadRequest).ToString(),
-                    Message = "Brak numeru PESEL i ID osoby do wyszukania zdjęcia."
-                };
-            }
+            return await _rdoService.GetCurrentPhotoAsync(body, requestId);
+        }
 
 
-            var soapEnvelope = RequestEnvelopeHelper.PrepareGetCurrentPhotoRequestEnvelope(body,requestId);
-
-            _logger.LogInformation("RDO udostepnijAktualeZdjecie start. Request: {request}",soapEnvelope);
-
-            try
-            {
-                
-                var httpClient = _httpClientFactory.CreateClient("SrpServiceClient");
-                var content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
+        /// <summary>Udostępnij aktualny dowód osobisty po PESEL.</summary>
                 content.Headers.Add("SOAPAction", @"http://msw.gov.pl/srp/v3_0/uslugi/dowody/Udostepnianie/udostepnijAktualneZdjecie/");
                 var endpointUrl = _srpConfig.RdoShareServiceUrl;
                 _logger.LogInformation("Endpoint Url: {EndpointUrl}", endpointUrl);
