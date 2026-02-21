@@ -718,34 +718,10 @@ namespace IntegrationHub.Api.Controllers
                         requestId: requestId);
                 }
 
-                // Serwis zwraca: Result<BronOsobaResponse, Error>
                 var result = await _wantedService.GetBronAdresAsync(body, ct);
-
-                // Użycie ProxyResponseMapper.ToProxyResponse (metoda rozszerzająca)
-                var proxy = result.ToProxyResponse();
-
-                // Uzupełniamy metadane ProxyResponse
-                proxy.Source = source;
-                proxy.RequestId = requestId;
-
+                var proxy = result.ToProxyResponse(source, requestId);
                 if (result.IsSuccess)
-                {
-                    proxy.Status = ProxyStatus.Success;
-                    proxy.SourceStatusCode = StatusCodes.Status200OK.ToString();
                     proxy.Message = "Znaleziono dane posiadacza broni prywatnej dla wskazanego adresu.";
-                }
-                else
-                {
-                    var err = result.Error;
-
-                    proxy.Status = err.ErrorKind == ErrorKindEnum.Business
-                        ? ProxyStatus.BusinessError
-                        : ProxyStatus.TechnicalError;
-
-                    proxy.SourceStatusCode = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
-                    // Message ustawił już ProxyResponseMapper (err.Message).
-                }
-
                 return proxy;
             }
             catch (OperationCanceledException)

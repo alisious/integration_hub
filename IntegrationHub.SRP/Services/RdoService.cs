@@ -1,17 +1,13 @@
-﻿using IntegrationHub.Common.Config;
+using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Contracts;
+using IntegrationHub.Common.Primitives;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Contracts;
 using IntegrationHub.SRP.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace IntegrationHub.SRP.Services
@@ -30,7 +26,7 @@ namespace IntegrationHub.SRP.Services
             _logger = logger;
         }
 
-        public async Task<ProxyResponse<GetCurrentPhotoResponse>> GetCurrentPhotoAsync(GetCurrentPhotoRequest body, string? requestId = null, CancellationToken ct = default)
+        public async Task<Result<GetCurrentPhotoResponse, Error>> GetCurrentPhotoAsync(GetCurrentPhotoRequest body, string? requestId = null, CancellationToken ct = default)
         {
             requestId ??= Guid.NewGuid().ToString();
 
@@ -38,8 +34,7 @@ namespace IntegrationHub.SRP.Services
             var hasPersonId = !string.IsNullOrWhiteSpace(body.IdOsoby);
             if (!(hasPesel && hasPersonId))
             {
-                return Error<GetCurrentPhotoResponse>(requestId, HttpStatusCode.BadRequest,
-                    ProxyStatus.BusinessError, "Brak numeru PESEL i ID osoby do wyszukania zdjęcia.");
+                return ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "Brak numeru PESEL i ID osoby do wyszukania zdjęcia.", (int)HttpStatusCode.BadRequest);
             }
 
             var envelope = RequestEnvelopeHelper.PrepareGetCurrentPhotoRequestEnvelope(body, requestId);
@@ -51,47 +46,34 @@ namespace IntegrationHub.SRP.Services
 
                 if (result.Fault is not null)
                 {
-                    // Preferuj opis biznesowy, a techniczny dorzuć po średniku (o ile jest)
                     var msg = result.Fault.DetailOpis ?? result.Fault.FaultString;
                     if (!string.IsNullOrWhiteSpace(result.Fault.DetailOpisTechniczny))
                         msg += $"; {result.Fault.DetailOpisTechniczny}";
 
-                    return Error<GetCurrentPhotoResponse>(requestId, HttpStatusCode.BadRequest,
-                        ProxyStatus.BusinessError, msg);
+                    return ErrorFactory.BusinessError(ErrorCodeEnum.ExternalServiceError, msg, (int)HttpStatusCode.BadRequest);
                 }
 
                 if ((int)result.StatusCode < 200 || (int)result.StatusCode >= 300)
                 {
-                    return Error<GetCurrentPhotoResponse>(requestId, result.StatusCode,
-                        ProxyStatus.TechnicalError, $"HTTP {(int)result.StatusCode}");
+                    return ErrorFactory.TechnicalError(ErrorCodeEnum.ExternalServiceError, $"HTTP {(int)result.StatusCode}", (int)result.StatusCode);
                 }
 
                 var parsed = RdoGetCurrentPhotoResponseXmlMapper.Parse(
                     result.Body, _logger, requestId, validateBase64: true, snippetChars: 16);
 
-                return new ProxyResponse<GetCurrentPhotoResponse>
-                {
-                    RequestId = requestId,
-                    Data = parsed,
-                    Source = "SRP",
-                    Status = ProxyStatus.Success,
-                    SourceStatusCode = ((int)HttpStatusCode.OK).ToString()
-                };
+                return parsed;
             }
             catch (TimeoutException)
             {
-                return Error<GetCurrentPhotoResponse>(requestId, HttpStatusCode.RequestTimeout,
-                    ProxyStatus.TechnicalError, "Przekroczono czas oczekiwania na odpowiedz uslugi SRP: udostepnijAktualneZdjecie.");
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.OperationCanceledError, "Przekroczono czas oczekiwania na odpowiedz uslugi SRP: udostepnijAktualneZdjecie.", (int)HttpStatusCode.RequestTimeout);
             }
             catch (CommunicationException cex)
             {
-                return Error<GetCurrentPhotoResponse>(requestId, HttpStatusCode.BadGateway,
-                    ProxyStatus.TechnicalError, $"Blad komunikacji z usluga SRP: udostepnijAktualneZdjecie. {cex.Message}");
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.ExternalServiceError, $"Blad komunikacji z usluga SRP: udostepnijAktualneZdjecie. {cex.Message}", (int)HttpStatusCode.BadGateway);
             }
             catch (Exception ex)
             {
-                return Error<GetCurrentPhotoResponse>(requestId, HttpStatusCode.InternalServerError,
-                    ProxyStatus.TechnicalError, ex.Message);
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.UnexpectedError, ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -99,80 +81,48 @@ namespace IntegrationHub.SRP.Services
         /// <summary>
         /// Udostępnia aktualne dane z dowodu osobistego na podstawie numeru PESEL.
         /// </summary>
-        /// <param name="body"></param>
-        /// <param name="requestId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<ProxyResponse<GetCurrentIdByPeselResponse>> GetCurrentIdByPeselAsync(
+        public async Task<Result<GetCurrentIdByPeselResponse, Error>> GetCurrentIdByPeselAsync(
             GetCurrentIdByPeselRequest body, string? requestId = null, CancellationToken ct = default)
         {
             requestId ??= Guid.NewGuid().ToString();
 
             if (string.IsNullOrWhiteSpace(body.Pesel))
             {
-                return Error<GetCurrentIdByPeselResponse>(requestId, HttpStatusCode.BadRequest, ProxyStatus.BusinessError, "PESEL jest wymagany.");
+                return ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "PESEL jest wymagany.", (int)HttpStatusCode.BadRequest);
             }
 
-            // Budowa koperty SOAP 1.1
             var envelope = RequestEnvelopeHelper.PrepareGetCurrentIdByPeselRequestEnvelope(body, requestId);
 
             try
             {
                 var result = await _invoker.InvokeAsync(
-                    _srp.RdoShareServiceUrl, 
+                    _srp.RdoShareServiceUrl,
                     SrpSoapActions.Rdo_UdostepnijDaneAktualnegoDowoduPoPesel,
                     envelope,
                     requestId,
                     ct);
 
                 if (result.Fault is not null)
-                    return Error<GetCurrentIdByPeselResponse>(requestId, HttpStatusCode.BadRequest,
-                        ProxyStatus.BusinessError, result.Fault.FaultString);
+                    return ErrorFactory.BusinessError(ErrorCodeEnum.ExternalServiceError, result.Fault.FaultString, (int)HttpStatusCode.BadRequest);
 
                 if ((int)result.StatusCode < 200 || (int)result.StatusCode >= 300)
-                    return Error<GetCurrentIdByPeselResponse>(requestId, result.StatusCode,
-                        ProxyStatus.TechnicalError, $"HTTP {(int)result.StatusCode}");
+                    return ErrorFactory.TechnicalError(ErrorCodeEnum.ExternalServiceError, $"HTTP {(int)result.StatusCode}", (int)result.StatusCode);
 
+                var responseObj = RdoGetCurrentIdResponseXmlMapper.Parse(result.Body);
 
-                // Parsowanie
-                var responseObj =  RdoGetCurrentIdResponseXmlMapper.Parse(result.Body);
-
-                
                 if (responseObj.Dowod is null)
                 {
                     _logger.LogWarning("SRP:RDO Brak danych dowodu osobistego w odpowiedzi SRP (PESEL={Pesel}) RID={RID}", body.Pesel, requestId);
-                    return Error<GetCurrentIdByPeselResponse>(requestId, HttpStatusCode.NotFound,
-                        ProxyStatus.BusinessError, "Brak danych dowodu osobistego dla podanego numeru PESEL.");
+                    return ErrorFactory.BusinessError(ErrorCodeEnum.NotFoundError, "Brak danych dowodu osobistego dla podanego numeru PESEL.", (int)HttpStatusCode.NotFound);
                 }
 
-                return new ProxyResponse<GetCurrentIdByPeselResponse>
-                {
-                    RequestId = requestId,
-                    Data = responseObj,
-                    Status = ProxyStatus.Success,
-                    SourceStatusCode = ((int)HttpStatusCode.OK).ToString(),
-                    Source = "SRP"
-                };
+                return responseObj;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "SRP:RDO Błąd UdostepnijDaneAktualnegoDowoduPoPesel (PESEL={Pesel}) RID={RID}", body.Pesel, requestId);
-                return Error<GetCurrentIdByPeselResponse>(requestId, HttpStatusCode.InternalServerError,
-                    ProxyStatus.TechnicalError, ex.Message);
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.UnexpectedError, ex.Message, (int)HttpStatusCode.InternalServerError);
             }
-        }
-
-        private static ProxyResponse<T> Error<T>(string requestId, HttpStatusCode code, ProxyStatus status, string message)
-        {
-            return new ProxyResponse<T>
-            {
-                RequestId = requestId,
-                Source = "SRP",
-                Status = status,
-                SourceStatusCode = ((int)code).ToString(),
-                Message = message
-            };
         }
     }
 }

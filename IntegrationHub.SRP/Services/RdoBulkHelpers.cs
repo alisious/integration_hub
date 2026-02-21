@@ -1,10 +1,9 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using IntegrationHub.Common.Contracts;
 using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Services;
-using System.Net;
 
 namespace IntegrationHub.SRP.Services;
+
 public static class RdoBulkHelpers
 {
     /// <summary>
@@ -19,8 +18,8 @@ public static class RdoBulkHelpers
             CancellationToken ct = default)
     {
         var bag = new ConcurrentBag<(GetCurrentPhotoRequest, ProxyResponse<GetCurrentPhotoResponse>)>();
+        const string source = "SRP";
 
-        // .NET 6+: prosty bounded parallelism
         await Parallel.ForEachAsync(requests, new ParallelOptions
         {
             MaxDegreeOfParallelism = maxParallel,
@@ -28,20 +27,20 @@ public static class RdoBulkHelpers
         },
         async (req, token) =>
         {
+            var requestId = Guid.NewGuid().ToString();
             try
             {
-                // Osobny requestId per wywołanie (lub przekaż wspólny prefix)
-                var res = await rdo.GetCurrentPhotoAsync(req, requestId: Guid.NewGuid().ToString(), token);
-                bag.Add((req, res));
+                var result = await rdo.GetCurrentPhotoAsync(req, requestId: requestId, token);
+                bag.Add((req, result.ToProxyResponse(source, requestId)));
             }
             catch (OperationCanceledException)
             {
                 bag.Add((req, new ProxyResponse<GetCurrentPhotoResponse>
                 {
-                    RequestId = Guid.NewGuid().ToString(),
-                    Source = "SRP",
+                    RequestId = requestId,
+                    Source = source,
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = ((int)HttpStatusCode.RequestTimeout).ToString(),
+                    SourceStatusCode = ((int)System.Net.HttpStatusCode.RequestTimeout).ToString(),
                     Message = "Przerwano (CancellationToken)."
                 }));
             }
@@ -49,10 +48,10 @@ public static class RdoBulkHelpers
             {
                 bag.Add((req, new ProxyResponse<GetCurrentPhotoResponse>
                 {
-                    RequestId = Guid.NewGuid().ToString(),
-                    Source = "SRP",
+                    RequestId = requestId,
+                    Source = source,
                     Status = ProxyStatus.TechnicalError,
-                    SourceStatusCode = ((int)HttpStatusCode.InternalServerError).ToString(),
+                    SourceStatusCode = ((int)System.Net.HttpStatusCode.InternalServerError).ToString(),
                     Message = ex.Message
                 }));
             }

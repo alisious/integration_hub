@@ -1,19 +1,14 @@
-﻿using IntegrationHub.Common.Config;
-using IntegrationHub.Common.Contracts;
+using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Helpers;
+using IntegrationHub.Common.Primitives;
 using IntegrationHub.SRP.Config;
 using IntegrationHub.SRP.Contracts;
 using IntegrationHub.SRP.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Net;
 using static IntegrationHub.SRP.Services.SrpServiceCommon;
 
 namespace IntegrationHub.SRP.Services
@@ -36,61 +31,33 @@ namespace IntegrationHub.SRP.Services
         /// <summary>
         /// Pobieranie danych osoby na podstawie numeru PESEL. Metoda zwraca dane testowe dla pesel = 11111111111.
         /// </summary>
-        /// <param name="body"></param>
-        /// <param name="requestId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        public async Task<ProxyResponse<GetPersonByPeselResponse>> GetPersonByPeselAsync(GetPersonByPeselRequest body, string? requestId = null, CancellationToken ct = default)
+        public async Task<Result<GetPersonByPeselResponse, Error>> GetPersonByPeselAsync(GetPersonByPeselRequest body, string? requestId = null, CancellationToken ct = default)
         {
             requestId ??= Guid.NewGuid().ToString();
+
             if (string.IsNullOrWhiteSpace(body.Pesel))
             {
-                throw new ArgumentException("Brak wymaganego parametru: pesel");
+                return ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "Brak wymaganego parametru: pesel", (int)HttpStatusCode.BadRequest);
             }
 
             try
             {
-                          
-
-                var responseObj = new GetPersonByPeselResponse();
-
                 if (body.Pesel != "11111111111")
                 {
-                    responseObj.daneOsoby = null;
                     _logger.LogWarning("SRP:RDO Brak danych osoby w odpowiedzi SRP (PESEL={Pesel}) RID={RID}", body.Pesel, requestId);
-                        return Error<GetPersonByPeselResponse>(requestId, HttpStatusCode.NotFound,
-                            ProxyStatus.BusinessError, "Brak danych osoby dla podanego numeru PESEL.");
-                    
-
+                    return ErrorFactory.BusinessError(ErrorCodeEnum.NotFoundError, "Brak danych osoby dla podanego numeru PESEL.", (int)HttpStatusCode.NotFound);
                 }
 
-
-                // Wczytaj XML i sparsuj do DTO (parsuje też zdjęcia i podpis, jeśli są w pliku)
                 var xmlPath = Path.Combine(_testDataDir, "UdostepnijAktualneDaneOsobyPoPesel_RESPONSE.xml");
                 var xml = await File.ReadAllTextAsync(xmlPath, ct).ConfigureAwait(false);
-                // TODO: Zmapuj response XML -> GetPersonByPeselResponse 
-                responseObj = PeselGetPersonByPeselResponseXmlMapper.Parse(xml);
+                var responseObj = PeselGetPersonByPeselResponseXmlMapper.Parse(xml);
 
-
-                return new ProxyResponse<GetPersonByPeselResponse>
-                {
-                    RequestId = requestId,
-                    Data = responseObj,
-                    Source = "SRP",
-                    Status = ProxyStatus.Success,
-                    SourceStatusCode = ((int)HttpStatusCode.OK).ToString()
-                };
-            }
-            catch (ArgumentException aex)
-            {
-                return ProxyResponseError<GetPersonByPeselResponse>(requestId, HttpStatusCode.BadRequest,
-                    ProxyStatus.BusinessError, aex.Message);
+                return responseObj;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Błąd GetPerson, RequestId: {RequestId}", requestId);
-                return ProxyResponseError<GetPersonByPeselResponse>(requestId, HttpStatusCode.InternalServerError,
-                    ProxyStatus.TechnicalError, ex.Message);
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.UnexpectedError, ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -106,15 +73,12 @@ namespace IntegrationHub.SRP.Services
         /// <param name="body">The request containing the search criteria for the person. Cannot be null.</param>
         /// <param name="requestId">An optional identifier for tracking the request. Can be null.</param>
         /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains a  <see
-        /// cref="ProxyResponse{T}"/> wrapping a <see cref="SearchPersonResponse"/> with the search results.</returns>
-        /// <exception cref="NotImplementedException"></exception>
-        async Task<ProxyResponse<SearchPersonResponse>> IPeselService.SearchPersonAsync(SearchPersonRequest body, string? requestId, CancellationToken ct)
+        async Task<Result<SearchPersonResponse, Error>> IPeselService.SearchPersonAsync(SearchPersonRequest body, string? requestId, CancellationToken ct)
         {
             requestId ??= Guid.NewGuid().ToString();
 
             if (!TryValidateAndNormalize(body, requestId, allowRange: true, out var err))
-                return err!;
+                return err!.Value;
 
             var jsonPath = Path.Combine(_testDataDir, "SearchPersonResponse_13.json");
 
@@ -122,22 +86,19 @@ namespace IntegrationHub.SRP.Services
             try
             {
                 await using var fs = File.OpenRead(jsonPath);
-                var proxy = await JsonSerializer.DeserializeAsync<ProxyResponse<SearchPersonResponse>>(fs, JsonOpts, ct);
+                var proxy = await JsonSerializer.DeserializeAsync<IntegrationHub.Common.Contracts.ProxyResponse<SearchPersonResponse>>(fs, JsonOpts, ct);
                 resp = proxy?.Data ?? new SearchPersonResponse();
             }
             catch (FileNotFoundException)
             {
-                return Error<SearchPersonResponse>(requestId, HttpStatusCode.InternalServerError,
-                    ProxyStatus.TechnicalError, $"Brak pliku z danymi testowymi: {jsonPath}");
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.UnexpectedError, $"Brak pliku z danymi testowymi: {jsonPath}", (int)HttpStatusCode.InternalServerError);
             }
             catch (JsonException jx)
             {
                 _logger.LogError(jx, "Błąd JSON przy wczytywaniu {Path}", jsonPath);
-                return Error<SearchPersonResponse>(requestId, HttpStatusCode.InternalServerError,
-                    ProxyStatus.TechnicalError, "Uszkodzony plik danych testowych (JSON).");
+                return ErrorFactory.TechnicalError(ErrorCodeEnum.UnexpectedError, "Uszkodzony plik danych testowych (JSON).", (int)HttpStatusCode.InternalServerError);
             }
 
-            // === Filtrowanie danych testowych wg. żądania ===
             static string N(string? s) => (s ?? "").Trim().ToUpperInvariant();
 
             if (!string.IsNullOrWhiteSpace(body.Pesel))
@@ -152,35 +113,12 @@ namespace IntegrationHub.SRP.Services
             if (!string.IsNullOrWhiteSpace(body.DataUrodzenia))
                 resp.Persons = resp.Persons.Where(p => p.DataUrodzenia == body.DataUrodzenia).ToList();
 
-            // Reguła testowa: „>50 osób” gdy Nowak/Tomasz i nie podano imienia ojca
             if (N(body.Nazwisko) == "NOWAK" && N(body.ImiePierwsze) == "TOMASZ" && string.IsNullOrWhiteSpace(body.ImieOjca))
             {
-                return ProxyResponseError<SearchPersonResponse>(requestId, HttpStatusCode.NotAcceptable,
-                    ProxyStatus.BusinessError, "Znaleziono więcej niż 50 osób!");
+                return ErrorFactory.BusinessError(ErrorCodeEnum.ExternalServiceError, "Znaleziono więcej niż 50 osób!", (int)HttpStatusCode.NotAcceptable);
             }
 
-            // Zwróć jak zwykle ProxyResponse<>, zdjęcia już są w JSON (pole "zdjecie")
-            return new ProxyResponse<SearchPersonResponse>
-            {
-                RequestId = requestId,
-                Data = resp,
-                Source = "SRP",
-                Status = ProxyStatus.Success,
-                SourceStatusCode = ((int)HttpStatusCode.OK).ToString()
-            };
-        }
-
-
-        private static ProxyResponse<T> ProxyResponseError<T>(string requestId, HttpStatusCode code, ProxyStatus status, string message)
-        {
-            return new ProxyResponse<T>
-            {
-                RequestId = requestId,
-                Source = "SRP",
-                Status = status,
-                SourceStatusCode = ((int)code).ToString(),
-                Message = message
-            };
+            return resp;
         }
     }
 }

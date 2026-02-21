@@ -1,7 +1,7 @@
-﻿using System.Net;
+using System.Net;
 using System.Text.Json;
-using IntegrationHub.Common.Contracts;
 using IntegrationHub.Common.Helpers;
+using IntegrationHub.Common.Primitives;
 using IntegrationHub.SRP.Contracts;
 
 namespace IntegrationHub.SRP.Services;
@@ -22,13 +22,13 @@ internal static class SrpServiceCommon
     /// <summary>
     /// Sprawdza: PESEL lub (Nazwisko+Imię). Normalizuje daty do yyyyMMdd.
     /// Jeśli <paramref name="allowRange"/> = true, normalizuje też DataUrodzeniaOd/Do.
-    /// W razie błędu zwraca przygotowany ProxyResponse&lt;SearchPersonResponse&gt;.
+    /// W razie błędu ustawia <paramref name="error"/> i zwraca false.
     /// </summary>
     internal static bool TryValidateAndNormalize(
         SearchPersonRequest body,
-        string requestId,
+        string _,
         bool allowRange,
-        out ProxyResponse<SearchPersonResponse>? error)
+        out Error? error)
     {
         error = null;
 
@@ -38,19 +38,16 @@ internal static class SrpServiceCommon
 
         if (!hasPesel && !hasNamePair)
         {
-            error = Error<SearchPersonResponse>(requestId, HttpStatusCode.BadRequest,
-                ProxyStatus.BusinessError, "Obowiazkowo podaj PESEL albo zestaw: nazwisko i imie.");
+            error = ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "Obowiazkowo podaj PESEL albo zestaw: nazwisko i imie.", (int)HttpStatusCode.BadRequest);
             return false;
         }
 
-        // DataUrodzenia (dokładna)
         if (!string.IsNullOrWhiteSpace(body.DataUrodzenia))
         {
             var formatted = DateStringFormatHelper.FormatYyyyMmDd(body.DataUrodzenia);
             if (formatted is null)
             {
-                error = Error<SearchPersonResponse>(requestId, HttpStatusCode.BadRequest,
-                    ProxyStatus.BusinessError, "Niepoprawny format parametru dataUrodzenia. Wymagany format: yyyyMMdd lub yyyy-MM-dd.");
+                error = ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "Niepoprawny format parametru dataUrodzenia. Wymagany format: yyyyMMdd lub yyyy-MM-dd.", (int)HttpStatusCode.BadRequest);
                 return false;
             }
             body.DataUrodzenia = formatted;
@@ -58,27 +55,23 @@ internal static class SrpServiceCommon
 
         if (allowRange)
         {
-            // DataUrodzeniaOd
             if (!string.IsNullOrWhiteSpace(body.DataUrodzeniaOd))
             {
                 var formatted = DateStringFormatHelper.FormatYyyyMmDd(body.DataUrodzeniaOd);
                 if (formatted is null)
                 {
-                    error = Error<SearchPersonResponse>(requestId, HttpStatusCode.BadRequest,
-                        ProxyStatus.BusinessError, "Niepoprawny format parametru dataUrodzeniaOd. Wymagany format: yyyyMMdd lub yyyy-MM-dd.");
+                    error = ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "Niepoprawny format parametru dataUrodzeniaOd. Wymagany format: yyyyMMdd lub yyyy-MM-dd.", (int)HttpStatusCode.BadRequest);
                     return false;
                 }
                 body.DataUrodzeniaOd = formatted;
             }
 
-            // DataUrodzeniaDo
             if (!string.IsNullOrWhiteSpace(body.DataUrodzeniaDo))
             {
                 var formatted = DateStringFormatHelper.FormatYyyyMmDd(body.DataUrodzeniaDo);
                 if (formatted is null)
                 {
-                    error = Error<SearchPersonResponse>(requestId, HttpStatusCode.BadRequest,
-                        ProxyStatus.BusinessError, "Niepoprawny format parametru dataUrodzeniaDo. Wymagany format: yyyyMMdd lub yyyy-MM-dd.");
+                    error = ErrorFactory.BusinessError(ErrorCodeEnum.ValidationError, "Niepoprawny format parametru dataUrodzeniaDo. Wymagany format: yyyyMMdd lub yyyy-MM-dd.", (int)HttpStatusCode.BadRequest);
                     return false;
                 }
                 body.DataUrodzeniaDo = formatted;
@@ -87,16 +80,4 @@ internal static class SrpServiceCommon
 
         return true;
     }
-
-    // Jedna fabryka błędów dla całego serwisu
-    internal static ProxyResponse<T> Error<T>(
-        string requestId, HttpStatusCode code, ProxyStatus status, string message) =>
-        new()
-        {
-            RequestId = requestId,
-            Source = "SRP",
-            Status = status,
-            SourceStatusCode = ((int)code).ToString(),
-            Message = message
-        };
 }

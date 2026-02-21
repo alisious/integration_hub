@@ -1,16 +1,11 @@
-﻿using IntegrationHub.Common.Contracts;
+using IntegrationHub.Common.Primitives;
 using IntegrationHub.SRP.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntegrationHub.SRP.Services
 {
     public interface IRdoService
     {
-        Task<ProxyResponse<GetCurrentPhotoResponse>> GetCurrentPhotoAsync(GetCurrentPhotoRequest body, string? requestId = null, CancellationToken ct = default);
-        Task<ProxyResponse<GetCurrentIdByPeselResponse>> GetCurrentIdByPeselAsync(GetCurrentIdByPeselRequest body, string? requestId = null, CancellationToken ct = default);
+        Task<Result<GetCurrentPhotoResponse, Error>> GetCurrentPhotoAsync(GetCurrentPhotoRequest body, string? requestId = null, CancellationToken ct = default);
+        Task<Result<GetCurrentIdByPeselResponse, Error>> GetCurrentIdByPeselAsync(GetCurrentIdByPeselRequest body, string? requestId = null, CancellationToken ct = default);
     }
 }

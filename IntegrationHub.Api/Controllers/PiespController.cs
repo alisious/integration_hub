@@ -50,32 +50,10 @@ namespace IntegrationHub.PIESP.Controllers
 
             try
             {
-                // Wywołanie serwisu zwracającego Result<T, Error>
                 var result = await _dictService.GetByDictIdAsync(dictId, ct);
-
-                // Konwersja Result na ProxyResponse
-                var proxy = result.ToProxyResponse();
-
-                // Uzupełnienie metadanych ProxyResponse
-                proxy.Source = _sourceName;
-                proxy.RequestId = requestId;
-
+                var proxy = result.ToProxyResponse(_sourceName, requestId);
                 if (result.IsSuccess)
-                {
-                    proxy.Status = ProxyStatus.Success;
-                    proxy.SourceStatusCode = StatusCodes.Status200OK.ToString();
                     proxy.Message = $"Znaleziono {result.Value?.Count ?? 0} elementów słownika.";
-                }
-                else
-                {
-                    var err = result.Error;
-                    proxy.Status = err.ErrorKind == ErrorKindEnum.Business
-                        ? ProxyStatus.BusinessError
-                        : ProxyStatus.TechnicalError;
-                    proxy.SourceStatusCode = (err.HttpStatus ?? StatusCodes.Status500InternalServerError).ToString();
-                    // Message ustawił już ProxyResponseMapper (err.Message).
-                }
-
                 return proxy;
             }
             catch (OperationCanceledException)
