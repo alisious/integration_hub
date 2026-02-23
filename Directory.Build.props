@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+
+    <!-- Hash commita -->
+    <InformationalVersion>$(Version)+sha.$(SourceRevisionId)</InformationalVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Upewnij się, że MSBuild bierze hash z gita -->
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    <SourceControlManager>Git</SourceControlManager>
+  </PropertyGroup>
+</Project>
