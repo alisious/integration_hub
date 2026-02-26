@@ -1,11 +1,11 @@
-﻿using IntegrationHub.Common.RequestValidation;
+using IntegrationHub.Common.RequestValidation;
 using IntegrationHub.Sources.ZW.Contracts;
 
 namespace IntegrationHub.Sources.ZW.RequestValidation
 {
-    public sealed class BronAdresRequestValidator : IRequestValidator<BronAdresRequest>
+    public sealed class WeaponAddressSearchRequestValidator : IRequestValidator<WeaponAddressSearchRequest>
     {
-        public ValidationResult ValidateAndNormalize(BronAdresRequest body)
+        public ValidationResult ValidateAndNormalize(WeaponAddressSearchRequest body)
         {
             if (body is null)
             {

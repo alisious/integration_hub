@@ -1,17 +1,17 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace IntegrationHub.Sources.ZW.Contracts
 {
-    public sealed class BronOsobaResponse
+    public sealed class PrivateWeaponHolderResponse
     {
         [JsonPropertyName("pesel")]
         public string Pesel { get; set; } = default!;
 
         [JsonPropertyName("adresy")]
-        public IReadOnlyList<BronAdresDto> Adresy { get; set; } = new List<BronAdresDto>();
+        public IReadOnlyList<WeaponAddressDto> Adresy { get; set; } = new List<WeaponAddressDto>();
     }
 
-    public sealed class BronAdresDto
+    public sealed class WeaponAddressDto
     {
         [JsonPropertyName("miejscowosc")]
         public string Miejscowosc { get; set; } = default!;

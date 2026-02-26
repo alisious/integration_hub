@@ -1,4 +1,4 @@
-﻿using IntegrationHub.Common.Config;
+using IntegrationHub.Common.Config;
 using IntegrationHub.Sources.ZW.Config;
 using IntegrationHub.Sources.ZW.Interfaces;
 using IntegrationHub.Sources.ZW.Services;
@@ -18,26 +18,24 @@ public static class ServiceCollectionExtensions
                     .ValidateOnStart(); // opcjonalnie: fail-fast przy starcie
 
              
-        services.AddScoped<IZandWantedPersonService, ZandWantedPersonService>();
+        services.AddScoped<IZWSourceService, ZWSourceService>();
 
         var serviceMode = config.GetValue<SourceMode?>("ExternalServices:ZW:SourceMode") ?? SourceMode.Production;
         switch (serviceMode)
         {
             case SourceMode.Test:
                 logMessage = "ZW działa w trybie testowym.";
-                // Serwisy domenowe (pozostają bez zmian)
-                services.AddScoped<IZandWantedPersonService, ZandWantedPersonService>();
+                services.AddScoped<IZWSourceService, ZWSourceService>();
                 break;
 
             case SourceMode.Development:
                 logMessage = "ZW działa w trybie deweloperskim bez połączenia ze źródłem.";
-                // Serwisy domenowe (pozostają bez zmian)
-                services.AddScoped<IZandWantedPersonService, ZandWantedPersonService>();
+                services.AddScoped<IZWSourceService, ZWSourceService>();
                 break;
 
             default:
                 logMessage = "ZW działa w trybie produkcyjnym.";
-                services.AddScoped<IZandWantedPersonService, ZandWantedPersonService>();
+                services.AddScoped<IZWSourceService, ZWSourceService>();
                 break;
         }
     

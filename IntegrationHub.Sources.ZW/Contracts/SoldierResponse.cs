@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace IntegrationHub.Sources.ZW.Contracts
 {
-    public sealed class OsobaZolnierzResponse
+    public sealed class SoldierResponse
     {
         [JsonPropertyName("pesel")]
         public string Pesel { get; set; } = default!;

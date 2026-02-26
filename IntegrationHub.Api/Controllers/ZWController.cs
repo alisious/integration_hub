@@ -22,13 +22,13 @@ namespace IntegrationHub.Api.Controllers
     {
         private readonly IZWSourceFacade _facade;
         private readonly IRequestValidator<WPMRequest> _validator;
-        private readonly IZandWantedPersonService _wantedService;
+        private readonly IZWSourceService _zwSourceService;
 
-        public ZWController(IZWSourceFacade facade, IRequestValidator<WPMRequest> validator,IZandWantedPersonService wantedService)
+        public ZWController(IZWSourceFacade facade, IRequestValidator<WPMRequest> validator, IZWSourceService zwSourceService)
         {
             _facade = facade;
             _validator = validator;
-            _wantedService = wantedService;
+            _zwSourceService = zwSourceService;
         }
 
         [HttpGet("wpm/szukaj")]
@@ -134,16 +134,16 @@ namespace IntegrationHub.Api.Controllers
 
         // === NOWE ===
         [HttpGet("poszukiwani/by-pesel")]
-        [Produces(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>))]
-        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<ZandWantedPersonDto>>), StatusCodes.Status500InternalServerError)]
+        [Produces(typeof(ProxyResponse<IEnumerable<WantedPersonResponse>>))]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<WantedPersonResponse>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<WantedPersonResponse>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<WantedPersonResponse>>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<IEnumerable<WantedPersonResponse>>), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
             Summary = "ZW – lista osób poszukiwanych wg PESEL",
             Description = "Zwraca listę wpisów z tabeli piesp.OsobyPoszukiwane dla podanego numeru PESEL (adapter ZW)."
         )]
-        public async Task<ProxyResponse<IEnumerable<ZandWantedPersonDto>>> GetWantedPersonAsync(
+        public async Task<ProxyResponse<IEnumerable<WantedPersonResponse>>> GetWantedPersonAsync(
             [FromQuery] string pesel,
             CancellationToken ct = default)
         {
@@ -154,32 +154,26 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponseFactory.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                    return ProxyResponseFactory.BusinessError<IEnumerable<WantedPersonResponse>>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
                         requestId: requestId);
                 }
 
-                var result = await _wantedService.GetByPeselAsync(pesel.Trim(), ct);
+                var result = await _zwSourceService.GetWantedPersonsByPeselAsync(pesel.Trim(), ct);
 
                 return result.Match(
                     onSuccess: list =>
                     {
-                        if (list is null || list.Count == 0)
+                        var isEmpty = list is null || list.Count == 0;
+                        return new ProxyResponse<IEnumerable<WantedPersonResponse>>
                         {
-                            return ProxyResponseFactory.BusinessError<IEnumerable<ZandWantedPersonDto>>(
-                                message: $"Nie znaleziono osoby/osób poszukiwanych dla PESEL {pesel}.",
-                                source: source,
-                                sourceStatusCode: StatusCodes.Status404NotFound.ToString(),
-                                requestId: requestId);
-                        }
-
-                        return new ProxyResponse<IEnumerable<ZandWantedPersonDto>>
-                        {
-                            Data = list,
-                            Status = 0,
-                            Message = $"Znaleziono {list.Count} rekord(ów).",
+                            Data = list ?? Array.Empty<WantedPersonResponse>(),
+                            Status = ProxyStatus.Success,
+                            Message = isEmpty
+                                ? $"Nie znaleziono osoby/osób poszukiwanych dla PESEL {pesel}."
+                                : $"Znaleziono {list!.Count} rekord(ów).",
                             Source = source,
                             SourceStatusCode = StatusCodes.Status200OK.ToString(),
                             RequestId = requestId
@@ -191,14 +185,14 @@ namespace IntegrationHub.Api.Controllers
                         // Traktujemy 4xx jako błąd biznesowy, resztę jako techniczny
                         if (err.HttpStatus is >= 400 and < 500)
                         {
-                            return ProxyResponseFactory.BusinessError<IEnumerable<ZandWantedPersonDto>>(
+                            return ProxyResponseFactory.BusinessError<IEnumerable<WantedPersonResponse>>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: code,
                                 requestId: requestId);
                         }
 
-                        return ProxyResponseFactory.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                        return ProxyResponseFactory.TechnicalError<IEnumerable<WantedPersonResponse>>(
                             message: err.Message,
                             source: source,
                             sourceStatusCode: code,
@@ -207,12 +201,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponseFactory.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<WantedPersonResponse>>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponseFactory.TechnicalError<IEnumerable<ZandWantedPersonDto>>(
+                return ProxyResponseFactory.TechnicalError<IEnumerable<WantedPersonResponse>>(
                     $"Nieoczekiwany błąd: {ex.Message}", source, StatusCodes.Status500InternalServerError.ToString(), requestId);
             }
         }
@@ -244,7 +238,7 @@ namespace IntegrationHub.Api.Controllers
                         requestId: requestId);
                 }
 
-                var result = await _wantedService.GetByPeselAsync(pesel.Trim(), ct);
+                var result = await _zwSourceService.GetWantedPersonsByPeselAsync(pesel.Trim(), ct);
 
                 return result.Match(
                     onSuccess: list =>
@@ -297,11 +291,11 @@ namespace IntegrationHub.Api.Controllers
 
 
         [HttpGet("bron-osoba/by-pesel")]
-        [Produces(typeof(ProxyResponse<BronOsobaResponse>))]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status500InternalServerError)]
+        [Produces(typeof(ProxyResponse<PrivateWeaponHolderResponse>))]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
      Summary = "ZW – dane osoby posiadającej broń prywatną",
      Description = @"
@@ -317,7 +311,7 @@ namespace IntegrationHub.Api.Controllers
   <li>85031806944</li>
 </ul>"
  )]
-        public async Task<ProxyResponse<BronOsobaResponse>> GetPrivateWeaponHolderAsync(
+        public async Task<ProxyResponse<PrivateWeaponHolderResponse>> GetPrivateWeaponHolderAsync(
                 [FromQuery] string pesel,
                 CancellationToken ct = default)
         {
@@ -329,36 +323,33 @@ namespace IntegrationHub.Api.Controllers
 
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponseFactory.BusinessError<BronOsobaResponse>(
+                    return ProxyResponseFactory.BusinessError<PrivateWeaponHolderResponse>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
                         requestId: requestId);
                 }
 
-                var request = new BronOsobaRequest { Pesel = pesel.Trim() };
+                var request = new PrivateWeaponHolderRequest { Pesel = pesel.Trim() };
 
-                // Wywołanie serwisu ZW, który zwróci wynik w postaci Result<IReadOnlyList<BronOsobaResponse>, Error>.
+                // Wywołanie serwisu ZW, który zwróci wynik w postaci Result<IReadOnlyList<PrivateWeaponHolderResponse>, Error>.
                 // - Sukces  => lista osób z bronią,
                 // - Błąd    => obiekt Error z informacją o problemie biznesowym lub technicznym (np. nie znaleziono osoby, błąd SQL, walidacja itp).
-                var result = await _wantedService.GetBronOsobaByPeselAsync(request, ct);
+                var result = await _zwSourceService.GetWeaponHolderByPeselAsync(request, ct);
 
                 // Match rozgałęzia logikę w zależności od tego, czy Result jest sukcesem czy błędem.
-                // Zawsze na końcu musi powstać ProxyResponse<BronOsobaResponse>.
+                // Zawsze na końcu musi powstać ProxyResponse<PrivateWeaponHolderResponse>.
                 return result.Match(
                     onSuccess: list =>
                     {
-                        // Jeśli mamy dane, wybieramy pierwszą osobę (w tym scenariuszu PESEL jest unikalny,
-                        // więc logika "pierwszy element" jest wystarczająca).
-                        var person = list[0];
-
-                        // Zwracamy poprawny wynik – ProxyResponse z danymi.
-                        // HTTP będzie 200, a SourceStatusCode również "200" (sukces po stronie źródła ZW).
-                        return new ProxyResponse<BronOsobaResponse>
+                        var isEmpty = list is null || list.Count == 0;
+                        return new ProxyResponse<PrivateWeaponHolderResponse>
                         {
-                            Data = person,
-                            Status = 0, // 0 = OK (konwencja w Twoim ProxyResponse)
-                            Message = $"Znaleziono dane o broni prywatnej dla PESEL {pesel}.",
+                            Data = isEmpty ? null : list![0],
+                            Status = ProxyStatus.Success,
+                            Message = isEmpty
+                                ? $"Nie znaleziono informacji o broni prywatnej dla PESEL {pesel}."
+                                : $"Znaleziono dane o broni prywatnej dla PESEL {pesel}.",
                             Source = source,
                             SourceStatusCode = StatusCodes.Status200OK.ToString(),
                             RequestId = requestId
@@ -369,14 +360,14 @@ namespace IntegrationHub.Api.Controllers
                         //Jeśli nie znaleziono osoby lub wystąpił inny błąd biznesowy:
                         if (err.ErrorKind == ErrorKindEnum.Business)
                         {
-                            return ProxyResponseFactory.BusinessError<BronOsobaResponse>(
+                            return ProxyResponseFactory.BusinessError<PrivateWeaponHolderResponse>(
                                 message: err.Message,   // komunikat biznesowy z obiektu Error
                                 source: source,
                                 sourceStatusCode: err.Code,
                                 requestId: requestId);
                         }
                        
-                        return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
+                        return ProxyResponseFactory.TechnicalError<PrivateWeaponHolderResponse>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: err.Code,
@@ -386,7 +377,7 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<PrivateWeaponHolderResponse>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             // Ogólny catch na wszystkie inne nieoczkiwane wyjątki, które nie zostały obsłużone wyżej.
@@ -394,7 +385,7 @@ namespace IntegrationHub.Api.Controllers
             // a w message przekazujemy komunikat wyjątku (bez stack trace).
             catch (Exception ex)
             {
-                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<PrivateWeaponHolderResponse>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     source,
                     StatusCodes.Status500InternalServerError.ToString(),
@@ -440,18 +431,21 @@ namespace IntegrationHub.Api.Controllers
                         requestId: requestId);
                 }
 
-                var request = new BronOsobaRequest { Pesel = pesel.Trim() };
+                var request = new PrivateWeaponHolderRequest { Pesel = pesel.Trim() };
 
-                var result = await _wantedService.GetBronOsobaByPeselAsync(request, ct);
+                var result = await _zwSourceService.GetWeaponHolderByPeselAsync(request, ct);
 
                 return result.Match(
                     onSuccess: list =>
                     {
+                        var hasWeapon = list is not null && list.Count > 0;
                         return new ProxyResponse<bool>
                         {
-                            Data = true,
-                            Status = 0,//Sukces
-                            Message = $"Osoba o PESEL {pesel} posiada broń prywatną.",
+                            Data = hasWeapon,
+                            Status = ProxyStatus.Success,
+                            Message = hasWeapon
+                                ? $"Osoba o PESEL {pesel} posiada broń prywatną."
+                                : $"Nie znaleziono informacji o broni prywatnej dla PESEL {pesel}.",
                             Source = source,
                             SourceStatusCode = StatusCodes.Status200OK.ToString(),
                             RequestId = requestId
@@ -459,7 +453,6 @@ namespace IntegrationHub.Api.Controllers
                     },
                     onError: err =>
                     {
-                        //Jeśli nie znaleziono osoby:
                         if (err.ErrorKind == ErrorKindEnum.Business)
                         {
                             return new ProxyResponse<bool>
@@ -494,11 +487,11 @@ namespace IntegrationHub.Api.Controllers
         }
 
         [HttpGet("osoba-zolnierz/by-pesel")]
-        [Produces(typeof(ProxyResponse<OsobaZolnierzResponse>))]
-        [ProducesResponseType(typeof(ProxyResponse<OsobaZolnierzResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProxyResponse<OsobaZolnierzResponse>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProxyResponse<OsobaZolnierzResponse>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProxyResponse<OsobaZolnierzResponse>), StatusCodes.Status500InternalServerError)]
+        [Produces(typeof(ProxyResponse<SoldierResponse>))]
+        [ProducesResponseType(typeof(ProxyResponse<SoldierResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<SoldierResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<SoldierResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<SoldierResponse>), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
         Summary = "ZW – dane osoby żołnierza wg numeru PESEL",
         Description = @"
@@ -514,7 +507,7 @@ namespace IntegrationHub.Api.Controllers
   <li>85031806944</li>
 </ul>"
     )]
-        public async Task<ProxyResponse<OsobaZolnierzResponse>> GetSoldierPersonAsync(
+        public async Task<ProxyResponse<SoldierResponse>> GetSoldierPersonAsync(
         [FromQuery] string pesel,
         CancellationToken ct = default)
         {
@@ -525,25 +518,28 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(pesel))
                 {
-                    return ProxyResponseFactory.BusinessError<OsobaZolnierzResponse>(
+                    return ProxyResponseFactory.BusinessError<SoldierResponse>(
                         message: "PESEL jest wymagany.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
                         requestId: requestId);
                 }
 
-                var request = new OsobaZolnierzRequest { Pesel = pesel.Trim() };
+                var request = new SoldierRequest { Pesel = pesel.Trim() };
 
-                var result = await _wantedService.GetOsobaZolnierzByPeselAsync(request, ct);
+                var result = await _zwSourceService.GetSoldierByPeselAsync(request, ct);
 
                 return result.Match(
                     onSuccess: soldier =>
                     {
-                        return new ProxyResponse<OsobaZolnierzResponse>
+                        var found = soldier is not null;
+                        return new ProxyResponse<SoldierResponse>
                         {
                             Data = soldier,
-                            Status = 0,
-                            Message = $"Znaleziono dane żołnierza dla PESEL {pesel}.",
+                            Status = ProxyStatus.Success,
+                            Message = found
+                                ? $"Znaleziono dane żołnierza dla PESEL {pesel}."
+                                : "Nie znaleziono żołnierza dla podanego PESEL!",
                             Source = source,
                             SourceStatusCode = StatusCodes.Status200OK.ToString(),
                             RequestId = requestId
@@ -551,10 +547,9 @@ namespace IntegrationHub.Api.Controllers
                     },
                     onError: err =>
                     {
-                        // Błędy biznesowe (Validation / NotFound) -> BusinessError
                         if (err.ErrorKind == ErrorKindEnum.Business)
                         {
-                            return ProxyResponseFactory.BusinessError<OsobaZolnierzResponse>(
+                            return ProxyResponseFactory.BusinessError<SoldierResponse>(
                                 message: err.Message,
                                 source: source,
                                 sourceStatusCode: err.Code,
@@ -562,7 +557,7 @@ namespace IntegrationHub.Api.Controllers
                         }
 
                         // Pozostałe -> błąd techniczny
-                        return ProxyResponseFactory.TechnicalError<OsobaZolnierzResponse>(
+                        return ProxyResponseFactory.TechnicalError<SoldierResponse>(
                             message: err.Message,
                             source: source,
                             sourceStatusCode: err.Code,
@@ -571,12 +566,12 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponseFactory.TechnicalError<OsobaZolnierzResponse>(
+                return ProxyResponseFactory.TechnicalError<SoldierResponse>(
                     "Żądanie zostało anulowane.", source, "499", requestId);
             }
             catch (Exception ex)
             {
-                return ProxyResponseFactory.TechnicalError<OsobaZolnierzResponse>(
+                return ProxyResponseFactory.TechnicalError<SoldierResponse>(
                     $"Nieoczekiwany błąd: {ex.Message}",
                     source,
                     StatusCodes.Status500InternalServerError.ToString(),
@@ -622,21 +617,21 @@ namespace IntegrationHub.Api.Controllers
                         requestId: requestId);
                 }
 
-                var request = new OsobaZolnierzRequest { Pesel = pesel.Trim() };
+                var request = new SoldierRequest { Pesel = pesel.Trim() };
 
-                var result = await _wantedService.GetOsobaZolnierzByPeselAsync(request, ct);
+                var result = await _zwSourceService.GetSoldierByPeselAsync(request, ct);
 
                 return result.Match(
-                    onSuccess: _ =>
+                    onSuccess: soldier =>
                     {
-                        // Jeśli serwis zwrócił sukces, to znaczy, że osoba jest żołnierzem
-                        var stopien = result.Value!.Stopien ?? "";
-
+                        var isSoldier = soldier is not null;
                         return new ProxyResponse<bool>
                         {
-                            Data = true,
-                            Status = 0, // Sukces
-                            Message = $"Osoba o PESEL {pesel} jest żołnierzem. {stopien}",
+                            Data = isSoldier,
+                            Status = ProxyStatus.Success,
+                            Message = isSoldier
+                                ? $"Osoba o PESEL {pesel} jest żołnierzem. {soldier!.Stopien ?? ""}"
+                                : "Nie znaleziono żołnierza dla podanego PESEL!",
                             Source = source,
                             SourceStatusCode = StatusCodes.Status200OK.ToString(),
                             RequestId = requestId
@@ -644,7 +639,6 @@ namespace IntegrationHub.Api.Controllers
                     },
                     onError: err =>
                     {
-                        // Błąd biznesowy (np. NotFound) -> Data = false, ale Status = 0 (sukces logiczny zapytania)
                         if (err.ErrorKind == ErrorKindEnum.Business)
                         {
                             return new ProxyResponse<bool>
@@ -682,11 +676,11 @@ namespace IntegrationHub.Api.Controllers
         }
 
         [HttpPost("bron-osoba/by-address")]
-        [Produces(typeof(ProxyResponse<BronOsobaResponse>))]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProxyResponse<BronOsobaResponse>), StatusCodes.Status500InternalServerError)]
+        [Produces(typeof(ProxyResponse<PrivateWeaponHolderResponse>))]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProxyResponse<PrivateWeaponHolderResponse>), StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
     Summary = "ZW – dane osoby posiadającej broń prywatną wg adresu",
     Description = @"
@@ -698,10 +692,10 @@ namespace IntegrationHub.Api.Controllers
   <li>jeśli nie znaleziono żadnej lokalizacji, zwracany jest błąd biznesowy typu NotFound,</li>
   <li>w środowisku testowym dostępna jest lokalizacja testowa: Miejscowość: <code>WARSZAW</code>, Ulica: <code>BRZOZOWA</code>, Numer domu: <code>12</code>.</li>
 </ul>
-<p>Parametry należy przekazać w formacie JSON w ciele żądania zgodnie z modelem <code>BronAdresRequest</code>.</p>"
+<p>Parametry należy przekazać w formacie JSON w ciele żądania zgodnie z modelem <code>WeaponAddressSearchRequest</code>.</p>"
 )]
-        public async Task<ProxyResponse<BronOsobaResponse>> GetPrivateWeaponHolderByAddressAsync(
-    [FromBody] BronAdresRequest body,
+        public async Task<ProxyResponse<PrivateWeaponHolderResponse>> GetPrivateWeaponHolderByAddressAsync(
+    [FromBody] WeaponAddressSearchRequest body,
     CancellationToken ct = default)
         {
             var requestId = Guid.NewGuid().ToString("N");
@@ -711,22 +705,24 @@ namespace IntegrationHub.Api.Controllers
             {
                 if (body is null)
                 {
-                    return ProxyResponseFactory.BusinessError<BronOsobaResponse>(
+                    return ProxyResponseFactory.BusinessError<PrivateWeaponHolderResponse>(
                         message: "Body żądania nie może być null.",
                         source: source,
                         sourceStatusCode: StatusCodes.Status400BadRequest.ToString(),
                         requestId: requestId);
                 }
 
-                var result = await _wantedService.GetBronAdresAsync(body, ct);
+                var result = await _zwSourceService.GetWeaponHolderByAddressAsync(body, ct);
                 var proxy = result.ToProxyResponse(source, requestId);
                 if (result.IsSuccess)
-                    proxy.Message = "Znaleziono dane posiadacza broni prywatnej dla wskazanego adresu.";
+                    proxy.Message = result.Value is null
+                        ? "Nie znaleziono lokalizacji spełniającej zadane kryteria."
+                        : "Znaleziono dane posiadacza broni prywatnej dla wskazanego adresu.";
                 return proxy;
             }
             catch (OperationCanceledException)
             {
-                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<PrivateWeaponHolderResponse>(
                     message: "Żądanie zostało anulowane.",
                     source: source,
                     sourceStatusCode: "499",
@@ -734,7 +730,7 @@ namespace IntegrationHub.Api.Controllers
             }
             catch (Exception ex)
             {
-                return ProxyResponseFactory.TechnicalError<BronOsobaResponse>(
+                return ProxyResponseFactory.TechnicalError<PrivateWeaponHolderResponse>(
                     message: $"Nieoczekiwany błąd: {ex.Message}",
                     source: source,
                     sourceStatusCode: StatusCodes.Status500InternalServerError.ToString(),

@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace IntegrationHub.Sources.ZW.Contracts
 {
-    public sealed class BronAdresRequest
+    public sealed class WeaponAddressSearchRequest
     {
         [JsonPropertyName("miejscowosc")]
         public string? Miejscowosc { get; set; }
