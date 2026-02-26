@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.CEP.Udostepnianie.Mappers/PytanieOPojazdRozszerzoneResponseXmlMapper.cs
+// IntegrationHub.Sources.CEP.Udostepnianie.Mappers/PytanieOPojazdRozszerzoneResponseXmlMapper.cs
 using System.Xml.Linq;
 using IntegrationHub.Sources.CEP.Udostepnianie.Contracts;
 
@@ -514,7 +514,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
         {
             IdentyfikatorSystemowyPodmiotu = e.ValueOf("identyfikatorSystemowyPodmiotu"),
             WariantPodmiotu = e.ValueOf("wariantPodmiotu"),
-            Firma = e.Desc("firma")?.ToFirma()
+            Firma = e.Desc("firma")?.ToFirma(),
+            Osoba = e.Desc("osoba")?.ToOsoba()
         };
 
         private static FirmaDto ToFirma(this XElement e) => new()
@@ -524,6 +525,17 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Mappers
             NazwaFirmyDrukowana = e.ValueOf("nazwaFirmyDrukowana"),
             FormaWlasnosci = e.Desc("formaWlasnosci")?.ToSlownikZakresowy(),
             IdentyfikatorSystemowyREGON = e.ValueOf("identyfikatorSystemowyREGON"),
+            Adres = e.Desc("adres")?.ToAdres()
+        };
+
+        private static OsobaDto ToOsoba(this XElement e) => new()
+        {
+            PESEL = e.ValueOf("PESEL"),
+            ImiePierwsze = e.ValueOf("imiePierwsze"),
+            Nazwisko = e.ValueOf("nazwisko"),
+            DataUrodzenia = e.ValueOf("dataUrodzenia"),
+            MiejsceUrodzeniaKod = e.ValueOf("miejsceUrodzeniaKod"),
+            MiejsceUrodzenia = e.ValueOf("miejsceUrodzenia"),
             Adres = e.Desc("adres")?.ToAdres()
         };
 

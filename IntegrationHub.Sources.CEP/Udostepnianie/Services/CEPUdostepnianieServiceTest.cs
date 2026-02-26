@@ -113,7 +113,18 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Services
                 };
             }
 
-            var xmlPath = Path.Combine(_testDataDir, "pytanieOPojazdRozszerzone_LU638JU_RESPONSE.xml");
+            // W trybie testowym dobieramy plik po numerze rejestracyjnym:
+            // DW5C328 – właściciel osoba, LU638JU – właściciel firma.
+            var nrRejestracyjny = body.NumerRejestracyjny?.Trim();
+            if (string.IsNullOrEmpty(nrRejestracyjny))
+            {
+                return Error<PytanieOPojazdRozszerzoneResponse>(requestId, HttpStatusCode.BadRequest,
+                    ProxyStatus.BusinessError,
+                    "W trybie testowym wymagany jest numer rejestracyjny do doboru pliku testowego.");
+            }
+
+            var fileName = $"pytanieOPojazdRozszerzone_{nrRejestracyjny}_RESPONSE.xml";
+            var xmlPath = Path.Combine(_testDataDir, fileName);
             try
             {
                 if (!File.Exists(xmlPath))

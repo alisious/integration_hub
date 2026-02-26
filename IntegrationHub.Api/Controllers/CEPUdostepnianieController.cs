@@ -100,7 +100,8 @@ namespace IntegrationHub.Sources.CEP.Controllers
     "<ul>" +
       "Dostępne przykładowe dane:" +
       "<li><code>identyfikatorSystemowyPojazdu = 5302051569907661</code></li>" +
-      "<li><code>numerRejestracyjny = LU638JU</code></li>" +
+      "<li><code>numerRejestracyjny = LU638JU</code> – właściciel firma</li>" +
+      "<li><code>numerRejestracyjny = DW5C328</code> – właściciel osoba</li>" +
       "<li><code>dokumentSeriaNumer = BAS4381563</code></li>" +
       "<li><code>numerPodwoziaNadwoziaRamy = VF1JX0HSC81543224</code></li>" +
     "</ul>"

@@ -1,4 +1,4 @@
-﻿// IntegrationHub.Sources.CEP.Udostepnianie.Contracts/ResponseDto.cs
+// IntegrationHub.Sources.CEP.Udostepnianie.Contracts/ResponseDto.cs
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -506,6 +506,8 @@ namespace IntegrationHub.Sources.CEP.Udostepnianie.Contracts
         [JsonPropertyName("identyfikatorSystemowyPodmiotu")] public string? IdentyfikatorSystemowyPodmiotu { get; set; }
         [JsonPropertyName("wariantPodmiotu")] public string? WariantPodmiotu { get; set; }
         [JsonPropertyName("firma")] public FirmaDto? Firma { get; set; }
+        // OsobaDto jest zdefiniowana w PytanieOPodmiotResponse.cs (wspólna dla CEP) – używamy tej samej klasy
+        [JsonPropertyName("osoba")] public OsobaDto? Osoba { get; set; }
     }
     public sealed class FirmaDto
     {
