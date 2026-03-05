@@ -1,0 +1,1104 @@
+[{
+  "_id": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+  "wersja": 18,
+  "numer_bazowy_akt": "I/5415/2017/BR",
+  "data_utworzenia_akt": {
+    "$date": "2017-04-11T00:00:00.000Z"
+  },
+  "numer_aktualny_akt": "I/5415/2017/BR",
+  "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+  "uprawniona_do_posiadania_broni": "TAK",
+  "aktualizacja": {
+    "$date": "2025-11-18T06:48:39.453Z"
+  },
+  "Miejsca_Pracy": [
+    {
+      "nazwa_jednostki_wojskowej_mpr": "MAZOWIECKI ODDZIAŁ ŻANDARMERII WOJSKOWEJ",
+      "miejsce_stacjonowania_mpr": "WARSZAWA",
+      "rodzaj_sil_zbrojnych_mpr": "Żandarmeria Wojskowa"
+    }
+  ],
+  "Osoba": {
+    "stopien_osoby": "st.chor.sztab.",
+    "nazwisko_osoby": "MAŁEK",
+    "imie_osoby": "Andrzej",
+    "pesel_osoby": "77040102494",
+    "drugie_imie_osoby": "Ryszard",
+    "imie_ojca": "Albin",
+    "imie_matki": "Emilia",
+    "nazwisko_rodowe_osoby": "MAŁEK",
+    "nazwisko_rodowe_matki": "WALCZAK",
+    "status_osoby": null,
+    "zawod": null,
+    "miejsce_urodzenia_osoby": "Jarocin",
+    "data_urodzenia_osoby": {
+      "$date": "1977-04-01T00:00:00.000Z"
+    },
+    "numer_telefonu_praca": "261-853-547",
+    "numer_telefonu_dom": "-",
+    "numer_telefonu_komorkowego": "724-940-241"
+  },
+  "Adresy": [
+    {
+      "data_utraty_aktualnosci_adresu": null,
+      "rodzaj_adresu": "INNE MIEJ. PRZECH. BRONI",
+      "nazwa_kokalizacji": null,
+      "wojewodztwo": "podkarpackie",
+      "miejscowosc": "Racławice",
+      "ulica": "Nowowiejska",
+      "numer_domu": "1a",
+      "numer_lokalu": null,
+      "kod_pocztowy": "37-400",
+      "poczta": "Nisko",
+      "kraj": "Polska",
+      "miejsce_broni": true,
+      "najblizsza_jednostka_zw": "PŻW Nowa Dęba"
+    },
+    {
+      "data_utraty_aktualnosci_adresu": null,
+      "rodzaj_adresu": "ZAMELDOWANIA",
+      "nazwa_kokalizacji": null,
+      "wojewodztwo": "mazowieckie",
+      "miejscowosc": "Warszawa",
+      "ulica": "Łokuciewskiego",
+      "numer_domu": "4",
+      "numer_lokalu": "122",
+      "kod_pocztowy": "01-470",
+      "poczta": "Warszawa",
+      "kraj": "Polska",
+      "miejsce_broni": true,
+      "najblizsza_jednostka_zw": "MOŻW Warszawa"
+    }
+  ],
+  "Wnioski": [
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "5496/24",
+      "data_rejestracji_wniosku": {
+        "$date": "2024-02-15T23:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": "",
+      "nr_postepowania_administr": "",
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie pozwolenia na broń",
+      "numer_wniosku": "5426/17",
+      "data_rejestracji_wniosku": {
+        "$date": "2017-04-11T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": "I/5415/2017/BR",
+      "Decyzje": [
+        {
+          "decyzja": "Zgoda",
+          "uzasadnienie": null,
+          "data_decyzji": {
+            "$date": "2017-06-23T00:00:00.000Z"
+          },
+          "numer_decyzji": "1046/2017  I/5415/2017/BR",
+          "organ_wydajacy_decyzje": "Komendant MOŻW Warszawa",
+          "czy_odwolanie_od_decyzji": false,
+          "jednostek_broni": 5
+        }
+      ]
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "9005/18",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-06-28T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": "",
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Oświadczenie o zmianie miejsca przechowywania broni",
+      "numer_wniosku": "9459/20",
+      "data_rejestracji_wniosku": {
+        "$date": "2020-07-03T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "6093/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-05-09T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "10460/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-08-12T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "8870",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-06-26T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "11185/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-08-28T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie pozwolenia na broń",
+      "numer_wniosku": "2149/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-02-14T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": " I/6254/2019/BR",
+      "Decyzje": [
+        {
+          "decyzja": "Zgoda",
+          "uzasadnienie": null,
+          "data_decyzji": {
+            "$date": "2019-04-23T00:00:00.000Z"
+          },
+          "numer_decyzji": "393/2019",
+          "organ_wydajacy_decyzje": "Komendant MOŻW Warszawa",
+          "czy_odwolanie_od_decyzji": false,
+          "jednostek_broni": 5
+        }
+      ]
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "15893/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-11-28T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "11893/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-09-12T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "16796/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-12-13T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "8863/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-07-05T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "7049/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-05-29T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "10699/17",
+      "data_rejestracji_wniosku": {
+        "$date": "2017-08-02T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "2829/20",
+      "data_rejestracji_wniosku": {
+        "$date": "2020-02-21T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": "2 szt.",
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "13367/18",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-10-08T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "707/18",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-01-12T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "4096/18",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-03-16T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": "",
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie pozwolenia na broń",
+      "numer_wniosku": "2150/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-02-14T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": " I/6253/2019/BR",
+      "Decyzje": [
+        {
+          "decyzja": "Zgoda",
+          "uzasadnienie": null,
+          "data_decyzji": {
+            "$date": "2019-04-23T00:00:00.000Z"
+          },
+          "numer_decyzji": "392/2019",
+          "organ_wydajacy_decyzje": "Komendant MOŻW Warszawa",
+          "czy_odwolanie_od_decyzji": false,
+          "jednostek_broni": 10
+        }
+      ]
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "16009/17",
+      "data_rejestracji_wniosku": {
+        "$date": "2017-11-22T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": null,
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "15988/19",
+      "data_rejestracji_wniosku": {
+        "$date": "2019-12-02T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": "1 szt",
+      "nr_postepowania_administr": null,
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "3829/18",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-03-12T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": "I/5415/2017/BR",
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Wniosek o wydanie zaświadczenia upraw. do nabycia broni",
+      "numer_wniosku": "5462/18",
+      "data_rejestracji_wniosku": {
+        "$date": "2018-04-16T00:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": null,
+      "nr_postepowania_administr": "I/5415/2017/BR",
+      "Decyzje": []
+    },
+    {
+      "rodzaj_wniosku": "Zawiadomienie o zbyciu broni",
+      "numer_wniosku": "5496/24",
+      "data_rejestracji_wniosku": {
+        "$date": "2024-02-15T23:00:00.000Z"
+      },
+      "adresat_wniosku": "Komendant MOŻW Warszawa",
+      "deklarowany_cel_posiadania_1": "",
+      "status_kompletnosci_wniosku": false,
+      "uwagi_wniosku": "",
+      "nr_postepowania_administr": "",
+      "Decyzje": []
+    }
+  ],
+  "Dokumenty": [
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 331/44/412/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-12-03T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/14/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-03-13T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/1687/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-07-09T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Legitymacja pos. broni",
+      "seria_numer_dokumentu": "AA 0210339",
+      "data_wydania_dokumentu": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": [
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2017-10-23T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2019-05-28T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-02-04T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2019-09-11T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-05-10T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2020-06-16T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2020-07-28T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-12-13T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2020-01-14T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-05-10T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2020-01-13T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-09-10T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-04-30T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2019-07-05T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2020-01-13T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2020-07-28T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-05-20T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2019-12-13T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-08-13T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2019-08-28T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2019-05-20T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        }
+      ]
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 331/44/787/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2020-02-24T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Dowód osobisty",
+      "seria_numer_dokumentu": "CHW 280922",
+      "data_wydania_dokumentu": {
+        "$date": "2018-10-23T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": {
+        "$date": "2028-10-23T00:00:00.000Z"
+      },
+      "nazwa_organu_wydajacego_dokument": "Prezydent Miasta Stołecznego Warszawy",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/1688/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-07-09T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD155/33/632/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2017-08-02T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 331/44/404/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-11-29T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/384/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-06-29T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 155/33/1080/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-01-15T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "0",
+      "data_wydania_dokumentu": {
+        "$date": "2017-08-23T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/44/13/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-08-12T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD155/33/631/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2017-08-02T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Legitymacja pos. broni",
+      "seria_numer_dokumentu": "AA 0132417",
+      "data_wydania_dokumentu": {
+        "$date": "2017-08-21T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": [
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-07-05T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2018-09-26T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-04-10T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-01-18T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2018-03-06T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-04-09T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2018-06-26T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-10-15T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2017-08-23T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2018-04-11T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-03-15T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2019-05-10T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2018-01-18T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2018-03-06T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2017-08-23T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": null,
+          "Dokumenty": null
+        },
+        {
+          "data_dokonania_wpisu": {
+            "$date": "2017-08-23T00:00:00.000Z"
+          },
+          "data_dokonania_wypisu": {
+            "$date": "2018-04-11T00:00:00.000Z"
+          },
+          "Dokumenty": null
+        }
+      ]
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/1452/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/898/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-11-20T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 155/33/939/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2017-11-22T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/21/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-03-20T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/767/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-10-12T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 331/44/788/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2020-02-24T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/1453/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Dowód osobisty",
+      "seria_numer_dokumentu": "ARJ 082475",
+      "data_wydania_dokumentu": {
+        "$date": "2008-11-26T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": {
+        "$date": "2018-11-26T00:00:00.000Z"
+      },
+      "nazwa_organu_wydajacego_dokument": "Burmistrz Miasta Nowy Dwór Mazowiecki",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadcz. uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD331/42/153/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2018-04-17T00:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": null,
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Legitymacja pos. broni",
+      "seria_numer_dokumentu": "OM 0000110",
+      "data_wydania_dokumentu": {
+        "$date": "2021-04-20T22:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": "Sportowy",
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadczenie uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 331/47/1490/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2021-05-10T22:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": "Kolekcjonerski",
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    },
+    {
+      "rodzaj_dokumentu": "Zaświadczenie uprawn. do nabycia broni",
+      "seria_numer_dokumentu": "I/RWD 331/47/1489/ZNB",
+      "data_wydania_dokumentu": {
+        "$date": "2021-05-10T22:00:00.000Z"
+      },
+      "termin_waznosci_dokumentu": null,
+      "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+      "wydano_na_podstawie_decyzji_numer": null,
+      "status_dokumentu": null,
+      "cel_posiadania_broni": "Sportowy",
+      "dotyczy_broni": null,
+      "Wpisy_Broni_Do_Dokumentow": []
+    }
+  ],
+  "Kontrole": [
+    {
+      "numer_z_ksiazki_kontroli": "RWD/331/39 poz. 77",
+      "data_kontroli": {
+        "$date": "2017-08-23T00:00:00.000Z"
+      },
+      "nr_odznaki_kontrolujacego": "3270",
+      "spelnia_wymogi_ustawy": true,
+      "jednostka_kontrolujaca": "MOŻW Warszawa",
+      "status": "Wykonana",
+      "uwagi": null,
+      "Adresy": {
+        "data_utraty_aktualnosci_adresu": null,
+        "rodzaj_adresu": "INNE MIEJ. PRZECH. BRONI",
+        "nazwa_kokalizacji": null,
+        "wojewodztwo": "podkarpackie",
+        "miejscowosc": "Racławice",
+        "ulica": "Nowowiejska",
+        "numer_domu": "1a",
+        "numer_lokalu": null,
+        "kod_pocztowy": "37-400",
+        "poczta": "Nisko",
+        "kraj": "Polska",
+        "miejsce_broni": true,
+        "najblizsza_jednostka_zw": "PŻW Nowa Dęba"
+      },
+      "Wykroczenia": null
+    },
+    {
+      "numer_z_ksiazki_kontroli": "RWD/331/39 poz.1040",
+      "data_kontroli": {
+        "$date": "2020-11-20T23:00:00.000Z"
+      },
+      "nr_odznaki_kontrolujacego": "1810",
+      "spelnia_wymogi_ustawy": true,
+      "jednostka_kontrolujaca": "PŻW Nowa Dęba",
+      "status": "Wykonana",
+      "uwagi": "",
+      "Adresy": {
+        "data_utraty_aktualnosci_adresu": null,
+        "rodzaj_adresu": "INNE MIEJ. PRZECH. BRONI",
+        "nazwa_kokalizacji": null,
+        "wojewodztwo": "podkarpackie",
+        "miejscowosc": "Racławice",
+        "ulica": "Nowowiejska",
+        "numer_domu": "1a",
+        "numer_lokalu": null,
+        "kod_pocztowy": "37-400",
+        "poczta": "Nisko",
+        "kraj": "Polska",
+        "miejsce_broni": true,
+        "najblizsza_jednostka_zw": "PŻW Nowa Dęba"
+      },
+      "Wykroczenia": null
+    }
+  ],
+  "Wykroczenia": [],
+  "Zapytania_o_Karalnosc": [
+    {
+      "numer_zapytania": null,
+      "data_wyslania_zapytania": {
+        "$date": "2019-02-15T00:00:00.000Z"
+      },
+      "numer_odpowiedzi": null,
+      "data_odpowiedzi_zapytanie": {
+        "$date": "2019-02-19T00:00:00.000Z"
+      },
+      "wynik_zapytania": "Nie karana",
+      "podstawa_ukarania": null
+    },
+    {
+      "numer_zapytania": null,
+      "data_wyslania_zapytania": {
+        "$date": "2017-04-13T00:00:00.000Z"
+      },
+      "numer_odpowiedzi": null,
+      "data_odpowiedzi_zapytanie": {
+        "$date": "2017-05-09T00:00:00.000Z"
+      },
+      "wynik_zapytania": "Nie karana",
+      "podstawa_ukarania": null
+    }
+  ],
+  "_class": "pl.kgzw.kobuzbackend.aktaosobowe.modele.Akta",
+  "data_otrzymania_akt": null,
+  "data_pisma_przekazania_akt": null,
+  "data_przekazania_akt": null,
+  "nazwa": null,
+  "numer_pisma_przekazania_akt": null,
+  "organ_skad_otrzymano_akta": null,
+  "uwagi_osoby": null
+}]

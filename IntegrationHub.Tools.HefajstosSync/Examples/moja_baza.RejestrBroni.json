@@ -1,0 +1,2819 @@
+[{
+  "_id": "EB720D61-BE41-4A45-9043-0C8242E86E30",
+  "data_wpisania": {
+    "$date": "2018-04-30T11:01:37.580Z"
+  },
+  "seria_numer_broni": "KZL 338",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 2007,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "GLOCK 17",
+  "kaliber": "9 ",
+  "jednostka": "mm",
+  "typ_amunicji": "PARA",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-04-30T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-07-05T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-04-30T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-07-05T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca92d92d822683691eb0"
+      },
+      "idRej": {
+        "$oid": "60ace71c68c1daecf2c7b862"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, centr. zapłonu"
+},
+{
+  "_id": "23D99483-C5F9-4156-A54A-05F1074B67A4",
+  "data_wpisania": {
+    "$date": "2020-01-13T11:53:00.150Z"
+  },
+  "seria_numer_broni": "K 92-14-005",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": null,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "RECK G-5",
+  "kaliber": "8",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2020-01-13T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2020-07-28T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2020-01-13T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "392/2019",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2020-07-28T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca93d92d82268369219d"
+      },
+      "idRej": {
+        "$oid": "60ace71d68c1daecf2c7bb50"
+      }
+    }
+  ],
+  "typ_broni": "Gazowa"
+},
+{
+  "_id": "32F2DFCF-2F24-4FB8-A62A-38395200AF94",
+  "data_wpisania": {
+    "$date": "2017-10-11T15:50:43.563Z"
+  },
+  "seria_numer_broni": "PT-10010",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1952,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "TT wz. 33",
+  "kaliber": "7,62",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2017-10-23T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-05-28T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-05-28T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0139677",
+        "data_wydania_dokumentu": {
+          "$date": "2018-07-30T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2002-01-18T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2017-10-23T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "DA0003309",
+        "data_wydania_dokumentu": {
+          "$date": "2002-01-18T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant Oddziału ŻW w Bydgoszczy",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2017-10-23T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-05-28T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca97d92d8226836928b6"
+      },
+      "idRej": {
+        "$oid": "60ace72168c1daecf2c7c26e"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2002-01-18T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "Decyzja K-nta Rektora WSO w Toruniu",
+      "deklarowany_cel_posiadania_1": "Ochrona osobista",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2017-10-23T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "256C8226-0EA7-4740-A787-9EFD076114F1",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mjr",
+        "imie_osoby": "Piotr",
+        "drugie_imie_osoby": "Zbigniew",
+        "nazwisko_osoby": "MAŚLOCH",
+        "nazwisko_rodowe_osoby": "MAŚLOCH",
+        "miejsce_urodzenia_osoby": "Wąbrzeźno",
+        "data_urodzenia_osoby": {
+          "$date": "1971-02-26T00:00:00.000Z"
+        },
+        "pesel_osoby": "71022609759",
+        "zawod": null,
+        "imie_ojca": "Czesław",
+        "imie_matki": "Elżbieta",
+        "nazwisko_rodowe_matki": "ŚNIEGOCKA",
+        "numer_telefonu_praca": "# 261-814-291 735-464-338",
+        "numer_telefonu_komorkowego": "506-064-185",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "II/92/2001/BR",
+        "data_utworzenia_akt": {
+          "$date": "2001-10-15T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5568/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": {
+          "$date": "2017-10-02T00:00:00.000Z"
+        },
+        "numer_pisma_przekazania_akt": "13489/17",
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": "Zwolniony ze służby i przeniesiony do rezerwy z dniem 31.05.2003 r.\r\nPrzekazano do KWP Bydgoszcz w dniu 29.09.2003 r.\r\nPowołany do służby w dniu 12.05.2017 r.\r\nPrzekazano z KWP Bydgoszcz.\r\nAkademia Sztuki Wojennej w Warszawie.\r\nUznanie miejsca zamieszkania w Warszawie jako miejsca stałego pobytu."
+      },
+      "id": {
+        "$oid": "6026ca97d92d8226836928b7"
+      },
+      "idRej": {
+        "$oid": "60ace72168c1daecf2c7c26f"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-05-28T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "446/2018",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": null,
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "22DDB78D-7D0A-4988-A324-1275C1625B83",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "kpt.",
+        "imie_osoby": "Marcin",
+        "drugie_imie_osoby": null,
+        "nazwisko_osoby": "JANOCHA",
+        "nazwisko_rodowe_osoby": "JANOCHA",
+        "miejsce_urodzenia_osoby": "Kielce",
+        "data_urodzenia_osoby": {
+          "$date": "1979-05-05T00:00:00.000Z"
+        },
+        "pesel_osoby": "79050511758",
+        "zawod": null,
+        "imie_ojca": "Adam",
+        "imie_matki": "Krystyna",
+        "nazwisko_rodowe_matki": "DĘBSKA",
+        "numer_telefonu_praca": "#",
+        "numer_telefonu_komorkowego": "723-253-936",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5839/2018/BR",
+        "data_utworzenia_akt": {
+          "$date": "2018-04-06T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5839/2018/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": "Uznanie miejsca zamieszkania w Warszawie jako miejsca stałego pobytu."
+      },
+      "id": {
+        "$oid": "6026ca97d92d8226836928b8"
+      },
+      "idRej": {
+        "$oid": "60ace72168c1daecf2c7c270"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, centr. zapłonu"
+},
+{
+  "_id": "D00D9C89-0FD7-4106-A0D0-396EECB8F67F",
+  "data_wpisania": {
+    "$date": "2018-10-15T09:44:43.857Z"
+  },
+  "seria_numer_broni": "W 00168",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1997,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "MAG 95",
+  "kaliber": "9x19 PARA",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2020-01-13T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-10-15T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-10-15T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "",
+      "typ_zbycia_broni": "Zmiana celu posiadania",
+      "informacje_dotyczące_zbycia_broni": "Wniosek Nr 6092/19 z dnia 09.05.2019 r.",
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca97d92d822683692924"
+      },
+      "idRej": {
+        "$oid": "60ace72168c1daecf2c7c2dc"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2020-01-13T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "Jednostka terenowa Policji",
+      "typ_zbycia_broni": "Zbycie",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca97d92d822683692925"
+      },
+      "idRej": {
+        "$oid": "60ace72168c1daecf2c7c2dd"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, centr. zapłonu"
+},
+{
+  "_id": "531BAA81-931A-478B-9DD8-3B7F375A64CB",
+  "seria_numer_broni": "C966006",
+  "rok_produkcji_broni": 2019,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "CZ P09",
+  "kaliber": "9x19",
+  "jednostka": "mm",
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "typ_broni": "Palna, krótka, centr. zapłonu",
+  "data_wpisania": {
+    "$date": "2020-01-14T11:23:08.560Z"
+  },
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2020-01-14T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "data_wyrejestrowania_broni": {
+        "$date": "2021-04-19T22:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie MOŻW",
+      "informacje_dotyczące_zbycia_broni": "",
+      "Osoby": {
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "nazwisko_osoby": "MAŁEK",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "id": {
+        "$oid": "6026ca97d92d822683692a07"
+      },
+      "idRej": {
+        "$oid": "60ace72268c1daecf2c7c3bf"
+      }
+    }
+  ],
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2020-01-14T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2021-04-19T22:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa"
+      }
+    }
+  ],
+  "_class": "pl.kgzw.kobuzbackend.rejestrbroni.modele.EgzemplarzBroni"
+},
+{
+  "_id": "1ED554C1-4BF7-4E51-83A7-3DAC1A0D6536",
+  "data_wpisania": {
+    "$date": "2016-03-25T09:55:59.060Z"
+  },
+  "seria_numer_broni": "124632",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": null,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": null,
+  "kaliber": "12",
+  "jednostka": "inna",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Bock (dwojak, nadlufka)",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2016-03-25T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni - duplikat",
+        "seria_numer_dokumentu": "DA 0008208",
+        "data_wydania_dokumentu": {
+          "$date": "2011-10-05T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2016-03-25T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "116/2010  I/4344/2010/BR",
+      "deklarowany_cel_posiadania_1": "Łowiecki",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "stopien_osoby": "płk",
+        "imie_osoby": "Piotr",
+        "nazwisko_osoby": "MISIURA",
+        "drugie_imie_osoby": null,
+        "nazwisko_rodowe_osoby": "MISIURA",
+        "data_urodzenia_osoby": {
+          "$date": "1972-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "72040105799",
+        "miejsce_urodzenia_osoby": "Lipsko",
+        "imie_ojca": "Czesław",
+        "imie_matki": "Lucyna",
+        "wlasciwa_terytorialnie_jednostka_zw": "Jednostka terenowa Policji"
+      },
+      "id": {
+        "$oid": "6026ca98d92d822683692af6"
+      },
+      "idRej": {
+        "$oid": "60ace72268c1daecf2c7c4ae"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "392/2019",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": null,
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca98d92d822683692af7"
+      },
+      "idRej": {
+        "$oid": "60ace72268c1daecf2c7c4af"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, gładkolufowa"
+},
+{
+  "_id": "CA49D1DF-650E-4263-9D8A-1149BE4505D7",
+  "data_wpisania": {
+    "$date": "2018-07-05T09:02:40.217Z"
+  },
+  "seria_numer_broni": "BM 03550",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1952,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "TT wz. 33",
+  "kaliber": "7,62",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-07-05T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-09-26T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-07-05T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-09-26T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026ca99d92d822683692ca2"
+      },
+      "idRej": {
+        "$oid": "60ace72368c1daecf2c7c65a"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, centr. zapłonu"
+},
+{
+  "_id": "4F8A6412-3A6E-4BFF-BF72-4B465A615BBF",
+  "data_wpisania": {
+    "$date": "2017-08-23T16:02:42.667Z"
+  },
+  "seria_numer_broni": "4500",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": null,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "TOZ 17-01",
+  "kaliber": "5,6",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Karabin(ek) sportowy",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2017-08-23T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-04-11T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2017-08-23T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2017-08-23T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-04-11T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2017-08-23T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-04-11T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caa0d92d822683693bfb"
+      },
+      "idRej": {
+        "$oid": "60ace72868c1daecf2c7d5ba"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, lufa gwint., boczn. zapłonu"
+},
+{
+  "_id": "18FB83FA-9014-4897-B285-508A4047A7A3",
+  "data_wpisania": {
+    "$date": "2008-03-27T10:01:49.730Z"
+  },
+  "seria_numer_broni": "40792",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1987,
+  "opis_modyfikacji_broni": "",
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "PARKER 2100",
+  "kaliber": "30-06",
+  "jednostka": "",
+  "typ_amunicji": "",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Sztucer",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2001-05-12T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "DA0009933",
+        "data_wydania_dokumentu": {
+          "$date": "2006-05-11T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2001-05-12T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Pozwolenie na broń",
+        "seria_numer_dokumentu": "A01554",
+        "data_wydania_dokumentu": {
+          "$date": "1998-09-29T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Dowódca JW 3233 Żurawica",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-01-18T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-03-06T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2001-05-12T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "Zgoda D-cy 14 BPanc. w Przemyślu",
+      "deklarowany_cel_posiadania_1": "Łowiecki",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-01-18T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "749C96DF-7E59-4E04-BEEF-ECEA08D6A79E",
+        "status_osoby": "NIEŻYJĄCY",
+        "stopien_osoby": "kpt.",
+        "imie_osoby": "Mirosław",
+        "drugie_imie_osoby": null,
+        "nazwisko_osoby": "STEFANIAK",
+        "nazwisko_rodowe_osoby": "STEFANIAK",
+        "miejsce_urodzenia_osoby": "Uniejów",
+        "data_urodzenia_osoby": {
+          "$date": {
+            "$numberLong": "-193881600000"
+          }
+        },
+        "pesel_osoby": "63111008891",
+        "zawod": null,
+        "imie_ojca": "Edmund",
+        "imie_matki": "Genowefa",
+        "nazwisko_rodowe_matki": "GALOCH",
+        "numer_telefonu_praca": "#",
+        "numer_telefonu_komorkowego": "691-753-925",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "VI/517/2002/BR",
+        "data_utworzenia_akt": {
+          "$date": "2002-02-13T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/4128/2006/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": "NIE",
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": "Przekazano z OŻW Lublin w dniu 21.03.2006 r. za numerem VI/517/2002/BR i zarejestrowano w książce pod numerem I/4128/2006/BR\r\nDubeltówka  Bock FAIR S-5 użyczona: Hubert NIEBIESZCZAŃSKI, 37-700 Przemyśl, ul. Monte Casino 16/40. Cała broń w depozycie. Legitym. posiad. broni zaginęła - oświad. córki"
+      },
+      "id": {
+        "$oid": "6026caa1d92d822683693e19"
+      },
+      "idRej": {
+        "$oid": "60ace72968c1daecf2c7d7d9"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-01-18T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-03-06T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "Jednostka terenowa Policji",
+      "typ_zbycia_broni": "Zbycie",
+      "informacje_dotyczące_zbycia_broni": "KWP Rzeszów",
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caa1d92d822683693e1a"
+      },
+      "idRej": {
+        "$oid": "60ace72968c1daecf2c7d7da"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, lufa gwint., centr. zapłonu"
+},
+{
+  "_id": "AFB6D0E0-8575-471F-AB92-53D1122EC1DB",
+  "data_wpisania": {
+    "$date": "2008-03-27T09:57:23.340Z"
+  },
+  "seria_numer_broni": "TN-0011",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 0,
+  "opis_modyfikacji_broni": "",
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "TOZ-17-01",
+  "kaliber": "5,6",
+  "jednostka": "mm",
+  "typ_amunicji": "",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Karabin(ek) sportowy",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2024-02-14T23:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": null,
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "1999-09-16T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-03-15T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "DA0000240",
+        "data_wydania_dokumentu": {
+          "$date": "2002-05-24T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": null,
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-03-15T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": null,
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "1999-09-16T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Pozwolenie na broń",
+        "seria_numer_dokumentu": "0041/98",
+        "data_wydania_dokumentu": {
+          "$date": "1998-02-02T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Dowódca 3 Batalionu Dowodzenia OW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": null,
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2024-02-14T23:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "OM 0000567",
+        "data_wydania_dokumentu": {
+          "$date": "2022-06-29T22:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": "",
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": []
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "1999-09-16T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "Zgoda D-cy 3 Batalionu Dowodzenia OW w Warszawie",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-03-15T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "stopien_osoby": "płk",
+        "imie_osoby": "Sławomir",
+        "nazwisko_osoby": "BUJNOWSKI",
+        "drugie_imie_osoby": "Lucjan",
+        "nazwisko_rodowe_osoby": "BUJNOWSKI",
+        "data_urodzenia_osoby": {
+          "$date": {
+            "$numberLong": "-127267200000"
+          }
+        },
+        "pesel_osoby": "65122010913",
+        "miejsce_urodzenia_osoby": "Tomaszów Lubelski",
+        "imie_ojca": "Jarosław",
+        "imie_matki": "Alicja",
+        "wlasciwa_terytorialnie_jednostka_zw": "Jednostka terenowa Policji"
+      },
+      "idRej": {
+        "$oid": "60ace72a68c1daecf2c7d912"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-03-15T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "",
+      "typ_zbycia_broni": "Zmiana celu posiadania",
+      "informacje_dotyczące_zbycia_broni": "Wniosek Nr 6092/19 z dn. 09.05.2019",
+      "Osoby": {
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "nazwisko_osoby": "MAŁEK",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "idRej": {
+        "$oid": "60ace72a68c1daecf2c7d913"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-05-10T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "data_wyrejestrowania_broni": {
+        "$date": "2024-02-14T23:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie",
+      "informacje_dotyczące_zbycia_broni": "",
+      "Osoby": {
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "nazwisko_osoby": "MAŁEK",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "idRej": {
+        "$oid": "60ace72a68c1daecf2c7d914"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2024-02-14T23:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "777/2020",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Paweł",
+        "nazwisko_osoby": "NIKODEMSKI",
+        "drugie_imie_osoby": null,
+        "nazwisko_rodowe_osoby": "NIKODEMSKI",
+        "data_urodzenia_osoby": {
+          "$date": "1978-06-29T00:00:00.000Z"
+        },
+        "pesel_osoby": "78062908295",
+        "miejsce_urodzenia_osoby": "Ostrołęka",
+        "imie_ojca": "Eugeniusz",
+        "imie_matki": "Elżbieta",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "idRej": {
+        "$oid": "65cde2c2ab2fae03537abac8"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, lufa gwint., boczn. zapłonu"
+},
+{
+  "_id": "C8558B3B-EF05-4B72-A574-65E6318777EB",
+  "data_wpisania": {
+    "$date": "2019-09-10T09:14:09.853Z"
+  },
+  "seria_numer_broni": "T 195355",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 2016,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "SIG SAUER 1911 22",
+  "kaliber": ".22",
+  "jednostka": "cale",
+  "typ_amunicji": "LR",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet sportowy",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-09-10T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-09-10T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "deklarowany_cel_posiadania_2": null,
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caa5d92d8226836947a1"
+      },
+      "idRej": {
+        "$oid": "60ace72f68c1daecf2c7e169"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, bocznego zapłonu"
+},
+{
+  "_id": "6C8AB740-493D-48EC-824F-77C6E1E7549F",
+  "data_wpisania": {
+    "$date": "2008-03-27T09:58:15.560Z"
+  },
+  "seria_numer_broni": "M3819T",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 0,
+  "opis_modyfikacji_broni": "",
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "MARGOLIN",
+  "kaliber": "5,6",
+  "jednostka": "mm",
+  "typ_amunicji": "",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet sportowy",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-04-10T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-04-09T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-06-26T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "1998-08-03T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-04-10T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "DA0000142",
+        "data_wydania_dokumentu": {
+          "$date": "2002-04-03T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "1998-08-03T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Pozwolenie na broń",
+        "seria_numer_dokumentu": "26/98",
+        "data_wydania_dokumentu": {
+          "$date": "1998-08-03T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Dowódca JW 1153 Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "1998-08-03T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "Zgoda D-cy JW 1153 w Warszawie",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-04-10T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "384039C0-F8FA-4191-8DC4-2182326D8CDA",
+        "status_osoby": "REZERWA",
+        "stopien_osoby": "płk",
+        "imie_osoby": "Marcin",
+        "drugie_imie_osoby": null,
+        "nazwisko_osoby": "WRÓBLEWSKI",
+        "nazwisko_rodowe_osoby": "WRÓBLEWSKI",
+        "miejsce_urodzenia_osoby": "Rudki",
+        "data_urodzenia_osoby": {
+          "$date": {
+            "$numberLong": "-190425600000"
+          }
+        },
+        "pesel_osoby": "63122010315",
+        "zawod": null,
+        "imie_ojca": "Józef",
+        "imie_matki": "Maria",
+        "nazwisko_rodowe_matki": "DĄBROWSKA",
+        "numer_telefonu_praca": "#",
+        "numer_telefonu_komorkowego": "509-973-979  721-813-452",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/0731/2002/BR",
+        "data_utworzenia_akt": {
+          "$date": "2002-01-31T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/0731/2002/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": {
+          "$date": "2019-10-30T00:00:00.000Z"
+        },
+        "data_pisma_przekazania_akt": {
+          "$date": "2019-02-12T00:00:00.000Z"
+        },
+        "numer_pisma_przekazania_akt": "1460/19/SPNBiPA",
+        "konflikt_identyfikacji": "NIE",
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "Jednostka terenowa Policji",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": "Przekazano do KSP"
+      },
+      "id": {
+        "$oid": "6026caa8d92d822683694e6b"
+      },
+      "idRej": {
+        "$oid": "60ace73268c1daecf2c7e837"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-04-10T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-06-26T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caa8d92d822683694e6c"
+      },
+      "idRej": {
+        "$oid": "60ace73268c1daecf2c7e838"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, bocznego zapłonu"
+},
+{
+  "_id": "468044DD-D36B-4DBF-98F5-8CC917C14C17",
+  "data_wpisania": {
+    "$date": "2019-12-13T12:28:49.507Z"
+  },
+  "seria_numer_broni": "MV 0397356",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 2019,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "MAVERICK MOSSBERG  mod. 88",
+  "kaliber": "12/76",
+  "jednostka": " ",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Strzelba powt. PUMP-ACTION",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-12-13T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-12-13T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "deklarowany_cel_posiadania_2": null,
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caacd92d82268369567e"
+      },
+      "idRej": {
+        "$oid": "60ace73768c1daecf2c7f04f"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, gładkolufowa"
+},
+{
+  "_id": "B998652E-2E69-4451-9548-A58DACA2A3F4",
+  "data_wpisania": {
+    "$date": "2020-06-16T10:26:16.450Z"
+  },
+  "seria_numer_broni": "004154",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": null,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "WEIHRAUCH HW94",
+  "kaliber": "9",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2020-06-16T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2020-07-28T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2020-06-16T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "392/2019",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2020-07-28T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caaed92d822683695c74"
+      },
+      "idRej": {
+        "$oid": "60ace73a68c1daecf2c7f647"
+      }
+    }
+  ],
+  "typ_broni": "Gazowa"
+},
+{
+  "_id": "63DEF36B-BE12-462A-91B8-85451288BE0B",
+  "data_wpisania": {
+    "$date": "2019-02-04T09:10:15.097Z"
+  },
+  "seria_numer_broni": "CP 2834",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1986,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "MAKAROW",
+  "kaliber": "9x18",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-02-04T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-09-11T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-02-04T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-09-11T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "Jednostka terenowa Policji",
+      "typ_zbycia_broni": "Zbycie",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caafd92d822683695d51"
+      },
+      "idRej": {
+        "$oid": "60ace73b68c1daecf2c7f724"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, centr. zapłonu"
+},
+{
+  "_id": "605184DB-D70E-442E-B683-8FB4B2330287",
+  "data_wpisania": {
+    "$date": "2008-03-27T09:56:14.357Z"
+  },
+  "seria_numer_broni": "8923252",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1989,
+  "opis_modyfikacji_broni": "BOCK\r\nLufa nr 8923252\r\nBaskila nr E23252",
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "TOZ-34 EP",
+  "kaliber": "12/70",
+  "jednostka": "",
+  "typ_amunicji": "",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Dubeltówka (dwururka, dwulufka)",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2000-08-04T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni - duplikat",
+        "seria_numer_dokumentu": "DA 0008208",
+        "data_wydania_dokumentu": {
+          "$date": "2011-10-05T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2000-08-04T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "DA0008045",
+        "data_wydania_dokumentu": {
+          "$date": "2009-07-27T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-12-13T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-12-13T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026caafd92d822683695ea1"
+      },
+      "idRej": {
+        "$oid": "60ace73b68c1daecf2c7f875"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2000-08-04T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "Zgoda K-nta CSŁiI Zegrze",
+      "deklarowany_cel_posiadania_1": "Łowiecki",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-05-20T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "stopien_osoby": "płk",
+        "imie_osoby": "Piotr",
+        "nazwisko_osoby": "MISIURA",
+        "drugie_imie_osoby": null,
+        "nazwisko_rodowe_osoby": "MISIURA",
+        "data_urodzenia_osoby": {
+          "$date": "1972-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "72040105799",
+        "miejsce_urodzenia_osoby": "Lipsko",
+        "imie_ojca": "Czesław",
+        "imie_matki": "Lucyna",
+        "wlasciwa_terytorialnie_jednostka_zw": "Jednostka terenowa Policji"
+      },
+      "id": {
+        "$oid": "6026caafd92d822683695ea2"
+      },
+      "idRej": {
+        "$oid": "60ace73b68c1daecf2c7f876"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, gładkolufowa"
+},
+{
+  "_id": "B34D10E0-088A-4D43-A1A8-C128D09ECD65",
+  "data_wpisania": {
+    "$date": "2008-03-27T10:01:49.700Z"
+  },
+  "seria_numer_broni": "113495",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1996,
+  "opis_modyfikacji_broni": "\r\n\r\n\r\n",
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "BOCK FAIR RIZZINI S-5",
+  "kaliber": "12/70",
+  "jednostka": "",
+  "typ_amunicji": "",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Dubeltówka (dwururka, dwulufka)",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "1998-09-29T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "DA0009933",
+        "data_wydania_dokumentu": {
+          "$date": "2006-05-11T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2018-01-18T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2018-03-06T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0132417",
+        "data_wydania_dokumentu": {
+          "$date": "2017-08-21T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    },
+    {
+      "data_dokonania_wpisu": {
+        "$date": "1998-09-29T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Pozwolenie na broń",
+        "seria_numer_dokumentu": "A01554",
+        "data_wydania_dokumentu": {
+          "$date": "1998-09-29T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Dowódca JW 3233 Żurawica",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "1998-09-29T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "Zgoda D-cy JW 3233 Żurawica",
+      "deklarowany_cel_posiadania_1": "Łowiecki",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-01-18T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie OŻW",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "749C96DF-7E59-4E04-BEEF-ECEA08D6A79E",
+        "status_osoby": "NIEŻYJĄCY",
+        "stopien_osoby": "kpt.",
+        "imie_osoby": "Mirosław",
+        "drugie_imie_osoby": null,
+        "nazwisko_osoby": "STEFANIAK",
+        "nazwisko_rodowe_osoby": "STEFANIAK",
+        "miejsce_urodzenia_osoby": "Uniejów",
+        "data_urodzenia_osoby": {
+          "$date": {
+            "$numberLong": "-193881600000"
+          }
+        },
+        "pesel_osoby": "63111008891",
+        "zawod": null,
+        "imie_ojca": "Edmund",
+        "imie_matki": "Genowefa",
+        "nazwisko_rodowe_matki": "GALOCH",
+        "numer_telefonu_praca": "#",
+        "numer_telefonu_komorkowego": "691-753-925",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "VI/517/2002/BR",
+        "data_utworzenia_akt": {
+          "$date": "2002-02-13T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/4128/2006/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": "NIE",
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": "Przekazano z OŻW Lublin w dniu 21.03.2006 r. za numerem VI/517/2002/BR i zarejestrowano w książce pod numerem I/4128/2006/BR\r\nDubeltówka  Bock FAIR S-5 użyczona: Hubert NIEBIESZCZAŃSKI, 37-700 Przemyśl, ul. Monte Casino 16/40. Cała broń w depozycie. Legitym. posiad. broni zaginęła - oświad. córki"
+      },
+      "id": {
+        "$oid": "6026cab6d92d822683696ed7"
+      },
+      "idRej": {
+        "$oid": "60ace74468c1daecf2c808b3"
+      }
+    },
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2018-01-18T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "1046/2017  I/5415/2017/BR",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2018-03-06T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "Jednostka terenowa Policji",
+      "typ_zbycia_broni": "Zbycie",
+      "informacje_dotyczące_zbycia_broni": "KWP Kielce",
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026cab6d92d822683696ed8"
+      },
+      "idRej": {
+        "$oid": "60ace74468c1daecf2c808b4"
+      }
+    }
+  ],
+  "typ_broni": "Palna, długa, gładkolufowa"
+},
+{
+  "_id": "8CEE3CEF-E9B5-4C96-BCF8-EC6B58306A19",
+  "data_wpisania": {
+    "$date": "2019-08-13T08:31:02.490Z"
+  },
+  "seria_numer_broni": "K 13266",
+  "numer_ewidencyjny_CLK": null,
+  "rok_produkcji_broni": 1953,
+  "opis_modyfikacji_broni": null,
+  "posiadane_luski_broni": "TAK",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "CZ 52",
+  "kaliber": "7,62",
+  "jednostka": "mm",
+  "typ_amunicji": null,
+  "ID_nadrzednego_egzemplarza_broni_egzbr": null,
+  "JZW_ID": 10,
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2019-08-13T00:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2019-08-28T00:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "AA 0210339",
+        "data_wydania_dokumentu": {
+          "$date": "2019-05-10T00:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null
+      }
+    }
+  ],
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2019-08-13T00:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "392/2019",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "deklarowany_cel_posiadania_2": "",
+      "data_wyrejestrowania_broni": {
+        "$date": "2019-08-28T00:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie",
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "ID_osoby": "FFFC3A14-0FA1-47B3-B743-D759C55FABFB",
+        "status_osoby": "SŁUŻBA CZYNNA",
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_osoby": "MAŁEK",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "zawod": null,
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "nazwisko_rodowe_matki": "WALCZAK",
+        "numer_telefonu_praca": "# 261-853-547",
+        "numer_telefonu_komorkowego": "724-940-241",
+        "numer_telefonu_dom": null,
+        "numer_bazowy_akt": "I/5415/2017/BR",
+        "data_utworzenia_akt": {
+          "$date": "2017-04-11T00:00:00.000Z"
+        },
+        "numer_aktualny_akt": "I/5415/2017/BR",
+        "data_otrzymania_akt": null,
+        "organ_skad_otrzymano_akta": null,
+        "data_przekazania_akt": null,
+        "data_pisma_przekazania_akt": null,
+        "numer_pisma_przekazania_akt": null,
+        "konflikt_identyfikacji": null,
+        "status_kompletnosci_danych": "TAK",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa",
+        "uprawniona_do_posiadania_broni": "TAK",
+        "uwagi_osoby": null
+      },
+      "id": {
+        "$oid": "6026cabed92d82268369856f"
+      },
+      "idRej": {
+        "$oid": "60ace74f68c1daecf2c81f53"
+      }
+    }
+  ],
+  "typ_broni": "Palna, krótka, centr. zapłonu"
+},
+{
+  "_id": "ef41bf40-c484-4535-9602-4cbcfe897704",
+  "seria_numer_broni": "KZL  577",
+  "numer_ewidencyjny_CLK": "",
+  "rok_produkcji_broni": 2007,
+  "opis_modyfikacji_broni": "",
+  "posiadane_luski_broni": "",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "GLOCK 17",
+  "kaliber": "9x19",
+  "jednostka": "mm",
+  "typ_amunicji": "",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": "",
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "typ_broni": "Palna, krótka, centr. zapłonu",
+  "data_wpisania": {
+    "$date": "2021-04-21T06:45:20.272Z"
+  },
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2021-04-20T22:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "data_wyrejestrowania_broni": {
+        "$date": "2023-05-14T22:00:00.000Z"
+      },
+      "kierunek_zbycia_broni": "MOŻW Warszawa",
+      "typ_zbycia_broni": "Zbycie MOŻW",
+      "informacje_dotyczące_zbycia_broni": "Artur Antoniewicz",
+      "Osoby": {
+        "stopien_osoby": "mł.chor.",
+        "imie_osoby": "Andrzej",
+        "nazwisko_osoby": "MAŁEK",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "idRej": {
+        "$oid": "60ace75368c1daecf2c82671"
+      }
+    }
+  ],
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2021-04-20T22:00:00.000Z"
+      },
+      "data_dokonania_wypisu": {
+        "$date": "2023-05-14T22:00:00.000Z"
+      },
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "OM 0000110",
+        "data_wydania_dokumentu": {
+          "$date": "2021-04-20T22:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": "Sportowy",
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": []
+      }
+    }
+  ],
+  "_class": "pl.kgzw.kobuzbackend.rejestrbroni.modele.EgzemplarzBroni"
+},
+{
+  "_id": "53219ef2-b1d9-4c52-970b-40aee79fee60",
+  "seria_numer_broni": "BZUH 030",
+  "numer_ewidencyjny_CLK": "",
+  "rok_produkcji_broni": 2022,
+  "opis_modyfikacji_broni": "",
+  "posiadane_luski_broni": "NIE",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "GLOCK 17 generacja 4",
+  "kaliber": "9",
+  "jednostka": "mm",
+  "typ_amunicji": "PARA",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": "",
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Pistolet",
+  "typ_broni": "Palna, krótka, centr. zapłonu",
+  "data_wpisania": {
+    "$date": "2023-05-30T09:09:01.689Z"
+  },
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2023-05-29T22:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "393/2019",
+      "deklarowany_cel_posiadania_1": "Sportowy",
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "stopien_osoby": "chor.",
+        "imie_osoby": "Andrzej",
+        "nazwisko_osoby": "MAŁEK",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "idRej": {
+        "$oid": "6475bd464038b6675aae0d47"
+      }
+    }
+  ],
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2023-05-29T22:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "OM 0000110",
+        "data_wydania_dokumentu": {
+          "$date": "2021-04-20T22:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": "Sportowy",
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": []
+      }
+    }
+  ]
+},
+{
+  "_id": "9a6a7f44-1d74-4016-89dd-8b48f691e079",
+  "seria_numer_broni": "EWJ 5034839",
+  "numer_ewidencyjny_CLK": "",
+  "rok_produkcji_broni": null,
+  "opis_modyfikacji_broni": "",
+  "posiadane_luski_broni": "",
+  "pozbawiona_cech_uzytkowych": "NIE",
+  "marka": "ROSSI 7022 Del",
+  "kaliber": ".22",
+  "jednostka": "cale",
+  "typ_amunicji": "LR",
+  "ID_nadrzednego_egzemplarza_broni_egzbr": "",
+  "urzadzenie_pneumatyczne": "NIE",
+  "rodzaj_broni": "Karabin(ek) - inny",
+  "typ_broni": "Palna, długa, lufa gwint., boczn. zapłonu",
+  "data_wpisania": {
+    "$date": "2024-01-29T06:39:53.127Z"
+  },
+  "Rejestry_Broni": [
+    {
+      "data_zarejestrowania_broni": {
+        "$date": "2024-01-28T23:00:00.000Z"
+      },
+      "numer_decyzji_o_zarejestrowaniu_broni": "392/2019",
+      "deklarowany_cel_posiadania_1": "Kolekcjonerski",
+      "data_wyrejestrowania_broni": null,
+      "kierunek_zbycia_broni": null,
+      "typ_zbycia_broni": null,
+      "informacje_dotyczące_zbycia_broni": null,
+      "Osoby": {
+        "stopien_osoby": "chor.",
+        "imie_osoby": "Andrzej",
+        "nazwisko_osoby": "MAŁEK",
+        "drugie_imie_osoby": "Ryszard",
+        "nazwisko_rodowe_osoby": "MAŁEK",
+        "data_urodzenia_osoby": {
+          "$date": "1977-04-01T00:00:00.000Z"
+        },
+        "pesel_osoby": "77040102494",
+        "miejsce_urodzenia_osoby": "Jarocin",
+        "imie_ojca": "Albin",
+        "imie_matki": "Emilia",
+        "wlasciwa_terytorialnie_jednostka_zw": "MOŻW Warszawa"
+      },
+      "idRej": {
+        "$oid": "65b74865a41dbcf0d70ade64"
+      }
+    }
+  ],
+  "Wpisy_Broni_Do_Dokumentow": [
+    {
+      "data_dokonania_wpisu": {
+        "$date": "2024-01-28T23:00:00.000Z"
+      },
+      "data_dokonania_wypisu": null,
+      "Dokumenty": {
+        "rodzaj_dokumentu": "Legitymacja pos. broni",
+        "seria_numer_dokumentu": "OM 0000110",
+        "data_wydania_dokumentu": {
+          "$date": "2021-04-20T22:00:00.000Z"
+        },
+        "termin_waznosci_dokumentu": null,
+        "nazwa_organu_wydajacego_dokument": "Komendant MOŻW Warszawa",
+        "wydano_na_podstawie_decyzji_numer": null,
+        "status_dokumentu": null,
+        "cel_posiadania_broni": "Sportowy",
+        "dotyczy_broni": null,
+        "Wpisy_Broni_Do_Dokumentow": []
+      }
+    }
+  ]
+}]

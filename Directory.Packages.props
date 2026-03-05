@@ -50,6 +50,10 @@
 	  <!-- Dapper i SQLClient -->
 	  <PackageVersion Include="Dapper" Version="2.1.35" />
 	  <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+	  <PackageVersion Include="MongoDB.Driver" Version="2.25.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+	  <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
 	
 <!-- WEBCON 2025 -->
 	  <PackageVersion Include="WEBCON.BPS.2025.SDK.Libraries" Version="25.1.1.15" />
