@@ -16,7 +16,7 @@ CREATE TABLE [piesp].[BronAdresy](
 	[BA_NUMER_LOKALU] [varchar](10) NULL,
 	[BA_KOD_POCZTOWY] [varchar](10) NULL,
 	[BA_POCZTA] [varchar](100) NOT NULL,
-	[BA_OPIS] [varchar](1000) NULL,
+	[BA_OPIS] [varchar](MAX) NULL,
 	[BA_DATA_AKTUALIZACJI] [datetime] NOT NULL
 ) ON [PRIMARY]
 GO

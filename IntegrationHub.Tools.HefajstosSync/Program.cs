@@ -50,27 +50,61 @@ static async Task<HashSet<string>> LoadBronOsobyAsync(
     MongoConfig mongoConfig,
     SqlConfig sqlConfig)
 {
-    var collection = db.GetCollection<RejestrBroniDoc>(mongoConfig.RejestrBroniCollection);
+    var collection = db.GetCollection<BsonDocument>(mongoConfig.RejestrBroniCollection);
 
     // interesują nas wpisy, gdzie w tablicy Rejestry_Broni jest element z data_wyrejestrowania_broni == null
-    var filter = Builders<RejestrBroniDoc>.Filter.ElemMatch(
-        d => d.RejestryBroni,
-        rb => rb.DataWyrejestrowaniaBroni == null);
+    var elemFilter = Builders<BsonDocument>.Filter.ElemMatch(
+        "Rejestry_Broni",
+        Builders<BsonDocument>.Filter.Eq("data_wyrejestrowania_broni", BsonNull.Value));
 
-    var docs = await collection.Find(filter).ToListAsync();
+    var docs = await collection.Find(elemFilter).ToListAsync();
 
+    // Mapa PESEL -> zestaw rodzajów broni, które dana osoba aktualnie posiada
+    var peselToKinds = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
     var pesels = new HashSet<string>();
 
     foreach (var doc in docs)
     {
-        if (doc.RejestryBroni == null) continue;
+        // rodzaj_broni jest na poziomie dokumentu – ten sam dla wszystkich wpisów Rejestry_Broni
+        string? kind = null;
+        if (doc.TryGetValue("rodzaj_broni", out var kindValue) && !kindValue.IsBsonNull)
+            kind = kindValue.AsString?.Trim();
 
-        foreach (var entry in doc.RejestryBroni)
+        if (!doc.TryGetValue("Rejestry_Broni", out var rejestryValue) || rejestryValue.IsBsonNull)
+            continue;
+
+        var rejestry = rejestryValue.AsBsonArray;
+        foreach (var re in rejestry)
         {
-            if (entry.DataWyrejestrowaniaBroni != null) continue;
-            var pesel = entry.Osoby?.PeselOsoby?.Trim();
-            if (!string.IsNullOrWhiteSpace(pesel))
-                pesels.Add(pesel);
+            if (!re.IsBsonDocument) continue;
+            var reDoc = re.AsBsonDocument;
+
+            var dataWyrejestrowania = reDoc.GetValue("data_wyrejestrowania_broni", BsonNull.Value);
+            if (!dataWyrejestrowania.IsBsonNull)
+                continue; // tylko aktywne wpisy
+
+            if (!reDoc.TryGetValue("Osoby", out var osobyValue) || !osobyValue.IsBsonDocument)
+                continue;
+
+            var osobyDoc = osobyValue.AsBsonDocument;
+            var peselValue = osobyDoc.GetValue("pesel_osoby", BsonNull.Value);
+            if (peselValue.IsBsonNull) continue;
+
+            var pesel = peselValue.AsString?.Trim();
+            if (string.IsNullOrWhiteSpace(pesel)) continue;
+
+            pesels.Add(pesel);
+
+            if (!string.IsNullOrWhiteSpace(kind))
+            {
+                if (!peselToKinds.TryGetValue(pesel, out var set))
+                {
+                    set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    peselToKinds[pesel] = set;
+                }
+
+                set.Add(kind);
+            }
         }
     }
 
@@ -86,10 +120,15 @@ static async Task<HashSet<string>> LoadBronOsobyAsync(
     await conn.ExecuteAsync("DELETE FROM piesp.BronOsoby", transaction: (IDbTransaction)tx);
 
     const string insertSql = @"
-INSERT INTO piesp.BronOsoby (BO_PESEL)
-VALUES (@Pesel);";
+INSERT INTO piesp.BronOsoby (BO_PESEL, BO_OPIS)
+VALUES (@Pesel, @Opis);";
 
-    var rows = pesels.Select(p => new { Pesel = p });
+    var rows = pesels.Select(p =>
+    {
+        peselToKinds.TryGetValue(p, out var kinds);
+        var opis = kinds is { Count: > 0 } ? string.Join(", ", kinds) : null;
+        return new { Pesel = p, Opis = opis };
+    });
     await conn.ExecuteAsync(insertSql, rows, transaction: (IDbTransaction)tx);
 
     await tx.CommitAsync();
@@ -169,6 +208,16 @@ VALUES (
 
     await conn.ExecuteAsync(insertSql, adresRows, transaction: (IDbTransaction)tx);
 
+    // Po załadowaniu adresów przepisz opis z piesp.BronOsoby.BO_OPIS do piesp.BronAdresy.BA_OPIS według PESEL
+    const string updateOpisSql = @"
+UPDATE ba
+SET BA_OPIS = bo.BO_OPIS
+FROM piesp.BronAdresy AS ba
+INNER JOIN piesp.BronOsoby AS bo
+    ON bo.BO_PESEL = ba.BA_BOPESEL;";
+
+    await conn.ExecuteAsync(updateOpisSql, transaction: (IDbTransaction)tx);
+
     await tx.CommitAsync();
 
     Console.WriteLine("Załadowano piesp.BronAdresy.");
@@ -194,12 +243,24 @@ public sealed class SqlConfig
 public sealed class RejestrBroniDoc
 {
     [BsonId]
-    public ObjectId Id { get; set; }
+    [BsonRepresentation(BsonType.String)]
+    public string Id { get; set; } = string.Empty;
+
+    [BsonElement("data_wpisania")]
+    public DateTime? DataWpisania { get; set; }
+
+    [BsonElement("rodzaj_broni")]
+    public string? RodzajBroni { get; set; }
+
+    // Pola techniczne, których nie używamy, ale mapujemy, aby uniknąć błędów serializacji
+    [BsonElement("seria_numer_broni")]
+    public string? SeriaNumerBroni { get; set; }
 
     [BsonElement("Rejestry_Broni")]
     public List<RejestrBroniEntry> RejestryBroni { get; set; } = new();
 }
 
+ [BsonIgnoreExtraElements]
 public sealed class RejestrBroniEntry
 {
     [BsonElement("Osoby")]
@@ -209,16 +270,19 @@ public sealed class RejestrBroniEntry
     public DateTime? DataWyrejestrowaniaBroni { get; set; }
 }
 
+ [BsonIgnoreExtraElements]
 public sealed class RejestrBroniOsoba
 {
     [BsonElement("pesel_osoby")]
     public string? PeselOsoby { get; set; }
 }
 
+[BsonIgnoreExtraElements]
 public sealed class OsobaDoc
 {
     [BsonId]
-    public ObjectId Id { get; set; }
+    [BsonRepresentation(BsonType.String)]
+    public string Id { get; set; } = string.Empty;
 
     [BsonElement("Osoba")]
     public MongoOsoba Osoba { get; set; } = new();
@@ -227,12 +291,14 @@ public sealed class OsobaDoc
     public List<MongoAdres> Adresy { get; set; } = new();
 }
 
+[BsonIgnoreExtraElements]
 public sealed class MongoOsoba
 {
     [BsonElement("pesel_osoby")]
     public string PeselOsoby { get; set; } = string.Empty;
 }
 
+[BsonIgnoreExtraElements]
 public sealed class MongoAdres
 {
     [BsonElement("miejsce_broni")]

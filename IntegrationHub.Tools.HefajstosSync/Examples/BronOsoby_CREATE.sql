@@ -10,6 +10,7 @@ GO
 
 CREATE TABLE [piesp].[BronOsoby](
 	[BO_PESEL] [varchar](11) NOT NULL,
+        [BA_OPIS] [varchar](MAX) NULL,
 	[BO_DATA_AKTUALIZACJI] [datetime] NULL
 ) ON [PRIMARY]
 GO
