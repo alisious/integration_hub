@@ -13,6 +13,7 @@ using IntegrationHub.Infrastructure.Audit;
 using IntegrationHub.Infrastructure.Audit.Http;
 using IntegrationHub.Infrastructure.Cepik;
 using IntegrationHub.Infrastructure.Sql;
+using IntegrationHub.PIESP.Config;
 using IntegrationHub.PIESP.Data;
 using IntegrationHub.PIESP.Services;
 using IntegrationHub.Sources.ANPRS.Config;
@@ -285,7 +286,9 @@ var cepConfig = builder.Configuration.GetSection("ExternalServices:CEP").Get<CEP
 
 // ====== DEPENDENCY INJECTION ======
 
-
+builder.Services.Configure<ActiveDirectoryOptions>(
+    builder.Configuration.GetSection(ActiveDirectoryOptions.SectionName));
+builder.Services.AddScoped<ActiveDirectoryAuthenticationService>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();
