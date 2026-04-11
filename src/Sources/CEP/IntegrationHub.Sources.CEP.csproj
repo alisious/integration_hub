@@ -20,7 +20,7 @@
 	<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IntegrationHub.Common\IntegrationHub.Common.csproj" />
-    <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\Common\IntegrationHub.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Infrastructure\IntegrationHub.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

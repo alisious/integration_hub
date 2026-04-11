@@ -80,7 +80,6 @@
     <PackageReference Include="WEBCON.BPS.2025.SDK.Libraries" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Trentum.Common.Csv\Trentum.Common.Csv.csproj" />
     <ProjectReference Include="..\Trentum.Common.Excel\Trentum.Common.Excel.csproj">
       <Private>True</Private>
     </ProjectReference>

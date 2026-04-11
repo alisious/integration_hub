@@ -11,9 +11,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <ProjectReference Include="..\IntegrationHub.Common\IntegrationHub.Common.csproj" />
-    <ProjectReference Include="..\IntegrationHub.Infrastructure\IntegrationHub.Infrastructure.csproj" />
-    <ProjectReference Include="..\IntegrationHub.Sources.ANPRS\IntegrationHub.Sources.ANPRS.csproj" />
+    <ProjectReference Include="..\Common\IntegrationHub.Common.csproj" />
+    <ProjectReference Include="..\Infrastructure\IntegrationHub.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Sources\ANPRS\IntegrationHub.Sources.ANPRS.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

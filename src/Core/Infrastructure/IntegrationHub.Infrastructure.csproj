@@ -14,6 +14,6 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\IntegrationHub.Domain\IntegrationHub.Domain.csproj" />
+	  <ProjectReference Include="..\Domain\IntegrationHub.Domain.csproj" />
 	</ItemGroup>
 </Project>
