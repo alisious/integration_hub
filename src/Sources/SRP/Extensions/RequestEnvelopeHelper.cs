@@ -1,8 +1,9 @@
-﻿using IntegrationHub.SRP.Contracts;
+﻿using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Models;
 using System.Text;
 using System.Xml.Linq;
 
-namespace IntegrationHub.SRP.Extensions
+namespace IntegrationHub.Sources.SRP.Extensions
 {
     public static class RequestEnvelopeHelper
     {

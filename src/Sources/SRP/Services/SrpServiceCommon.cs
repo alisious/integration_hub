@@ -2,9 +2,9 @@ using System.Net;
 using System.Text.Json;
 using IntegrationHub.Common.Helpers;
 using IntegrationHub.Common.Primitives;
-using IntegrationHub.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Contracts;
 
-namespace IntegrationHub.SRP.Services;
+namespace IntegrationHub.Sources.SRP.Services;
 
 internal static class SrpServiceCommon
 {

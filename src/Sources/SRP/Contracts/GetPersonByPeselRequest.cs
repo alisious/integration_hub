@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace IntegrationHub.SRP.Contracts
+namespace IntegrationHub.Sources.SRP.Contracts
 {
 
     /// <summary>

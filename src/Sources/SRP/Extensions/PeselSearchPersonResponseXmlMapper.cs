@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Models;
+using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Models;
 
-namespace IntegrationHub.SRP.Extensions
+namespace IntegrationHub.Sources.SRP.Extensions
 { 
     /// <summary>
     /// Mapuje SOAP XML z wyszukajOsobyResponse -> SearchPersonResponse (List\PersonData\).

@@ -1,5 +1,5 @@
-﻿using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Models;
+﻿using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace IntegrationHub.SRP.Extensions
+namespace IntegrationHub.Sources.SRP.Extensions
 {
     /// <summary>
     /// Mapuje XML odpowiedzi z SRP: udostepnijDaneAktualnegoDowoduPoPeselResponse na obiekt <see cref="GetPersonByPeselResponse"/>.
@@ -194,8 +194,8 @@ namespace IntegrationHub.SRP.Extensions
             if (input.Length == 10 && input[4] == '-' && input[7] == '-')
             {
                 if (DateTime.TryParseExact(input, "yyyy-MM-dd",
-                                           System.Globalization.CultureInfo.InvariantCulture,
-                                           System.Globalization.DateTimeStyles.None,
+                                           CultureInfo.InvariantCulture,
+                                           DateTimeStyles.None,
                                            out var dt))
                 {
                     return dt.ToString("yyyy-MM-dd");

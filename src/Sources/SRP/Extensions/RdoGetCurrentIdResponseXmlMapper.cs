@@ -1,5 +1,5 @@
-﻿using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Models;
+﻿using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace IntegrationHub.SRP.Extensions
+namespace IntegrationHub.Sources.SRP.Extensions
 {
     /// <summary>
     /// Mapuje XML odpowiedzi z SRP: udostepnijDaneAktualnegoDowoduPoPeselResponse na obiekt <see cref="GetCurrentIdByPeselResponse"/>.

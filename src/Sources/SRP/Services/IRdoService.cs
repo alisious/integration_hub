@@ -1,7 +1,8 @@
 using IntegrationHub.Common.Primitives;
-using IntegrationHub.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Contracts;
 
-namespace IntegrationHub.SRP.Services
+
+namespace IntegrationHub.Sources.SRP.Services
 {
     public interface IRdoService
     {

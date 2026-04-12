@@ -1,17 +1,17 @@
 using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Helpers;
 using IntegrationHub.Common.Primitives;
-using IntegrationHub.SRP.Config;
-using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Extensions;
+using IntegrationHub.Sources.SRP.Contracts;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Net;
-using static IntegrationHub.SRP.Services.SrpServiceCommon;
+using static IntegrationHub.Sources.SRP.Services.SrpServiceCommon;
+using IntegrationHub.Sources.SRP.Config;
+using IntegrationHub.Sources.SRP.Extensions;
 
-namespace IntegrationHub.SRP.Services
+namespace IntegrationHub.Sources.SRP.Services
 {
     public sealed class PeselServiceTest : IPeselService
     {

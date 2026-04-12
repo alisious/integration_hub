@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 
 
-namespace IntegrationHub.SRP.Extensions
+namespace IntegrationHub.Sources.SRP.Extensions
 {
     public static class SrpLogEvents
     {

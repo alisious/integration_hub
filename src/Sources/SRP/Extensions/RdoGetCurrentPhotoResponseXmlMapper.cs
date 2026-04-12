@@ -1,5 +1,5 @@
-﻿using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Models;
+﻿using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace IntegrationHub.SRP.Extensions
+namespace IntegrationHub.Sources.SRP.Extensions
 {
     public static class RdoGetCurrentPhotoResponseXmlMapper
     {

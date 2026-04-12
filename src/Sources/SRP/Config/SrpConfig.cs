@@ -1,6 +1,6 @@
 ﻿using IntegrationHub.Common.Config;
 
-namespace IntegrationHub.SRP.Config
+namespace IntegrationHub.Sources.SRP.Config
 {
     /// <summary>
     /// Konfiguracja dostępu do usługi SRP: srp.pesel.wyszukiwanie.

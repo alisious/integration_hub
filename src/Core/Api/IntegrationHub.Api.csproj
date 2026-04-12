@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\Trentum.Common.Csv\Trentum.Common.Csv.csproj" />
     <ProjectReference Include="..\..\..\shared\Trentum.Horkos.Dapper\Trentum.Horkos.Dapper.csproj" />
+    <ProjectReference Include="..\..\Sources\SRP\IntegrationHub.Sources.SRP.csproj" />
     <ProjectReference Include="..\Application\IntegrationHub.Application.csproj" />
     <ProjectReference Include="..\Infrastructure\IntegrationHub.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Clients\PIESP\IntegrationHub.PIESP.csproj" />
@@ -45,7 +46,6 @@
     <ProjectReference Include="..\..\Sources\CEP\IntegrationHub.Sources.CEP.csproj" />
     <ProjectReference Include="..\..\Sources\KSIP\IntegrationHub.Sources.KSIP.csproj" />
     <ProjectReference Include="..\..\Sources\ZW\IntegrationHub.Sources.ZW.csproj" />
-    <ProjectReference Include="..\..\Sources\SRP\IntegrationHub.SRP.csproj" />
    
     <ProjectReference Include="..\..\..\shared\Trentum.Horkos.Abstractions\Trentum.Horkos.Abstractions.csproj" />
   </ItemGroup>

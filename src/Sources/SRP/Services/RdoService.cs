@@ -1,16 +1,17 @@
 using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Contracts;
 using IntegrationHub.Common.Primitives;
-using IntegrationHub.SRP.Config;
-using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Extensions;
+using IntegrationHub.Sources.SRP.Config;
+using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.ServiceModel;
 
 
-namespace IntegrationHub.SRP.Services
+namespace IntegrationHub.Sources.SRP.Services
 {
     public sealed class RdoService : IRdoService
     {

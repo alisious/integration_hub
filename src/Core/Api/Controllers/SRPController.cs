@@ -1,7 +1,7 @@
 using IntegrationHub.Api.Swagger.Examples.SRP;
 using IntegrationHub.Common.Contracts;
-using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Services;
+using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;

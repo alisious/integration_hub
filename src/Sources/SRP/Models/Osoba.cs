@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace IntegrationHub.SRP.Models
+namespace IntegrationHub.Sources.SRP.Models
 {
     public class Osoba
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntegrationHub.SRP.Services
+namespace IntegrationHub.Sources.SRP.Services
 {
     public static class SrpSoapActions
     {

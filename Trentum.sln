@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Sources.CEP"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Sources.KSIP", "src\Sources\KSIP\IntegrationHub.Sources.KSIP.csproj", "{F1A03C29-4C80-DF43-C5F8-B6A6133C2D54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.SRP", "src\Sources\SRP\IntegrationHub.SRP.csproj", "{39FA09A1-46ED-091E-3B51-3E292CD2F66D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Sources.ZW", "src\Sources\ZW\IntegrationHub.Sources.ZW.csproj", "{F3E7534D-4C3A-17FC-C73C-AE911FFAD28D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trentum.Common.Excel", "shared\Trentum.Common.Excel\Trentum.Common.Excel.csproj", "{7777369B-B4AA-180D-3A63-B7DC257D1EDD}"
@@ -40,6 +38,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trentum.Common.Csv", "shared\Trentum.Common.Csv\Trentum.Common.Csv.csproj", "{7BFFFD95-BE1D-CED8-9E14-78E837BF0510}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trentum.Horkos.Dapper", "shared\Trentum.Horkos.Dapper\Trentum.Horkos.Dapper.csproj", "{5E8CE484-281D-D623-B656-8BCC6CB3D421}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationHub.Sources.SRP", "src\Sources\SRP\IntegrationHub.Sources.SRP.csproj", "{804C3822-B366-9185-299D-D33887893FFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,10 +83,6 @@ Global
 		{F1A03C29-4C80-DF43-C5F8-B6A6133C2D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1A03C29-4C80-DF43-C5F8-B6A6133C2D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1A03C29-4C80-DF43-C5F8-B6A6133C2D54}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39FA09A1-46ED-091E-3B51-3E292CD2F66D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39FA09A1-46ED-091E-3B51-3E292CD2F66D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39FA09A1-46ED-091E-3B51-3E292CD2F66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39FA09A1-46ED-091E-3B51-3E292CD2F66D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3E7534D-4C3A-17FC-C73C-AE911FFAD28D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3E7534D-4C3A-17FC-C73C-AE911FFAD28D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3E7534D-4C3A-17FC-C73C-AE911FFAD28D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -111,6 +107,10 @@ Global
 		{5E8CE484-281D-D623-B656-8BCC6CB3D421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E8CE484-281D-D623-B656-8BCC6CB3D421}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E8CE484-281D-D623-B656-8BCC6CB3D421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{804C3822-B366-9185-299D-D33887893FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{804C3822-B366-9185-299D-D33887893FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{804C3822-B366-9185-299D-D33887893FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{804C3822-B366-9185-299D-D33887893FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

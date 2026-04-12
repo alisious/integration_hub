@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace IntegrationHub.SRP.Models
+namespace IntegrationHub.Sources.SRP.Models
 {
     
     [XmlRoot("dowod")]

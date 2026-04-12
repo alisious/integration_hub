@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace IntegrationHub.SRP.Models
+namespace IntegrationHub.Sources.SRP.Models
 {
     public class OsobaZnaleziona
     {

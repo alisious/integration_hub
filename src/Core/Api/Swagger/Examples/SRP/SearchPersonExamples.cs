@@ -1,6 +1,6 @@
 ﻿using IntegrationHub.Common.Contracts;
-using IntegrationHub.SRP.Contracts;      
-using IntegrationHub.SRP.Models;
+using IntegrationHub.Sources.SRP.Contracts;      
+using IntegrationHub.Sources.SRP.Models;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Filters;
 

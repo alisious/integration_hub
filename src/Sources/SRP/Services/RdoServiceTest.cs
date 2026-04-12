@@ -1,15 +1,15 @@
 using IntegrationHub.Common.Config;
 using IntegrationHub.Common.Primitives;
-using IntegrationHub.SRP.Config;
-using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Extensions;
-using IntegrationHub.SRP.Models;
+using IntegrationHub.Sources.SRP.Config;
+using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Extensions;
+using IntegrationHub.Sources.SRP.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 
-namespace IntegrationHub.SRP.Services
+namespace IntegrationHub.Sources.SRP.Services
 {
     public sealed class RdoServiceTest : IRdoService
     {

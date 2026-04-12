@@ -1,11 +1,11 @@
 ﻿using IntegrationHub.Common.Exceptions;
-using IntegrationHub.SRP.Contracts;
-using IntegrationHub.SRP.Extensions;
+using IntegrationHub.Sources.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Extensions;
 using Microsoft.Extensions.Logging;
 using System.ServiceModel;
 using System.Text;
 
-namespace IntegrationHub.SRP.Services
+namespace IntegrationHub.Sources.SRP.Services
 {
     public sealed class SrpSoapInvoker : ISrpSoapInvoker
     {

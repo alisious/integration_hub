@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using IntegrationHub.Common.Contracts;
-using IntegrationHub.SRP.Contracts;
+using IntegrationHub.Sources.SRP.Contracts;
 
-namespace IntegrationHub.SRP.Services;
+namespace IntegrationHub.Sources.SRP.Services;
 
 public static class RdoBulkHelpers
 {

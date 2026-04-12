@@ -1,4 +1,4 @@
-﻿using IntegrationHub.SRP.Contracts;
+﻿using IntegrationHub.Sources.SRP.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntegrationHub.SRP.Services
+namespace IntegrationHub.Sources.SRP.Services
 {
     public sealed record SoapInvokeResult(HttpStatusCode StatusCode, string Body, SoapFaultResponse? Fault);
 

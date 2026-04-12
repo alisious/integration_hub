@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntegrationHub.SRP.Contracts
+namespace IntegrationHub.Sources.SRP.Contracts
 {
     public record SoapFaultResponse(
         string FaultCode,
