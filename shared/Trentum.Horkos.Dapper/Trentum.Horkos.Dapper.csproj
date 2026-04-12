@@ -7,7 +7,7 @@
 		<AssemblyName>Trentum.Horkos.Dapper</AssemblyName>
 		<RootNamespace>Trentum.Horkos</RootNamespace>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>C:\TRENTUM\VS\Trentum\shared\Trentum.Horkos.BpsExtensions\temporary_key.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\Trentum.Horkos.BpsExtensions\temporary_key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
