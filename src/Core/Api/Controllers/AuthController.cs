@@ -10,7 +10,8 @@ using Swashbuckle.AspNetCore.Filters;
 namespace IntegrationHub.PIESP.Controllers
 {
     /// <summary>
-    /// Operacje uwierzytelniania: logowanie, odświeżanie tokenu, zmiana/reset PIN, dane bieżącego użytkownika oraz wylogowanie.
+    /// Operacje uwierzytelniania: logowanie przez Active Directory, odświeżanie tokenu,
+    /// dane bieżącego użytkownika oraz wylogowanie.
     /// </summary>
     [ApiController]
     [Route("piesp/[controller]")]
@@ -20,76 +21,55 @@ namespace IntegrationHub.PIESP.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
-        private readonly SupervisorService _supervisorService;
 
-        public AuthController(AuthService authService, SupervisorService supervisorService)
+        public AuthController(AuthService authService)
         {
             _authService = authService;
-            _supervisorService = supervisorService;
         }
 
         // =========================
-        //  PIN
+        //  OBSOLETE PIN
         // =========================
 
-        /// <summary>Resetuje PIN użytkownika po poprawnym kodzie bezpieczeństwa.</summary>
+        /// <summary>Endpoint zachowany wyłącznie dla zgodności wstecznej. Logowanie PIN zostało wyłączone.</summary>
         /// <remarks>
-        /// Wymagane pola: <b>badgeNumber</b>, <b>securityCode</b>, <b>newPin</b>.
+        /// Użytkownik powinien logować się przez Active Directory podając <b>sAMAccountName</b> i hasło domenowe.
         /// </remarks>
         [HttpPost("reset-pin")]
         [SwaggerOperation(
-            Summary = "Reset PIN (kod bezpieczeństwa)",
-            Description = "Weryfikuje kod bezpieczeństwa i ustawia nowy PIN dla użytkownika o wskazanym numerze odznaki."
+            Summary = "Wyłączone po przejściu na AD",
+            Description = "Operacja resetu PIN jest niedostępna, ponieważ API używa logowania domenowego Active Directory."
         )]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ResetPin([FromBody] ResetPinRequest req)
-        {
-            var valid = await _supervisorService.ValidateSecurityCodeAsync(req.BadgeNumber, req.SecurityCode);
-            if (!valid) return BadRequest("Błędny kod bezpieczeństwa.");
+        [ProducesResponseType(typeof(string), StatusCodes.Status410Gone)]
+        public IActionResult ResetPin([FromBody] ResetPinRequest req) =>
+            StatusCode(StatusCodes.Status410Gone, "Reset PIN jest wyłączony. Użyj logowania przez Active Directory.");
 
-            var user = await _authService.SetPinAsync(req.BadgeNumber, req.NewPin);
-            return user != null ? Ok("Ustawiono nowy PIN.") : NotFound("Nie udało się ustawić nowego PIN.");
-        }
-
-        /// <summary>Zmienia PIN bieżącego, zalogowanego użytkownika.</summary>
-        /// <remarks>Wymaga ważnego tokena. Weryfikuje aktualny PIN (po UserId z claimu) i zapisuje nowy.</remarks>
+        /// <summary>Endpoint zachowany wyłącznie dla zgodności wstecznej. Logowanie PIN zostało wyłączone.</summary>
+        /// <remarks>Po migracji na AD zmiana PIN nie jest wspierana przez API.</remarks>
         [HttpPost("change-pin")]
         [Authorize]
         [SwaggerOperation(
-            Summary = "Zmiana PIN przez zalogowanego użytkownika",
-            Description = "Wymaga ważnego tokena. Weryfikuje aktualny PIN i zapisuje nowy."
+            Summary = "Wyłączone po przejściu na AD",
+            Description = "Operacja zmiany PIN jest niedostępna, ponieważ API używa logowania domenowego Active Directory."
         )]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ChangePin([FromBody] ChangePinRequest req)
-        {
-            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier); // GUID UserId
-            if (!Guid.TryParse(idStr, out var userId)) return Unauthorized();
-
-            var ok = await _authService.ConfirmCurrentPinByUserIdAsync(userId, req.CurrentPin);
-            if (!ok) return BadRequest("Nieprawidłowy PIN.");
-
-            var user = await _authService.SetPinByUserIdAsync(userId, req.NewPin);
-            return user != null ? Ok("PIN został zmieniony.") : NotFound("Nie udało się zmienić PIN.");
-        }
+        [ProducesResponseType(typeof(string), StatusCodes.Status410Gone)]
+        public IActionResult ChangePin([FromBody] ChangePinRequest req) =>
+            StatusCode(StatusCodes.Status410Gone, "Zmiana PIN jest wyłączona. Użyj logowania przez Active Directory.");
 
         // =========================
         //  LOGIN / REFRESH / LOGOUT
         // =========================
 
-        /// <summary>Loguje użytkownika i zwraca parę tokenów (access + refresh).</summary>
+        /// <summary>Loguje użytkownika przez Active Directory i zwraca parę tokenów (access + refresh).</summary>
         /// <remarks>
-        /// Wymagane pola: <b>badgeNumber</b>, <b>pin</b>.<br/>
-        /// Access JWT zawiera claimy: <b>nameidentifier = UserId (GUID)</b>, <b>ver = TokenVersion</b>, listę ról oraz <b>jti</b>.
+        /// Wymagane pola: <b>samAccountName</b>, <b>password</b>.<br/>
+        /// API najpierw weryfikuje poświadczenia w AD, a następnie odczytuje lokalny rekord użytkownika i role.
         /// </remarks>
         [HttpPost("login")]
         [AllowAnonymous]
         [SwaggerOperation(
-            Summary = "Logowanie (JWT + refresh)",
-            Description = "Zwraca krótkotrwały access token i długotrwały refresh token. Access zawiera UserId (NameIdentifier), jti oraz ver (TokenVersion)."
+            Summary = "Logowanie przez AD (JWT + refresh)",
+            Description = "Weryfikuje login sAMAccountName i hasło domenowe w Active Directory. Po poprawnym logowaniu zwraca access token i refresh token na podstawie lokalnego konta API."
         )]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string),StatusCodes.Status401Unauthorized)]
@@ -98,15 +78,15 @@ namespace IntegrationHub.PIESP.Controllers
         [SwaggerResponseExample(StatusCodes.Status403Forbidden, typeof(Login403Example))]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
-            var user = await _authService.LoginAsync(req.BadgeNumber, req.Pin);
-            if (user == null) return Unauthorized("Nie udało się zalogować. Sprawdź numer odznaki i PIN i spróbuj ponownie.");
+            var user = await _authService.LoginAsync(req.SamAccountName, req.Password, HttpContext.RequestAborted);
+            if (user == null) return Unauthorized("Nie udało się zalogować. Sprawdź login domenowy i hasło albo upewnij się, że konto ma lokalne uprawnienia w API.");
             if (!user.IsActive) return Forbid("Konto jest zablokowane lub nieaktywne. Skontaktuj się z przełożonym.");
 
             var access = _authService.IssueAccessToken(user);
             var (refresh, _, _) = await _authService.IssueRefreshTokenAsync(user.Id);
 
             var roles = user.Roles.Select(r => r.Role.ToString());
-            return Ok(new { accessToken = access, refreshToken = refresh, roles, userName = user.UserName });
+            return Ok(new { accessToken = access, refreshToken = refresh, roles, userName = user.UserName, samAccountName = user.SamAccountName });
         }
 
         /// <summary>Odświeża parę tokenów (rotacja refresh i nowy access).</summary>
@@ -208,9 +188,9 @@ namespace IntegrationHub.PIESP.Controllers
         /// <param name="NewPin">Nowy PIN.</param>
         public record ChangePinRequest(string CurrentPin, string NewPin);
 
-        /// <param name="BadgeNumber">Numer odznaki użytkownika.</param>
-        /// <param name="Pin">PIN użytkownika.</param>
-        public record LoginRequest(string BadgeNumber, string Pin);
+        /// <param name="SamAccountName">Login domenowy użytkownika (sAMAccountName).</param>
+        /// <param name="Password">Hasło domenowe użytkownika.</param>
+        public record LoginRequest(string SamAccountName, string Password);
 
         /// <param name="UserId">Identyfikator użytkownika (GUID).</param>
         /// <param name="RefreshToken">Obecny refresh token (opaque Base64).</param>

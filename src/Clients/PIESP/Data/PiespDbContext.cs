@@ -33,6 +33,8 @@ namespace IntegrationHub.PIESP.Data
                 e.Property(x => x.UserName).IsRequired().HasMaxLength(200);
                 e.Property(x => x.BadgeNumber).IsRequired().HasMaxLength(32);
                 e.HasIndex(x => x.BadgeNumber).IsUnique();
+                e.Property(x => x.SamAccountName).HasMaxLength(256);
+                e.HasIndex(x => x.SamAccountName).IsUnique().HasFilter("[SamAccountName] IS NOT NULL");
                 e.Property(x => x.UnitName).HasMaxLength(200);
                 e.Property(x => x.IsActive).HasDefaultValue(true);
                 e.Property(x => x.KsipUserId).HasMaxLength(64);

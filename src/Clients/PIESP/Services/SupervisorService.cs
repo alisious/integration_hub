@@ -34,11 +34,11 @@ namespace IntegrationHub.PIESP.Services
             return true;
         }
 
-        public async Task<bool> AssignRoleAsync(string badgeNumber, RoleType role)
+        public async Task<bool> AssignRoleAsync(string samAccountName, RoleType role)
         {
             var user = await _context.Users
                 .Include(u => u.Roles)
-                .FirstOrDefaultAsync(u => u.BadgeNumber == badgeNumber);
+                .FirstOrDefaultAsync(u => u.SamAccountName == NormalizeSamAccountName(samAccountName));
 
             if (user == null)
                 return false;
@@ -51,11 +51,11 @@ namespace IntegrationHub.PIESP.Services
             return true;
         }
 
-        public async Task<bool> RevokeRoleAsync(string badgeNumber, RoleType role)
+        public async Task<bool> RevokeRoleAsync(string samAccountName, RoleType role)
         {
             var user = await _context.Users
                 .Include(u => u.Roles)
-                .FirstOrDefaultAsync(u => u.BadgeNumber == badgeNumber);
+                .FirstOrDefaultAsync(u => u.SamAccountName == NormalizeSamAccountName(samAccountName));
 
             if (user == null)
                 return false;
@@ -69,6 +69,9 @@ namespace IntegrationHub.PIESP.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        private static string NormalizeSamAccountName(string samAccountName) =>
+            samAccountName.Trim().ToLowerInvariant();
 
 
     }
