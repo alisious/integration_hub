@@ -13,6 +13,7 @@ using IntegrationHub.Infrastructure.Audit;
 using IntegrationHub.Infrastructure.Audit.Http;
 using IntegrationHub.Infrastructure.Cepik;
 using IntegrationHub.Infrastructure.Sql;
+using IntegrationHub.PIESP.Config;
 using IntegrationHub.PIESP.Data;
 using IntegrationHub.PIESP.Services;
 using IntegrationHub.Sources.ANPRS.Config;
@@ -55,6 +56,64 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Tryb CI/offline: uruchom minimalną aplikację tylko po to, aby wystawić swagger.json.
+// Użycie (env var): SwaggerGenOnly=true
+var swaggerGenOnly = builder.Configuration.GetValue<bool>("SwaggerGenOnly");
+if (swaggerGenOnly)
+{
+    builder.Services.AddControllers();
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Integration Hub API",
+            Version = "v1",
+        });
+        options.EnableAnnotations();
+        options.ExampleFilters();
+
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Wprowadź JWT w formacie 'Bearer {token}'",
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                },
+                Array.Empty<string>()
+            }
+        });
+    });
+
+    // examples (nie wymagają uruchamiania zewnętrznych serwisów)
+    builder.Services.AddSwaggerExamplesFromAssemblyOf<
+        IntegrationHub.Api.Swagger.Examples.SRP.SearchPerson200Example>();
+    builder.Services.AddSwaggerExamplesFromAssemblyOf<
+        IntegrationHub.Api.Swagger.Examples.PIESP.Login401Example>();
+    builder.Services.AddSwaggerExamplesFromAssemblyOf<
+        IntegrationHub.Api.Swagger.Examples.ANPRS.Code400InvalidParameterExample>();
+
+    var swaggerApp = builder.Build();
+    swaggerApp.UseSwagger();
+    swaggerApp.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integration Hub API V1");
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+    });
+
+    swaggerApp.MapControllers();
+    swaggerApp.Run();
+    return;
+}
 
 // KONFIGURACJA SERILOG � musi by� przed builder.Build() U�ywaj konfiguracji Seriloga z appsettings.*.json
 builder.Logging.ClearProviders(); // usu� domy�lnego ConsoleLoggera itp.
@@ -227,7 +286,9 @@ var cepConfig = builder.Configuration.GetSection("ExternalServices:CEP").Get<CEP
 
 // ====== DEPENDENCY INJECTION ======
 
-
+builder.Services.Configure<ActiveDirectoryOptions>(
+    builder.Configuration.GetSection(ActiveDirectoryOptions.SectionName));
+builder.Services.AddScoped<ActiveDirectoryAuthenticationService>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DutyService>();

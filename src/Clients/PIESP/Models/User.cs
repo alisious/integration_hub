@@ -21,6 +21,10 @@ namespace IntegrationHub.PIESP.Models
         [JsonPropertyName("badgeNumber")]
         public required string BadgeNumber { get; set; }
 
+        /// <summary>Login domenowy użytkownika (sAMAccountName) używany do logowania w AD.</summary>
+        [JsonPropertyName("samAccountName")]
+        public string? SamAccountName { get; set; }
+
         /// <summary>Nazwa jednostki organizacyjnej.</summary>
         [JsonPropertyName("unitName")]
         public string? UnitName { get; set; }

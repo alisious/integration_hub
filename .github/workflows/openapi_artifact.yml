@@ -1,0 +1,43 @@
+name: OpenAPI (swagger.json) artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  swagger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore IntegrationHub.Api/IntegrationHub.Api.csproj
+
+      - name: Run API (SwaggerGenOnly)
+        run: |
+          dotnet run --project IntegrationHub.Api/IntegrationHub.Api.csproj --configuration Release --no-restore --urls http://127.0.0.1:7104 &
+          for i in {1..60}; do
+            if curl -fsS "http://127.0.0.1:7104/swagger/v1/swagger.json" > swagger.json; then
+              echo "Swagger fetched"
+              break
+            fi
+            sleep 1
+          done
+          test -s swagger.json
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          SwaggerGenOnly: "true"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrationhub.swagger.v1
+          path: swagger.json
+

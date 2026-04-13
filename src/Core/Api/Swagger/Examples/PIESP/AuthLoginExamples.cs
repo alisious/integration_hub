@@ -6,7 +6,7 @@ namespace IntegrationHub.Api.Swagger.Examples.PIESP
     public sealed class Login401Example : IExamplesProvider<string>
     {
         public string GetExamples() =>
-            "Nie udało się zalogować. Sprawdź numer odznaki i PIN i spróbuj ponownie.";
+            "Nie udało się zalogować. Sprawdź login domenowy i hasło albo upewnij się, że konto ma lokalne uprawnienia w API.";
     }
 
     public sealed class Login403Example : IExamplesProvider<string>

@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace IntegrationHub.PIESP.Controllers
 {
     /// <summary>
-    /// Operacje przełożonego: generowanie kodów bezpieczeństwa, zarządzanie rolami,
+    /// Operacje przełożonego: zarządzanie rolami,
     /// wymuszone wylogowanie użytkownika (force-logout).
     /// </summary>
     [ApiController]
@@ -27,30 +27,27 @@ namespace IntegrationHub.PIESP.Controllers
             _authService = authService;
         }
 
-        /// <summary>Generuje jednorazowy kod bezpieczeństwa dla wskazanego numeru odznaki.</summary>
+        /// <summary>Endpoint zachowany wyłącznie dla zgodności wstecznej. Reset PIN został wyłączony.</summary>
         [HttpPost("generate-code")]
         [SwaggerOperation(
-            Summary = "Generowanie kodu bezpieczeństwa",
-            Description = "Tworzy jednorazowy kod bezpieczeństwa dla użytkownika. Kod służy do resetu PIN."
+            Summary = "Wyłączone po przejściu na AD",
+            Description = "Generowanie kodu bezpieczeństwa jest niedostępne, ponieważ API nie używa już PIN-ów do logowania."
         )]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GenerateCode([FromBody] GenerateCodeRequest req)
-        {
-            var code = await _supervisorService.GenerateCodeAsync(req.BadgeNumber);
-            return Ok(new { securityCode = code });
-        }
+        [ProducesResponseType(typeof(string), StatusCodes.Status410Gone)]
+        public IActionResult GenerateCode([FromBody] GenerateCodeRequest req) =>
+            StatusCode(StatusCodes.Status410Gone, "Generowanie kodów bezpieczeństwa jest wyłączone. API używa logowania przez Active Directory.");
 
         /// <summary>Nadaje wskazaną rolę użytkownikowi.</summary>
         [HttpPost("assign-role")]
         [SwaggerOperation(
             Summary = "Przypisz rolę użytkownikowi",
-            Description = "Nadaje użytkownikowi rolę (User/Supervisor/PowerUser) na podstawie numeru odznaki."
+            Description = "Nadaje użytkownikowi rolę (User/Supervisor/PowerUser) na podstawie loginu domenowego sAMAccountName."
         )]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AssignRole([FromBody] RoleChangeRequest req)
         {
-            var success = await _supervisorService.AssignRoleAsync(req.BadgeNumber, req.Role);
+            var success = await _supervisorService.AssignRoleAsync(req.SamAccountName, req.Role);
             return success ? Ok() : NotFound("User not found or role already assigned.");
         }
 
@@ -58,13 +55,13 @@ namespace IntegrationHub.PIESP.Controllers
         [HttpPost("revoke-role")]
         [SwaggerOperation(
             Summary = "Odbierz rolę użytkownikowi",
-            Description = "Usuwa wskazaną rolę użytkownikowi z podanym numerem odznaki."
+            Description = "Usuwa wskazaną rolę użytkownikowi z podanym loginem domenowym sAMAccountName."
         )]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RevokeRole([FromBody] RoleChangeRequest req)
         {
-            var success = await _supervisorService.RevokeRoleAsync(req.BadgeNumber, req.Role);
+            var success = await _supervisorService.RevokeRoleAsync(req.SamAccountName, req.Role);
             return success ? Ok() : NotFound("User or role not found.");
         }
 
@@ -82,22 +79,22 @@ namespace IntegrationHub.PIESP.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ForceLogout([FromBody] ForceLogoutRequest req)
         {
-            var ok = await _authService.ForceLogoutByBadgeAsync(req.BadgeNumber);
-            return ok ? Ok() : NotFound("Nie znaleziono użytkownika o podanym numerze odznaki.");
+            var ok = await _authService.ForceLogoutBySamAccountNameAsync(req.SamAccountName);
+            return ok ? Ok() : NotFound("Nie znaleziono użytkownika o podanym loginie domenowym.");
         }
 
         // =========================
         //  Request models
         // =========================
 
-        /// <param name="BadgeNumber">Numer odznaki użytkownika.</param>
-        public record GenerateCodeRequest(string BadgeNumber);
+        /// <param name="SamAccountName">Login domenowy użytkownika (sAMAccountName).</param>
+        public record GenerateCodeRequest(string SamAccountName);
 
-        /// <param name="BadgeNumber">Numer odznaki użytkownika.</param>
+        /// <param name="SamAccountName">Login domenowy użytkownika (sAMAccountName).</param>
         /// <param name="Role">Rola do przypisania/odebrania (User/Supervisor/PowerUser).</param>
-        public record RoleChangeRequest(string BadgeNumber, RoleType Role);
+        public record RoleChangeRequest(string SamAccountName, RoleType Role);
 
-        /// <param name="BadgeNumber">Numer odznaki użytkownika do wymuszonego wylogowania.</param>
-        public record ForceLogoutRequest(string BadgeNumber);
+        /// <param name="SamAccountName">Login domenowy użytkownika do wymuszonego wylogowania.</param>
+        public record ForceLogoutRequest(string SamAccountName);
     }
 }

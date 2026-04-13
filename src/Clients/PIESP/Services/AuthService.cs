@@ -24,12 +24,18 @@ namespace IntegrationHub.PIESP.Services
     {
         private readonly PiespDbContext _context;
         private readonly ILogger<AuthService> _log;
+        private readonly ActiveDirectoryAuthenticationService _activeDirectoryAuthenticationService;
         private readonly string _jwtKey;
 
-        public AuthService(PiespDbContext context, ILogger<AuthService> log, IConfiguration cfg)
+        public AuthService(
+            PiespDbContext context,
+            ILogger<AuthService> log,
+            IConfiguration cfg,
+            ActiveDirectoryAuthenticationService activeDirectoryAuthenticationService)
         {
             _context = context;
             _log = log;
+            _activeDirectoryAuthenticationService = activeDirectoryAuthenticationService;
             _jwtKey = cfg["Jwt:Key"] ?? throw new InvalidOperationException("Missing Jwt:Key in configuration.");
         }
 
@@ -75,25 +81,32 @@ namespace IntegrationHub.PIESP.Services
             return user;
         }
 
-        /// <summary>Logowanie: znajduje użytkownika po odznace, sprawdza PIN. Zwraca <c>User</c> (kontroler generuje tokeny).</summary>
-        public async Task<User?> LoginAsync(string badge, string pin)
+        /// <summary>
+        /// Logowanie przez Active Directory: najpierw weryfikuje poświadczenia domenowe,
+        /// następnie wyszukuje lokalnego użytkownika po sAMAccountName.
+        /// </summary>
+        public async Task<User?> LoginAsync(string samAccountName, string password, CancellationToken ct = default)
         {
             try
             {
+                var normalizedLogin = NormalizeSamAccountName(samAccountName);
+                if (string.IsNullOrWhiteSpace(normalizedLogin))
+                    return null;
+
+                var valid = await _activeDirectoryAuthenticationService.ValidateCredentialsAsync(normalizedLogin, password, ct);
+                if (!valid) return null;
+
                 var user = await _context.Users
                     .Include(u => u.Roles)
-                    .FirstOrDefaultAsync(u => u.BadgeNumber == badge);
-                                
+                    .FirstOrDefaultAsync(u => u.SamAccountName == normalizedLogin, ct);
+
                 if (user == null) return null;
-
-
-                if (!PinHasher.Verify(pin, user.PinHash)) return null;
 
                 return user;
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "Błąd podczas logowania (badge={Badge})", badge);
+                _log.LogError(ex, "Błąd podczas logowania AD (samAccountName={SamAccountName})", samAccountName);
                 return null;
             }
         }
@@ -132,6 +145,10 @@ namespace IntegrationHub.PIESP.Services
             if (!string.IsNullOrWhiteSpace(user.BadgeNumber))
             {
                 claims.Add(new System.Security.Claims.Claim("badge_number", user.BadgeNumber));
+            }
+            if (!string.IsNullOrWhiteSpace(user.SamAccountName))
+            {
+                claims.Add(new System.Security.Claims.Claim("sam_account_name", user.SamAccountName));
             }
 
             foreach (var r in user.Roles.Select(x => x.Role.ToString()))
@@ -299,9 +316,10 @@ namespace IntegrationHub.PIESP.Services
         /// Force-logout (Supervisor): inkrementuje TokenVersion danego użytkownika oraz unieważnia wszystkie jego refresh tokeny.
         /// Stare access tokeny odpadają (ver &lt; Users.TokenVersion), użytkownik może od razu zalogować się ponownie.
         /// </summary>
-        public async Task<bool> ForceLogoutByBadgeAsync(string badgeNumber)
+        public async Task<bool> ForceLogoutBySamAccountNameAsync(string samAccountName)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.BadgeNumber == badgeNumber);
+            var normalizedLogin = NormalizeSamAccountName(samAccountName);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.SamAccountName == normalizedLogin);
             if (user is null) return false;
 
             user.TokenVersion += 1;
@@ -312,7 +330,7 @@ namespace IntegrationHub.PIESP.Services
                 "WHERE UserId = {0} AND RevokedAt IS NULL",
                 user.Id);
 
-            _log.LogInformation("ForceLogout: TokenVersion++ for user {UserId} (badge={Badge}) -> {Ver}", user.Id, badgeNumber, user.TokenVersion);
+            _log.LogInformation("ForceLogout: TokenVersion++ for user {UserId} (samAccountName={SamAccountName}) -> {Ver}", user.Id, normalizedLogin, user.TokenVersion);
             return true;
         }
 
@@ -327,5 +345,8 @@ namespace IntegrationHub.PIESP.Services
                 "WHERE UserId = {0} AND RevokedAt IS NULL",
                 userId);
         }
+
+        private static string NormalizeSamAccountName(string samAccountName) =>
+            samAccountName.Trim().ToLowerInvariant();
     }
 }
