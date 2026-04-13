@@ -146,3 +146,4 @@ FROM [piesp].[Users] u
 WHERE u.[SamAccountName] IS NOT NULL
 GROUP BY u.[SamAccountName]
 HAVING COUNT(*) > 1;
+
