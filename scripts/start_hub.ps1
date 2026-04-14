@@ -25,7 +25,7 @@ if (Test-Path $PublishedDll) {
     $dotnetArgs = "`"$PublishedDll`""
     $mode = "published DLL ($PublishedDll)"
 } elseif (Test-Path $ProjectPath) {
-    $dotnetArgs = "run --project `"$ProjectPath`" --no-launch-profile"
+    $dotnetArgs = "run --project `"$ProjectPath`" --launch-profile http"
     $mode = "dotnet run ($ProjectPath)"
 } else {
     Write-Error "Cannot find project file or published DLL.`n  Searched: $ProjectPath`n  Searched: $PublishedDll"
@@ -40,7 +40,6 @@ try {
         -WorkingDirectory $RepoRoot `
         -RedirectStandardOutput $LogFile `
         -RedirectStandardError  $ErrFile `
-        -WindowStyle Hidden `
         -PassThru `
         -NoNewWindow
 
