@@ -50,7 +50,7 @@ using Trentum.Horkos;
 
 
 
-// Serilog � bootstrap logger, �eby logowa� od samego pocz�tku
+// Serilog – bootstrap logger, żeby logować od samego początku
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
@@ -115,13 +115,13 @@ if (swaggerGenOnly)
     return;
 }
 
-// KONFIGURACJA SERILOG � musi by� przed builder.Build() U�ywaj konfiguracji Seriloga z appsettings.*.json
-builder.Logging.ClearProviders(); // usu� domy�lnego ConsoleLoggera itp.
+// KONFIGURACJA SERILOG – musi być przed builder.Build() Używaj konfiguracji Seriloga z appsettings.*.json
+builder.Logging.ClearProviders(); // usuń domyślnego ConsoleLoggera itp.
 builder.Host.UseSerilog((ctx, services, cfg) =>
 cfg.ReadFrom.Configuration(ctx.Configuration)
        .ReadFrom.Services(services));
 
-//Konfiguracja CORS � PROD + localhost (dev)
+//Konfiguracja CORS – PROD + localhost (dev)
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>() ?? Array.Empty<string>();
@@ -130,9 +130,9 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("PIESP", p =>
         p
-        // zezw�l na originy z appsettings (PROD)
+        // zezwól na originy z appsettings (PROD)
         .WithOrigins(allowedOrigins)
-        // i dodatkowo zezw�l na localhost (dev)
+        // i dodatkowo zezwól na localhost (dev)
         .SetIsOriginAllowed(origin =>
         {
             if (Uri.TryCreate(origin, UriKind.Absolute, out var uri) && uri.IsLoopback) return true;
@@ -140,7 +140,7 @@ builder.Services.AddCors(opt =>
         })
         .AllowAnyHeader()
         .AllowAnyMethod()
-        // .AllowCredentials() // w��cz TYLKO je�li faktycznie u�ywacie cookies/credentials
+        // .AllowCredentials() // włącz TYLKO jeśli faktycznie używacie cookies/credentials
         .SetPreflightMaxAge(TimeSpan.FromHours(1))
     );
 });
@@ -194,28 +194,28 @@ var srpConfig = builder.Configuration.GetSection("ExternalServices:SRP").Get<Srp
 
 builder.Services.AddHttpClient("SrpServiceClient", c =>
 {
-    // Ca�kowity timeout HttpClient wy��czamy � kontrolujemy czas przez pipeline (Attempt/Total)
+    // Całkowity timeout HttpClient wyłączamy – kontrolujemy czas przez pipeline (Attempt/Total)
     c.Timeout = Timeout.InfiniteTimeSpan;
-    // Spr�buj HTTP/2 (wenn dost�pny), z fallbackiem w d� � lepsze mno�enie strumieni
+    // Spróbuj HTTP/2 (wenn dostępny), z fallbackiem w dół – lepsze mnożenie strumieni
     c.DefaultRequestVersion = HttpVersion.Version20;
     c.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
 })
-// 1) Handler audytu �r�de� � wsp�lny mechanizm dla SRP
+// 1) Handler audytu źródeł – wspólny mechanizm dla SRP
 .AddHttpMessageHandler(sp =>
 {
     var factory = sp.GetRequiredService<Func<string, SourceAuditHandler>>();
     return factory("SRP");
 })
 
-// Handler gniazd � klucz do wydajno�ci r�wnoleg�ych wywo�a�
+// Handler gniazd – klucz do wydajności równoległych wywołań
 .ConfigurePrimaryHttpMessageHandler(sp =>
 {
 
-    // Uwaga: NIE �adujemy certyfikatu w trybie testowym
+    // Uwaga: NIE ładujemy certyfikatu w trybie testowym
     if (srpConfig?.TestMode == true)
     {
         
-        Log.Warning("SRP dzia�a w TRYBIE TESTOWYM. Nie u�ywam certyfikatu klienta.");
+        Log.Warning("SRP działa w TRYBIE TESTOWYM. Nie używam certyfikatu klienta.");
         return new HttpClientHandler();
 
     }
@@ -227,16 +227,16 @@ builder.Services.AddHttpClient("SrpServiceClient", c =>
 
     // ZLATA ZASADA: MaxConnectionsPerServer >= 2 * maxParallel (zapas)
     var maxConn = Math.Max(16, (config.HttpMaxConnectionsPerServer ?? 0)); // opcjonalnie z appsettings
-    if (maxConn <= 0) maxConn = 32; // domy�lnie pod bulk
+    if (maxConn <= 0) maxConn = 32; // domyślnie pod bulk
 
     var h = new SocketsHttpHandler
     {
         AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         MaxConnectionsPerServer = maxConn,
-        PooledConnectionLifetime = TimeSpan.FromMinutes(5), // rotacja po��cze� (DNS/zdrowie)
+        PooledConnectionLifetime = TimeSpan.FromMinutes(5), // rotacja połączeń (DNS/zdrowie)
         PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
         ConnectTimeout = TimeSpan.FromSeconds(5),
-        // W .NET 8 dost�pne: utrzymanie po��cze� H2 przy d�u�szej bezczynno�ci
+        // W .NET 8 dostępne: utrzymanie połączeń H2 przy dłuższej bezczynności
         KeepAlivePingDelay = TimeSpan.FromSeconds(30),
         KeepAlivePingTimeout = TimeSpan.FromSeconds(15),
         KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always
@@ -253,22 +253,22 @@ builder.Services.AddHttpClient("SrpServiceClient", c =>
     return h;
 })
 
-// Polly v8 � gotowy �standard� z dopracowaniem czas�w i prog�w
+// Polly v8 – gotowy „standard” z dopracowaniem czasów i progów
 .AddStandardResilienceHandler(opt =>
 {
-    // 1) Timeout pojedynczej pr�by (wa�ne przy retrach)
+    // 1) Timeout pojedynczej próby (ważne przy retrach)
     opt.AttemptTimeout.Timeout = TimeSpan.FromSeconds(10);
 
-    // 2) ��czny limit czasu ca�ego ��dania (przez wszystkie retry)
+    // 2) Łączny limit czasu całego żądania (przez wszystkie retry)
     opt.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
 
-    // 3) Retry � exponential + jitter (domy�lnie na 5xx/408/transport; 429 te� jest sensowny na odczytach)
+    // 3) Retry – exponential + jitter (domyślnie na 5xx/408/transport; 429 też jest sensowny na odczytach)
     opt.Retry.MaxRetryAttempts = 3;
 
-    // 4) Circuit Breaker � �eby nie �m�czy� us�ugi gdy ewidentnie ma k�opot
-    opt.CircuitBreaker.FailureRatio = 0.2;                // 20% pora�ek w oknie => przerwa
+    // 4) Circuit Breaker – żeby nie zmęczyć usługi gdy ewidentnie ma kłopot
+    opt.CircuitBreaker.FailureRatio = 0.2;                // 20% porażek w oknie => przerwa
     opt.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(60);
-    opt.CircuitBreaker.MinimumThroughput = 20;            // minimalna liczba pr�b do oceny
+    opt.CircuitBreaker.MinimumThroughput = 20;            // minimalna liczba prób do oceny
     opt.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
 });
 
@@ -309,10 +309,10 @@ builder.Services.AddScoped<IZWSourceFacade, ZWSourceFacade>();
 if (srpConfig!.TestMode)
 {
     
-    // Je�li TestMode, zarejestruj PeselService jako PeselServiceTest
+    // Jeśli TestMode, zarejestruj PeselService jako PeselServiceTest
     builder.Services.AddTransient<IPeselService, PeselServiceTest>();
     builder.Services.AddTransient<IRdoService, RdoServiceTest>();
-    Log.Warning("SRP dzia�a w trybie testowym.");
+    Log.Warning("SRP działa w trybie testowym.");
 }
 else
 {
@@ -325,14 +325,14 @@ if (cepConfig!.TestMode)
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiServiceTest>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieServiceTest>();
-    Log.Warning("CEP dzia�a w trybie testowym.");
+    Log.Warning("CEP działa w trybie testowym.");
 }
 else
 {
     builder.Services.AddScoped<ICEPSlownikiService, CEPSlownikiService>();
     builder.Services.AddScoped<ICEPUdostepnianieService, CEPUdostepnianieService>();
-    //TODO: Zamieni� na UpKiService w trybie produkcyjnym
-    Log.Information("CEP dzia�a w trybie produkcyjnym.");
+    //TODO: Zamienić na UpKiService w trybie produkcyjnym
+    Log.Information("CEP działa w trybie produkcyjnym.");
 }
 
 /**************************************************************/
@@ -386,7 +386,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 if (string.IsNullOrEmpty(jti) || await auth.IsTokenRevokedAsync(jti))
                 { ctx.Fail("Token revoked or missing jti."); return; }
 
-                // 2) wersjonowanie tokenu (force-logout / zmiana r�l)
+                // 2) wersjonowanie tokenu (force-logout / zmiana ról)
                 var uidStr = ctx.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var verStr = ctx.Principal?.FindFirst("ver")?.Value;
                 if (!Guid.TryParse(uidStr, out var uid) || !int.TryParse(verStr, out var ver))
@@ -409,40 +409,40 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Integration Hub API",
         Version = "v1",
-        Description = @"System API dla aplikacji patrolowej �andarmerii Wojskowej.
+        Description = @"System API dla aplikacji patrolowej Żandarmerii Wojskowej.
 
-    W bazie danych znajduj� si�:
+    W bazie danych znajdują się:
 
-    - **U�ytkownicy**: 'kpr. Jan Kowalski' (badge: 1111, PIN: 1111), 'mjr Tomasz Nowak' (badge: 2222, PIN: 2222), z przypisanymi rolami takimi jak `User` i `Supervisor`.
+    - **Użytkownicy**: 'kpr. Jan Kowalski' (badge: 1111, PIN: 1111), 'mjr Tomasz Nowak' (badge: 2222, PIN: 2222), z przypisanymi rolami takimi jak `User` i `Supervisor`.
     - **PIN-y**: przechowywane jako hashe, logowanie wymaga numeru odznaki i PIN-u.
-    - **S�u�by**: przypisane do u�ytkownika 1111, typy: 'Patrol pieszy', 'Patrol zapobiegawczy', 'Kontrola ruchu', 'Zabezpieczenie wydarzenia', w dniach od 18 do 21.06.2025 r.
-    - **Kody bezpiecze�stwa**: generowane na 10 minut w celu resetu PIN-u.
+    - **Służby**: przypisane do użytkownika 1111, typy: 'Patrol pieszy', 'Patrol zapobiegawczy', 'Kontrola ruchu', 'Zabezpieczenie wydarzenia', w dniach od 18 do 21.06.2025 r.
+    - **Kody bezpieczeństwa**: generowane na 10 minut w celu resetu PIN-u.
     - **Role**: `User`, `Supervisor`, `PowerUser`.
 
-    **Autoryzacja**: Wymagany token JWT przesy�any w nag��wku:
-    **Autoryzacja JWT � Jak korzysta� w Swaggerze:**
+    **Autoryzacja**: Wymagany token JWT przesyłany w nagłówku:
+    **Autoryzacja JWT – Jak korzystać w Swaggerze:**
 
-    1. Wywo�aj endpoint POST /piesp/auth/login z tre�ci�:
+    1. Wywołaj endpoint POST /piesp/auth/login z treścią:
 
        badgeNumber: 1111
        pin: 1111
 
-       Odpowied� zawiera token JWT (w polu ''token'').
+       Odpowiedź zawiera token JWT (w polu ''token'').
 
-    2. Kliknij przycisk Authorize (k��dka w prawym g�rnym rogu).
+    2. Kliknij przycisk Authorize (kłódka w prawym górnym rogu).
     3. Wklej token w formacie:
 
        Bearer [wklej_token_tutaj]
 
-    4. Kliknij Authorize, a nast�pnie Close.
-    5. Teraz mo�esz wywo�ywa� wszystkie zabezpieczone endpointy.
+    4. Kliknij Authorize, a następnie Close.
+    5. Teraz możesz wywoływać wszystkie zabezpieczone endpointy.
 
-    Token JWT jest wa�ny 1 dzie�. Po jego wyga�ni�ciu zaloguj si� ponownie, aby uzyska� nowy token.
+    Token JWT jest ważny 1 dzień. Po jego wygaśnięciu zaloguj się ponownie, aby uzyskać nowy token.
 
     Zalecane testowe dane logowania:
 
-    - Badge: 1111, PIN: 1111 (Dow�dca patrolu)
-    - Badge: 2222, PIN: 2222 (Oficer dy�urny)"
+    - Badge: 1111, PIN: 1111 (Dowódca patrolu)
+    - Badge: 2222, PIN: 2222 (Oficer dyżurny)"
     });
     options.MapType<IFormFile>(() => new OpenApiSchema 
     { 
@@ -458,7 +458,7 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Wprowad� JWT w formacie 'Bearer {token}'",
+        Description = "Wprowadź JWT w formacie 'Bearer {token}'",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
@@ -474,11 +474,11 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 
-    options.EnableAnnotations();// �eby dzia�a� [SwaggerOperation] itd.
-    options.ExampleFilters();// �eby dzia�a�y [SwaggerResponseExample]
+    options.EnableAnnotations();// żeby działał [SwaggerOperation] itd.
+    options.ExampleFilters();// żeby działały [SwaggerResponseExample]
 });
 
-// Wskazanie assembly, w kt�rym s� klasy przyk�ad�w wynik�w dzia�ania metod konroler�w:
+// Wskazanie assembly, w którym są klasy przykładów wyników działania metod konrolerów:
 builder.Services.AddSwaggerExamplesFromAssemblyOf<
     IntegrationHub.Api.Swagger.Examples.SRP.SearchPerson200Example>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<
@@ -512,13 +512,13 @@ app.Lifetime.ApplicationStarted.Register(() =>
             if (string.IsNullOrWhiteSpace(rdoUrl)) return;
 
             var warmupEnabled = cfg.GetValue<bool?>("ExternalServices:SRP:WarmUpEnabled") ?? false;
-            if (!warmupEnabled) return; // <-- wy��cza warm-up
+            if (!warmupEnabled) return; // <-- wyłącza warm-up
 
 
-            // r�wnoleg�o�� ~ po�owa MaxConnectionsPerServer (bezpiecznie dla dziesi�tek user�w)
+            // równoległość ~ połowa MaxConnectionsPerServer (bezpiecznie dla dziesiątek userów)
             var maxConns = cfg.GetValue<int?>("ExternalServices:SRP:HttpMaxConnectionsPerServer") ?? 32;
             var parallelism = Math.Clamp(maxConns / 2, 4, 32);
-            var attempts = 2; // po 2 lekkie strza�y
+            var attempts = 2; // po 2 lekkie strzały
 
             using var sem = new SemaphoreSlim(parallelism);
             var tasks = new List<Task>();
@@ -541,9 +541,9 @@ app.Lifetime.ApplicationStarted.Register(() =>
                                     VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
                                 };
                                 using var resp = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cts.Token);
-                                break; // handshake/ALPN/H2 i po��czenia w puli s� gotowe
+                                break; // handshake/ALPN/H2 i połączenia w puli są gotowe
                             }
-                            catch { /* spr�buj kolejny candidate */ }
+                            catch { /* spróbuj kolejny candidate */ }
                         }
                     }
                     finally { sem.Release(); }
@@ -552,7 +552,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 
             await Task.WhenAll(tasks);
         }
-        catch { /* warm-up nie mo�e blokowa� startu */ }
+        catch { /* warm-up nie może blokować startu */ }
     });
 });
 
