@@ -46,11 +46,25 @@ try {
 
     $proc.Id | Set-Content -Path $PidFile -Encoding UTF8
 
+    # --- resolve Swagger URL from launchSettings.json ---
+    $launchSettings = [System.IO.Path]::Combine($RepoRoot, 'src', 'Core', 'Api', 'Properties', 'launchSettings.json')
+    $swaggerUrl = 'http://localhost:5266/swagger'
+    if (Test-Path $launchSettings) {
+        $ls = Get-Content $launchSettings -Raw | ConvertFrom-Json
+        $appUrl = $ls.profiles.http.applicationUrl
+        if ($appUrl) {
+            $baseUrl = ($appUrl -split ';' | Where-Object { $_ -like 'http://*' } | Select-Object -First 1).TrimEnd('/')
+            $swaggerUrl = "$baseUrl/swagger"
+        }
+    }
+
     Write-Host "IntegrationHub.Api started ($mode)." -ForegroundColor Green
     Write-Host "  PID      : $($proc.Id)"
     Write-Host "  Log      : $LogFile"
     Write-Host "  Err log  : $ErrFile"
     Write-Host "  PID file : $PidFile"
+    Write-Host ""
+    Write-Host "  Swagger  : $swaggerUrl" -ForegroundColor Cyan
 } catch {
     Write-Error "Failed to start IntegrationHub.Api: $_"
     exit 1
